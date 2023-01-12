@@ -28,18 +28,6 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final defaultPinTheme = PinTheme(
-      width: 56,
-      height: 56,
-      textStyle: const TextStyle(
-        fontSize: 22,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade400),
-      ),
-    );
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -80,15 +68,14 @@ class _OTPScreenState extends State<OTPScreen> {
                 Directionality(
                   textDirection: TextDirection.ltr,
                   child: Pinput(
+                    length: 6,
                     controller: otpController,
                     focusNode: focusNode,
-                    androidSmsAutofillMethod:
-                    AndroidSmsAutofillMethod.smsUserConsentApi,
                     listenForMultipleSmsOnAndroid: true,
                     defaultPinTheme: defaultPinTheme,
 
                     validator: (value) {
-                      return value == '1234' ? null : 'Pin is incorrect';
+                      return value == '123456' ? null : 'Pin is incorrect';
                     },
                     hapticFeedbackType: HapticFeedbackType.lightImpact,
                     onCompleted: (pin) {
@@ -148,4 +135,16 @@ class _OTPScreenState extends State<OTPScreen> {
       ),
     );
   }
+
+  final defaultPinTheme = PinTheme(
+    width: 50,
+    height: 50,
+    textStyle: const TextStyle(
+      fontSize: 21,
+    ),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(color: Colors.grey.shade400),
+    ),
+  );
 }
