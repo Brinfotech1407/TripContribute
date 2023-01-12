@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:trip_contribute/login_screen.dart';
-import 'package:trip_contribute/splash_screen.dart';
+import 'package:trip_contribute/views/login_screen.dart';
+import 'package:trip_contribute/views/splash_screen.dart';
 
-import 'otp_screen.dart';
+
+import 'views/otp_screen.dart';
 
 void main() {
   runApp(const MyApp());

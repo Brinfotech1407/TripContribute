@@ -1,8 +1,9 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:trip_contribute/otp_screen.dart';
+
 import 'package:trip_contribute/tripUtils.dart';
+import 'package:trip_contribute/views/otp_screen.dart';
 
 
 

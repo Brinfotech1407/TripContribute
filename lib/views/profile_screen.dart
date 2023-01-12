@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:trip_contribute/add_member_screen.dart';
+import 'package:trip_contribute/views/add_member_screen.dart';
 import 'package:trip_contribute/tripUtils.dart';
 
 class ProfileScreen extends StatefulWidget {
