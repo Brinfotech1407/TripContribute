@@ -3,7 +3,6 @@ import 'package:trip_contribute/views/auth_views/login_screen.dart';
 import 'package:trip_contribute/views/splash_screen.dart';
 
 
-import 'views/auth_views/otp_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-        future: Future.delayed(const Duration(seconds: 3)),
+        future: Future.delayed(const Duration(seconds: 2)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const SplashScreen();
