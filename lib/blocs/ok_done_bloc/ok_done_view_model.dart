@@ -8,4 +8,8 @@ abstract class OkDoneViewModel implements AppViewModel {
 
   bool? get isLoading;
 
+  Future<OkDoneViewModel> redirectToHomeScreen();
+
+
+
 }

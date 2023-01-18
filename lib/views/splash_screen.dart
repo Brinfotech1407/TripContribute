@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:trip_contribute/blocs/ok_done_bloc/ok_done_accessor.dart';
+import 'package:trip_contribute/blocs/ok_done_bloc/ok_done_view_model.dart';
+import 'package:trip_contribute/views/auth_views/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -38,39 +41,53 @@ class _SplashScreenState extends State<SplashScreen> with
      _animController!.dispose();
      super.dispose();
 
-
    }
 
 
 @override
   Widget build(BuildContext context) {
-  final double width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      body: AnimatedBuilder(
-        animation: _animController!,
-        builder: (BuildContext context, Widget? child) {
-          return  Container(
-              alignment: Alignment.centerRight,
-              padding: const EdgeInsets.only( right: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-              Text(
-                'Trip',
-                textAlign: TextAlign.right,
-                style: buildTextStyle(),
-              ),
-                  Text(
-                    'Contribute',
-                    textAlign: TextAlign.right,
-                    style: buildTextStyle(),
-                  )
+    return OkDoneConnector(
+      onInitState: (OkDoneViewModel model) {
+         model.redirectToHomeScreen();
+      },
+      condition: (OkDoneViewModel previous, OkDoneViewModel current) {
+        if(previous.isLoading ==false && current.isLoading ==true){
+          Navigator.of(context).push(
+              MaterialPageRoute<List<String>>(
+                  builder: (_) =>
+                  const LoginScreen()));
+        }
+        return true;
+      },
+      builder: (BuildContext context, OkDoneViewModel model) {
+        return  Scaffold(
+          body: AnimatedBuilder(
+            animation: _animController!,
+            builder: (BuildContext context, Widget? child) {
+              return  Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only( right: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Trip',
+                        textAlign: TextAlign.right,
+                        style: buildTextStyle(),
+                      ),
+                      Text(
+                        'Contribute',
+                        textAlign: TextAlign.right,
+                        style: buildTextStyle(),
+                      )
 
-                ],
-              ));
-        },
-      ),
+                    ],
+                  ));
+            },
+          ),
+        );
+      },
     );
   }
 

@@ -37,4 +37,9 @@ abstract class OkDoneState
       AsyncEventDispatcher<OkDoneAction, OkDoneState, OkDoneBloc> dispatch,) {
     return rebuild((OkDoneStateBuilder b) => b.dispatch = dispatch);
   }
+
+  @override
+  Future<OkDoneViewModel> redirectToHomeScreen() {
+    return dispatch!(RedirectToHomeScreen());
+  }
 }

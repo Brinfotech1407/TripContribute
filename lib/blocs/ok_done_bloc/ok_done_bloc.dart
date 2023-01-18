@@ -18,7 +18,6 @@ class OkDoneBloc extends AppBloc<OkDoneAction, OkDoneState> {
     required OkDoneState initialState,
   }) : super(initialState);
 
-
   /// This creates [ChatBloc] with the [initState] as the initialState
   /// and also adds the [InitChat] action as the first action.
 
@@ -30,3 +29,13 @@ class OkDoneBloc extends AppBloc<OkDoneAction, OkDoneState> {
   }
 }
 
+class RedirectToHomeScreen extends OkDoneAction {
+  @override
+  Stream<OkDoneState> reduce(OkDoneBloc bloc) async* {
+    yield bloc.state;
+
+    await Future<void>.delayed(const Duration(seconds: 3), () {});
+
+    yield bloc.state.rebuild((OkDoneStateBuilder b) => b..isLoading = true);
+  }
+}
