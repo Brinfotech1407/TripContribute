@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:trip_contribute/tripUtils.dart';
-
+import 'package:velocity_x/velocity_x.dart';
 
 import 'profile_screen.dart';
 
@@ -17,14 +17,12 @@ class _OTPScreenState extends State<OTPScreen> {
   final TextEditingController otpController = TextEditingController();
   final focusNode = FocusNode();
 
-
   @override
   void dispose() {
     otpController.dispose();
     focusNode.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -57,65 +55,85 @@ class _OTPScreenState extends State<OTPScreen> {
                     height: 1),
               ),
             ),
-        Align(
-          alignment: Alignment.center,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: Pinput(
-                    length: 6,
-                    controller: otpController,
-                    focusNode: focusNode,
-                    listenForMultipleSmsOnAndroid: true,
-                    defaultPinTheme: defaultPinTheme,
+            20.heightBox,
+           /* Align(
+              alignment: Alignment.center,
+              child: VxPinView(
+                type: VxPinBorderType.round,
+                onEditingComplete: () {
 
-                    validator: (value) {
-                      return value == '123456' ? null : 'Pin is incorrect';
-                    },
-                    hapticFeedbackType: HapticFeedbackType.lightImpact,
-                    onCompleted: (pin) {
-                      debugPrint('onCompleted: $pin');
-                    },
-                    onChanged: (value) {
-                      debugPrint('onChanged: $value');
-                    },
-                    cursor: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 9),
-                          width: 22,
-                          height: 1,
-                          color: Colors.red,
+                },
+                count: 6,
+                size: 45,
+                color: Colors.grey,
+                obscureText: false,
+                focusNode: focusNode,
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  print('Test value=$value');
+                  value == '123456' ? null : 'Pin is incorrect';
+                },
+              ),
+            ),*/
+            Align(
+              alignment: Alignment.center,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Pinput(
+                        length: 6,
+                        controller: otpController,
+                        // focusNode: focusNode,
+                        listenForMultipleSmsOnAndroid: true,
+                        defaultPinTheme: defaultPinTheme,
+
+                        validator: (value) {
+                          return value == '123456' ? null : 'Pin is incorrect';
+                        },
+                        hapticFeedbackType: HapticFeedbackType.lightImpact,
+                        onCompleted: (pin) {
+                          debugPrint('onCompleted: $pin');
+                        },
+                        onChanged: (value) {
+                          debugPrint('onChanged: $value');
+                        },
+                        cursor: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(bottom: 9),
+                              width: 22,
+                              height: 1,
+                              color: Colors.red,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    focusedPinTheme: defaultPinTheme.copyWith(
-                      decoration: defaultPinTheme.decoration!.copyWith(
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.grey.shade900),
+                        focusedPinTheme: defaultPinTheme.copyWith(
+                          decoration: defaultPinTheme.decoration!.copyWith(
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(color: Colors.grey.shade900),
+                          ),
+                        ),
+                        submittedPinTheme: defaultPinTheme.copyWith(
+                          decoration: defaultPinTheme.decoration!.copyWith(
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                        ),
+                        errorPinTheme: defaultPinTheme.copyBorderWith(
+                          border: Border.all(color: Colors.redAccent),
+                        ),
                       ),
                     ),
-                    submittedPinTheme: defaultPinTheme.copyWith(
-                      decoration: defaultPinTheme.decoration!.copyWith(
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                    ),
-                    errorPinTheme: defaultPinTheme.copyBorderWith(
-                      border: Border.all(color: Colors.redAccent),
-                    ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
             Align(
               alignment: Alignment.center,
               child: InkWell(
@@ -127,7 +145,8 @@ class _OTPScreenState extends State<OTPScreen> {
                     }
                   });
                 },
-                child: TripUtils().bottomButtonDesignView(buttonText: 'Verifying OTP'),
+                child: TripUtils()
+                    .bottomButtonDesignView(buttonText: 'Verifying OTP'),
               ),
             ),
           ],
