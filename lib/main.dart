@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:trip_contribute/blocs/ok_done_bloc/ok_done_accessor.dart';
+import 'package:trip_contribute/blocs/ok_done_bloc/ok_done_bloc.dart';
+import 'package:trip_contribute/models/okdone_state.dart';
 import 'package:trip_contribute/views/auth_views/login_screen.dart';
 import 'package:trip_contribute/views/splash_screen.dart';
-
-
 
 void main() {
   runApp(const MyApp());
@@ -35,16 +36,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<dynamic>(
-        future: Future<dynamic>.delayed(const Duration(seconds: 2)),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SplashScreen();
-          } else {
-            return const LoginScreen();
-          }
-        },
+    return OkDoneProvider(
+      create: (BuildContext context) => OkDoneBloc(
+          initialState:
+              OkDoneState((OkDoneStateBuilder b) => b.isLoading = false)),
+      child: const Scaffold(
+        body: SplashScreen(),
       ),
     );
   }
