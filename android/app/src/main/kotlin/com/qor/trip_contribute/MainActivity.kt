@@ -1,4 +1,4 @@
-package com.example.trip_contribute
+package com.qor.trip_contribute
 
 import io.flutter.embedding.android.FlutterActivity
 
