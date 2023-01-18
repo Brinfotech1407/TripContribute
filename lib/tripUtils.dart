@@ -6,7 +6,6 @@ class TripUtils {
       alignment: Alignment.centerRight,
       padding: const EdgeInsets.only(right: 10, top: 8,bottom: 10),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
@@ -24,11 +23,11 @@ class TripUtils {
     );
   }
 
-  buildTextStyle() {
+  TextStyle buildTextStyle() {
     return const TextStyle(fontSize: 28,fontFamily: 'Italiana');
   }
 
-  bottomButtonDesignView({required String buttonText}){
+ Widget bottomButtonDesignView({required String buttonText}){
      return Container(
        width: 301,
        height: 50,
@@ -49,10 +48,10 @@ class TripUtils {
        ),
        child:  Padding(
          padding:
-         EdgeInsets.only(left: 18, bottom: 8, top: 8, right: 18),
+         const EdgeInsets.only(left: 18, bottom: 8, top: 8, right: 18),
          child: Text(
           buttonText,
-           style: TextStyle(fontSize: 15, color: Colors.white),
+           style: const TextStyle(fontSize: 15, color: Colors.white),
          ),
        ),
      );

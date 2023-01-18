@@ -36,8 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: Future.delayed(const Duration(seconds: 2)),
+      body: FutureBuilder<dynamic>(
+        future: Future<dynamic>.delayed(const Duration(seconds: 2)),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const SplashScreen();
