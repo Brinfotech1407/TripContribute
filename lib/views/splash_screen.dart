@@ -44,16 +44,12 @@ class _SplashScreenState extends State<SplashScreen> with
 
 @override
   Widget build(BuildContext context) {
-  final width = MediaQuery.of(context).size.width;
+  final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: AnimatedBuilder(
         animation: _animController!,
-        builder: (context, child) {
+        builder: (BuildContext context, Widget? child) {
           return  Container(
-            transform: Matrix4.translationValues(
-                _containerSizeAnimation!.value * width - width-110, 00, 0.0),
-           // width: _containerSizeAnimation!.value * height,
-            //height: _containerSizeAnimation!.value * height,
               alignment: Alignment.centerRight,
               padding: const EdgeInsets.only( right: 20),
               child: Column(

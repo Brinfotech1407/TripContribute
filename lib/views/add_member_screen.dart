@@ -155,7 +155,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     );
   }
 
-  buildShowAddMemberModalBottomSheet(BuildContext context) {
+  Future<void> buildShowAddMemberModalBottomSheet(BuildContext context) {
     return showModalBottomSheet<void>(
       isScrollControlled: true,
       context: context,
@@ -206,7 +206,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     );
   }
 
-  buildShowCreateTripModalBottomSheet(BuildContext context) {
+  Future<void> buildShowCreateTripModalBottomSheet(BuildContext context) {
     return showModalBottomSheet<void>(
       isScrollControlled: true,
       context: context,
