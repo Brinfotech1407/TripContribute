@@ -60,14 +60,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
             Expanded(
               child: ListView.builder(
                 itemCount: selectedList.length,
-                itemBuilder: (context, index) {
+                itemBuilder: (BuildContext context, int index) {
                   return Card(
                     margin: const EdgeInsets.all(12),
                     elevation: 0,
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                         side: BorderSide(
-                          width: 1,
                           color: Colors.grey,
                         )),
                     child: Padding(
@@ -91,14 +90,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
                                   '3500',
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.bold),
+                                      fontSize: 18, fontWeight: FontWeight.bold)
                                 ),
                               ),
                               IconButton(
@@ -159,9 +157,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     return showModalBottomSheet<void>(
       isScrollControlled: true,
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (BuildContext context, void setState) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -210,9 +208,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     return showModalBottomSheet<void>(
       isScrollControlled: true,
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (BuildContext context,void setState) {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -264,7 +262,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         filled: true,
         contentPadding: const EdgeInsets.only(left: 8),
         border: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.grey),
+          borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
@@ -275,11 +273,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
-            width: 1.0,
           ),
         ),
         disabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.black),
+
         ));
   }
 
@@ -291,7 +288,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         autofillHints: const [AutofillHints.name],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Name'),
-        validator: (value) {
+        validator: (String? value) {
           if (value!.isEmpty) {
             return 'Please enter your name';
           } else if (value.length <= 2) {
@@ -309,10 +306,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       padding: const EdgeInsets.only(left: 14, right: 14, top: 20),
       child: TextFormField(
         controller: _createTripNameController,
-        autofillHints: const [AutofillHints.name],
+        autofillHints:  const [AutofillHints.name],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Trip Name'),
-        validator: (value) {
+        validator: (String? value) {
           if (value!.isEmpty) {
             return 'Please enter your Trip name';
           } else if (value.length <= 2) {
@@ -334,10 +331,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'mobile number'),
         keyboardType: TextInputType.phone,
-        validator: (value) {
-          Pattern pattern =
+        validator: (String? value) {
+          const Pattern pattern =
               r'^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$';
-          RegExp regex = RegExp(pattern.toString());
+          final RegExp regex = RegExp(pattern.toString());
           if (!regex.hasMatch(value!)) {
             return 'Enter a valid phone number';
           } else {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:trip_contribute/views/add_member_screen.dart';
 import 'package:trip_contribute/tripUtils.dart';
+import 'package:trip_contribute/views/add_member_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -46,7 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           textFiledViews(),
           Align(
-            alignment: Alignment.center,
             child: InkWell(
               onTap: () {
                 submitForm();
@@ -106,10 +105,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Enter Mobile number'),
         keyboardType: TextInputType.phone,
-        validator: (value) {
-          Pattern pattern =
+        validator: (String? value) {
+          const Pattern pattern =
               r'^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$';
-          RegExp regex = RegExp(pattern.toString());
+          final RegExp regex = RegExp(pattern.toString());
           if (!regex.hasMatch(value!)) {
             return 'Enter a valid phone number';
           } else {
@@ -128,7 +127,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         filled: true,
         contentPadding: const EdgeInsets.only(left: 8),
         border: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.grey),
+          borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
@@ -155,7 +154,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         autofillHints: const [AutofillHints.name],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Your Name *'),
-        validator: (value) {
+        validator: (String? value) {
           if (value!.isEmpty) {
             return 'Please enter your name';
           } else if (value.length <= 2) {
@@ -177,10 +176,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Email'),
         keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          Pattern pattern =
+        validator: (String? value) {
+          const Pattern pattern =
               r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-          RegExp regex = RegExp(pattern.toString());
+          final RegExp regex = RegExp(pattern.toString());
           if (!regex.hasMatch(value!)) {
             return 'Enter a valid email';
           } else {

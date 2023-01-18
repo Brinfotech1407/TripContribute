@@ -15,7 +15,7 @@ class OTPScreen extends StatefulWidget {
 class _OTPScreenState extends State<OTPScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController otpController = TextEditingController();
-  final focusNode = FocusNode();
+  final FocusNode focusNode = FocusNode();
 
 
   @override
@@ -58,12 +58,10 @@ class _OTPScreenState extends State<OTPScreen> {
               ),
             ),
         Align(
-          alignment: Alignment.center,
           child: Form(
             key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Directionality(
                   textDirection: TextDirection.ltr,
@@ -74,14 +72,14 @@ class _OTPScreenState extends State<OTPScreen> {
                     listenForMultipleSmsOnAndroid: true,
                     defaultPinTheme: defaultPinTheme,
 
-                    validator: (value) {
+                    validator: (String? value) {
                       return value == '123456' ? null : 'Pin is incorrect';
                     },
                     hapticFeedbackType: HapticFeedbackType.lightImpact,
-                    onCompleted: (pin) {
+                    onCompleted: (String pin) {
                       debugPrint('onCompleted: $pin');
                     },
-                    onChanged: (value) {
+                    onChanged: (String value) {
                       debugPrint('onChanged: $value');
                     },
                     cursor: Column(
@@ -117,7 +115,6 @@ class _OTPScreenState extends State<OTPScreen> {
           ),
         ),
             Align(
-              alignment: Alignment.center,
               child: InkWell(
                 onTap: () {
                   setState(() {
@@ -136,7 +133,7 @@ class _OTPScreenState extends State<OTPScreen> {
     );
   }
 
-  final defaultPinTheme = PinTheme(
+  final PinTheme defaultPinTheme = PinTheme(
     width: 50,
     height: 50,
     textStyle: const TextStyle(

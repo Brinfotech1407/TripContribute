@@ -43,10 +43,8 @@ abstract class AuthState
   // The initial state of the Auth. Once the initAuth action is called
   // and gets list of countries and other dependencies, login screen is shown.
   static AuthState initState() {
-    return AuthState((AuthStateBuilder b) {
-      b
-        ..isLoginLoading = false;
-    });
+    return AuthState((AuthStateBuilder b) => b
+        ..isLoginLoading = false);
   }
 
  /* @override

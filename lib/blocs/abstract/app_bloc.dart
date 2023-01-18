@@ -5,21 +5,23 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:built_value/built_value.dart';
 import 'package:meta/meta.dart';
 
-/// Takes any event [E] as the parameter and returns the corresponding state [S].
+/// Takes any event [E] as the parameter and returns the corresponding state [S]
 typedef AsyncEventDispatcher<E extends AppEvent<E, S, B>,
         S extends AppState<E, S, B>, B extends AppBloc<E, S>>
     = Future<S> Function(E event);
 
+// ignore: lines_longer_than_80_chars
 /// The abstract class that all the Actions like [OkDoneAction], [ChatAction], [MessageAction] implements.
 abstract class AppEvent<E extends AppEvent<E, S, B>,
     S extends AppState<E, S, B>, B extends AppBloc<E, S>> {
   final Completer<S> _c = Completer<S>();
 
+  // ignore: lines_longer_than_80_chars
   /// The future that is completed by [_c] completer.
   ///
   /// The future that is completed when [complete] is called in [_subscribeCompletion]
   /// or when [completeError] is called in [onError].
-  Future<S> get _future => _c.future;
+  Future<S> get _future async => _c.future;
 
   void _subscribeCompletion(Future<S> _f) {
     _f.then<void>((S value) {
@@ -33,7 +35,6 @@ abstract class AppEvent<E extends AppEvent<E, S, B>,
     _c.completeError(error, stackTrace);
   }
 
-  // TODO():
   Stream<S> reduce(B bloc);
 }
 

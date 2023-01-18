@@ -36,7 +36,6 @@ class TripUtils {
        decoration: BoxDecoration(
          border: Border.all(
            color: const Color.fromRGBO(180, 176, 176, 1),
-           width: 1,
          ),
          gradient: const LinearGradient(
              begin: Alignment(6.123234262925839e-17, 1),

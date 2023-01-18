@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:trip_contribute/blocs/ok_done_bloc/ok_done_accessor.dart';
 import 'package:trip_contribute/blocs/ok_done_bloc/ok_done_bloc.dart';
 import 'package:trip_contribute/models/okdone_state.dart';
-import 'package:trip_contribute/views/auth_views/login_screen.dart';
 import 'package:trip_contribute/views/splash_screen.dart';
 
 void main() {

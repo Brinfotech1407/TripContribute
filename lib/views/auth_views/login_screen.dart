@@ -51,7 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             mobileNumberFormFiledView(),
             Align(
-              alignment: Alignment.center,
               child: InkWell(
                 onTap: () {
                   setState(() {
@@ -70,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         content: Text('Please Fill the above details'));
                   });
                 },
-                child: TripUtils().bottomButtonDesignView(buttonText: 'Get OTP'),
+                child: TripUtils().bottomButtonDesignView(buttonText: 'Get OTP')
               ),
             ),
           ],
@@ -86,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
         key: _formKey,
         child: TextFormField(
           controller: _phoneController,
-          autofillHints: const [AutofillHints.telephoneNumber],
+          autofillHints:  const [AutofillHints.telephoneNumber],
           cursorColor: Colors.black,
           decoration: InputDecoration(
               hintText: 'Enter Mobile number',
@@ -95,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
               filled: true,
               contentPadding: const EdgeInsets.only(left: 8),
               border: const OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: Colors.grey),
+                borderSide: BorderSide(color: Colors.grey),
               ),
               focusedBorder: const OutlineInputBorder(
                 borderSide: BorderSide(
@@ -106,17 +105,16 @@ class _LoginScreenState extends State<LoginScreen> {
               enabledBorder: const OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Colors.grey,
-                  width: 1.0,
                 ),
               ),
               disabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: Colors.black),
+
               )),
           keyboardType: TextInputType.phone,
-          validator: (value) {
-            Pattern pattern =
+          validator: (String? value) {
+            const Pattern pattern =
                 r'^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$';
-            RegExp regex = RegExp(pattern.toString());
+            final RegExp regex = RegExp(pattern.toString());
             if (!regex.hasMatch(value!)) {
               return 'Enter a valid phone number';
             } else {
