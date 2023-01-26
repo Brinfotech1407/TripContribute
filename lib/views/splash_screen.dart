@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -37,8 +38,6 @@ class _SplashScreenState extends State<SplashScreen> with
    void dispose() {
      _animController!.dispose();
      super.dispose();
-
-
    }
 
 
@@ -56,19 +55,27 @@ class _SplashScreenState extends State<SplashScreen> with
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-              Text(
-                'Trip',
-                textAlign: TextAlign.right,
-                style: buildTextStyle(),
-              ),
-                  Text(
-                    'Contribute',
-                    textAlign: TextAlign.right,
-                    style: buildTextStyle(),
-                  )
+              VxShimmer(
+                gradient:const LinearGradient(
+              colors: [
 
-                ],
-              ));
+                Color.fromRGBO(38, 38, 38, 0.4),
+              Color.fromRGBO(107, 105, 105, 1)
+              ],
+                  begin: Alignment(6.123234262925839e-17, 1),
+                  end: Alignment(-1, 6.123234262925839e-17),
+                ),
+                primaryColor: Colors.lightBlueAccent,
+                secondaryColor: Colors.black,
+                child: Text(
+                  'Trip\nContribute',
+                  textAlign: TextAlign.right,
+                  style: buildTextStyle(),
+                ),
+              ),
+          ],
+            ),
+          );
         },
       ),
     );
