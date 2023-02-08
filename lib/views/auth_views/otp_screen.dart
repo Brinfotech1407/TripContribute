@@ -56,26 +56,28 @@ class _OTPScreenState extends State<OTPScreen> {
               ),
             ),
             20.heightBox,
-           /* Align(
-              alignment: Alignment.center,
+            Align(
               child: VxPinView(
-                type: VxPinBorderType.round,
                 onEditingComplete: () {
-
                 },
+               onSubmitted: (String value) {
+                 value == '123456' ? null : 'Pin is incorrect';
+               },
                 count: 6,
                 size: 45,
                 color: Colors.grey,
                 obscureText: false,
                 focusNode: focusNode,
                 keyboardType: TextInputType.number,
-                onChanged: (value) {
+                onChanged: (String value) {
                   print('Test value=$value');
-                  value == '123456' ? null : 'Pin is incorrect';
+                  setState(() {
+                    otpController.text =value;
+                  });
                 },
               ),
-            ),*/
-            Align(
+            ),
+            /*Align(
               alignment: Alignment.center,
               child: Form(
                 key: _formKey,
@@ -133,7 +135,7 @@ class _OTPScreenState extends State<OTPScreen> {
                   ],
                 ),
               ),
-            ),
+            ),*/
             Align(
               alignment: Alignment.center,
               child: InkWell(
@@ -143,6 +145,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       Navigator.of(context).push(MaterialPageRoute<void>(
                           builder: (_) => const ProfileScreen()));
                     }
+
                   });
                 },
                 child: TripUtils()
