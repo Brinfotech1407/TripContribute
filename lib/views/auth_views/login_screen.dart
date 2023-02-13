@@ -1,11 +1,10 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:trip_contribute/login/cubit/auth_cubit.dart';
+import 'package:trip_contribute/login/cubit/auth_state.dart';
 
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/views/auth_views/otp_screen.dart';
-
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -50,28 +49,44 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             mobileNumberFormFiledView(),
-            Align(
-              alignment: Alignment.center,
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    submitForm();
-                    if (_phoneController.text.isNotEmpty) {
-                    Navigator.of(context).push(
-                        MaterialPageRoute<Widget>(
-                            builder: (_) => const OTPScreen()));
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          content: Text('successfully login')));
-                    } else {
+            BlocConsumer<AuthCubit, AuthState>(
+              listener: (BuildContext context, Object? state) {
+                if (state is AuthCodeSentState) {
+                  ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text('Please enter proper Details'));
-                    }
-                    const SnackBar(
-                        content: Text('Please Fill the above details'));
-                  });
-                },
-                child: TripUtils().bottomButtonDesignView(buttonText: 'Get OTP'),
-              ),
+                          content: Text('successfully login')));
+                  Navigator.of(context).push(MaterialPageRoute<Widget>(
+                      builder: (_) => const OTPScreen()));
+                }
+              },
+              builder: (BuildContext context, Object? state) {
+                if (state is AuthLoadingState) {
+                  return const Center(
+                    child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+                return Align(
+                  child: InkWell(
+                    onTap: () {
+                      setState(() async {
+                        if (_phoneController.text.isNotEmpty) {
+                          final String phoneNo = '+91' + _phoneController.text;
+                          BlocProvider.of<AuthCubit>(context).sendOTP(phoneNo);
+                        } else {
+                          const SnackBar(
+                              content: Text('Please enter proper Details'));
+                        }
+                        submitForm();
+                      });
+                    },
+                    child: TripUtils()
+                        .bottomButtonDesignView(buttonText: 'Get OTP'),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -81,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget mobileNumberFormFiledView() {
     return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10,top: 20),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
       child: Form(
         key: _formKey,
         child: TextFormField(
@@ -109,11 +124,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 1.0,
                 ),
               ),
-              disabledBorder: const OutlineInputBorder(
-                borderSide: BorderSide(width: 1, color: Colors.black),
-              )),
+              disabledBorder: const OutlineInputBorder()),
           keyboardType: TextInputType.phone,
-          validator: (value) {
+          validator: (String? value) {
             Pattern pattern =
                 r'^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$';
             RegExp regex = RegExp(pattern.toString());

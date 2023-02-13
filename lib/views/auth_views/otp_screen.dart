@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
+import 'package:trip_contribute/login/cubit/auth_cubit.dart';
+import 'package:trip_contribute/login/cubit/auth_state.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -13,9 +16,8 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController otpController = TextEditingController();
-  final focusNode = FocusNode();
+  final FocusNode focusNode = FocusNode();
 
   @override
   void dispose() {
@@ -58,11 +60,10 @@ class _OTPScreenState extends State<OTPScreen> {
             20.heightBox,
             Align(
               child: VxPinView(
-                onEditingComplete: () {
+                onEditingComplete: () {},
+                onSubmitted: (String value) {
+                  value == '123456' ? null : 'Pin is incorrect';
                 },
-               onSubmitted: (String value) {
-                 value == '123456' ? null : 'Pin is incorrect';
-               },
                 count: 6,
                 size: 45,
                 color: Colors.grey,
@@ -72,7 +73,7 @@ class _OTPScreenState extends State<OTPScreen> {
                 onChanged: (String value) {
                   print('Test value=$value');
                   setState(() {
-                    otpController.text =value;
+                    otpController.text = value;
                   });
                 },
               ),
@@ -136,21 +137,36 @@ class _OTPScreenState extends State<OTPScreen> {
                 ),
               ),
             ),*/
-            Align(
-              alignment: Alignment.center,
-              child: InkWell(
-                onTap: () {
-                  setState(() {
-                    if (otpController.text.isNotEmpty) {
-                      Navigator.of(context).push(MaterialPageRoute<void>(
-                          builder: (_) => const ProfileScreen()));
-                    }
-
-                  });
-                },
-                child: TripUtils()
-                    .bottomButtonDesignView(buttonText: 'Verifying OTP'),
-              ),
+            BlocConsumer<AuthCubit, AuthState>(
+              listener: (BuildContext context, Object? state) {
+                if (state is AuthLoggedInState) {
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                  Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
+                      builder: (_) => const ProfileScreen()));
+                } else if (state is AuthErrorState) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(state.error),
+                    duration: const Duration(milliseconds: 600),
+                    backgroundColor: Colors.redAccent,
+                  ));
+                }
+              },
+              builder: (BuildContext context, Object? state) {
+                if (state is AuthLoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return Align(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    onTap: () {
+                        BlocProvider.of<AuthCubit>(context)
+                            .verifyOTP(otpController.text);
+                    },
+                    child: TripUtils()
+                        .bottomButtonDesignView(buttonText: 'Verifying OTP'),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -158,7 +174,7 @@ class _OTPScreenState extends State<OTPScreen> {
     );
   }
 
-  final defaultPinTheme = PinTheme(
+  final PinTheme defaultPinTheme = PinTheme(
     width: 50,
     height: 50,
     textStyle: const TextStyle(
