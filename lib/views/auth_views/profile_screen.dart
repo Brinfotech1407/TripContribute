@@ -1,11 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:trip_contribute/views/add_member_screen.dart';
 import 'package:trip_contribute/tripUtils.dart';
+import 'package:trip_contribute/views/add_member_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({Key? key, required this.currentUser}) : super(key: key);
+  final User currentUser;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -16,6 +18,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    if(widget.currentUser.phoneNumber != null) {
+      _phoneController.text = widget.currentUser.phoneNumber!;
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +57,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           textFiledViews(),
           Align(
-            alignment: Alignment.center,
             child: InkWell(
               onTap: () {
                 submitForm();
@@ -107,11 +116,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
       child: TextFormField(
         controller: _phoneController,
-        autofillHints: const [AutofillHints.telephoneNumber],
+        autofillHints:  const [AutofillHints.telephoneNumber],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Enter Mobile number'),
         keyboardType: TextInputType.phone,
-        validator: (value) {
+        readOnly: true,
+        validator: (String? value) {
           Pattern pattern =
               r'^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$';
           RegExp regex = RegExp(pattern.toString());
@@ -144,11 +154,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
-            width: 1.0,
           ),
         ),
         disabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.black),
+
         ));
   }
 
@@ -160,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         autofillHints: const [AutofillHints.name],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Your Name *'),
-        validator: (value) {
+        validator: (String? value) {
           if (value!.isEmpty) {
             return 'Please enter your name';
           } else if (value.length <= 2) {
@@ -182,10 +191,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Email'),
         keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          Pattern pattern =
+        validator: (String? value) {
+          const Pattern pattern =
               r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-          RegExp regex = RegExp(pattern.toString());
+          final RegExp regex = RegExp(pattern.toString());
           if (!regex.hasMatch(value!)) {
             return 'Enter a valid email';
           } else {

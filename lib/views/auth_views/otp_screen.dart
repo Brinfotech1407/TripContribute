@@ -83,9 +83,9 @@ class _OTPScreenState extends State<OTPScreen> {
             BlocConsumer<AuthCubit, AuthState>(
               listener: (BuildContext context, Object? state) {
                 if (state is AuthLoggedInState) {
-                  Navigator.popUntil(context, (route) => route.isFirst);
+                  Navigator.popUntil(context, (Route route) => route.isFirst);
                   Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
-                      builder: (_) => const ProfileScreen()));
+                      builder: (_) =>  ProfileScreen(currentUser: state.firebaseUser,)));
                 } else if (state is AuthErrorState) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(state.error),
