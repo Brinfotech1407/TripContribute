@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:trip_contribute/views/add_member_screen.dart';
 import 'package:trip_contribute/tripUtils.dart';
 
@@ -58,15 +59,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Navigator.of(context).push(MaterialPageRoute<void>(
                         builder: (_) {
                           return const AddMemberScreen();
-                        },));
+                        },
+                      ));
                     });
                   });
-                } else {
-                  const SnackBar(content: Text('Please enter proper Details'));
+                }else{
+                  QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.info,
+                    text:
+                    'Please provide your name, email, and phone number before submitting.',
+                  );
                 }
-                const SnackBar(content: Text('Please Fill the above details'));
               },
-                child:TripUtils().bottomButtonDesignView(buttonText: 'Submit'),
+              child: TripUtils().bottomButtonDesignView(buttonText: 'Submit'),
             ),
           ),
         ]),
@@ -74,26 +80,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget textFiledViews(){
+  Widget textFiledViews() {
     return Form(
-      key: _formKey,
+        key: _formKey,
         child: Column(
           children: [
             mobileNumberFormFiledView(),
             nameFormFiledView(),
             emailFormFiledView(),
           ],
-        )
-    );
+        ));
   }
 
   void submitForm() {
     final FormState formState = _formKey.currentState!;
     if (formState.validate()) {
-      print( 'form is valid');
+      print('form is valid');
       formState.save();
     } else {
-      print( 'form is invalid');
+      print('form is invalid');
     }
   }
 
@@ -159,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (value!.isEmpty) {
             return 'Please enter your name';
           } else if (value.length <= 2) {
-            return 'Please enter your name more then 2 char';
+            return 'Your name must be at least 2 characters long';
           }
           return null;
         },
@@ -168,7 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget emailFormFiledView(){
+  Widget emailFormFiledView() {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
       child: TextFormField(

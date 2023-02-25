@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:trip_contribute/login/cubit/auth_cubit.dart';
 import 'package:trip_contribute/login/cubit/auth_state.dart';
 import 'package:trip_contribute/tripUtils.dart';
@@ -78,65 +80,6 @@ class _OTPScreenState extends State<OTPScreen> {
                 },
               ),
             ),
-            /*Align(
-              alignment: Alignment.center,
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Pinput(
-                        length: 6,
-                        controller: otpController,
-                        // focusNode: focusNode,
-                        listenForMultipleSmsOnAndroid: true,
-                        defaultPinTheme: defaultPinTheme,
-
-                        validator: (value) {
-                          return value == '123456' ? null : 'Pin is incorrect';
-                        },
-                        hapticFeedbackType: HapticFeedbackType.lightImpact,
-                        onCompleted: (pin) {
-                          debugPrint('onCompleted: $pin');
-                        },
-                        onChanged: (value) {
-                          debugPrint('onChanged: $value');
-                        },
-                        cursor: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(bottom: 9),
-                              width: 22,
-                              height: 1,
-                              color: Colors.red,
-                            ),
-                          ],
-                        ),
-                        focusedPinTheme: defaultPinTheme.copyWith(
-                          decoration: defaultPinTheme.decoration!.copyWith(
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(color: Colors.grey.shade900),
-                          ),
-                        ),
-                        submittedPinTheme: defaultPinTheme.copyWith(
-                          decoration: defaultPinTheme.decoration!.copyWith(
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: Colors.grey),
-                          ),
-                        ),
-                        errorPinTheme: defaultPinTheme.copyBorderWith(
-                          border: Border.all(color: Colors.redAccent),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),*/
             BlocConsumer<AuthCubit, AuthState>(
               listener: (BuildContext context, Object? state) {
                 if (state is AuthLoggedInState) {
@@ -159,8 +102,26 @@ class _OTPScreenState extends State<OTPScreen> {
                   alignment: Alignment.center,
                   child: InkWell(
                     onTap: () {
+                      if (otpController.text.isEmpty) {
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.info,
+                          title: 'Oops...',
+                          text:
+                              'You forgot to enter the OTP. Please enter the OTP to continue.',
+                        );
+                      } else if (state is AuthErrorState) {
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.warning,
+                          title: 'Oops...',
+                          text:
+                              'The OTP you entered is incorrect. Please try again',
+                        );
+                      } else {
                         BlocProvider.of<AuthCubit>(context)
                             .verifyOTP(otpController.text);
+                      }
                     },
                     child: TripUtils()
                         .bottomButtonDesignView(buttonText: 'Verifying OTP'),
