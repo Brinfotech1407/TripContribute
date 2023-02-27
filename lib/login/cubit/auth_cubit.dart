@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:trip_contribute/login/cubit/auth_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:trip_contribute/login/cubit/auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitialState()) {
-    User? currentUser = _auth.currentUser;
+    final User? currentUser = _auth.currentUser;
     if (currentUser != null) {
       //profile view set then put the condition
       emit(AuthLoggedInState(currentUser));

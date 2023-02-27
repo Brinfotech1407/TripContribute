@@ -1,0 +1,43 @@
+import 'package:equatable/equatable.dart';
+import 'package:trip_contribute/models/profile_model.dart';
+
+abstract class UserState extends Equatable{
+  const UserState();
+
+  @override
+  List<Object> get props => [];
+
+
+}
+
+class UserInitial extends UserState {}
+
+class UserLoading extends UserState{
+  @override
+  List<Object> get props => [];
+}
+
+class UserLoaded extends UserState{
+   const UserLoaded({this.userData =  const <ProfileModel>[]});
+  final List<ProfileModel> userData;
+
+  @override
+  List<Object> get props =>[userData];
+
+}
+
+class GetUser extends UserState{
+
+  const GetUser({required this.userData});
+  final ProfileModel userData;
+
+  @override
+  List<Object> get props =>[userData];
+
+}
+
+class ProfileError extends UserState {
+  const ProfileError(this.message);
+  final String message;
+}
+

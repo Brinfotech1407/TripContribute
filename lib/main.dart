@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/login/cubit/auth_cubit.dart';
-import 'package:trip_contribute/views/add_member_screen.dart';
+import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/views/auth_views/login_screen.dart';
 import 'package:trip_contribute/views/splash_screen.dart';
 
@@ -22,8 +22,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ignore: always_specify_types
-    return BlocProvider(
-      create: (BuildContext context) => AuthCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<UserBloc>(
+          create: (BuildContext context) => UserBloc(),
+        ),
+        BlocProvider<AuthCubit>(
+          create: (BuildContext context) => AuthCubit(),
+        ),
+
+      ],
       child: MaterialApp(
         title: 'Trip Contribute',
         theme: ThemeData(
@@ -35,13 +43,13 @@ class MyApp extends StatelessWidget {
             return previous is AuthInitialState;
           },
           builder: (BuildContext context, AuthState state) {
-            if (state is AuthLoggedInState) {
+            /*if (state is AuthLoggedInState) {
               return const AddMemberScreen();
-            } else if (state is AuthLoggedOutState) {
+            } else if (state is AuthLoggedOutState) {*/
               return const MyHomePage();
-            } else {
+          /*  } else {
               return const SplashScreen();
-            }
+            }*/
           },
         ),
       ),

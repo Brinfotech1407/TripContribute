@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/tripUtils.dart';
+import 'package:trip_contribute/user/user_bloc.dart';
+import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/views/add_member_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -21,14 +25,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    if(widget.currentUser.phoneNumber != null) {
+    if (widget.currentUser.phoneNumber != null) {
       _phoneController.text = widget.currentUser.phoneNumber!;
     }
     super.initState();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contexts) {
     return Scaffold(
       body: SafeArea(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -60,24 +64,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: InkWell(
               onTap: () {
                 submitForm();
+                setState(() {
+                  final ProfileModel userData = ProfileModel(
+                    name: _nameController.text,
+                    email: _emailController.text,
+                    mobileNo: _phoneController.text,
+                    id: '1',
+                  );
+
+                  contexts.read<UserBloc>().add(AddUser(userData: userData));
+                });
+
                 if (_emailController.text.isNotEmpty &&
                     _nameController.text.isNotEmpty &&
                     _phoneController.text.isNotEmpty) {
                   SchedulerBinding.instance.addPostFrameCallback((_) {
                     Future.delayed(Duration.zero, () async {
-                      Navigator.of(context).push(MaterialPageRoute<void>(
+                      Navigator.of(contexts).push(MaterialPageRoute<void>(
                         builder: (_) {
                           return const AddMemberScreen();
                         },
                       ));
                     });
                   });
-                }else{
+                } else {
                   QuickAlert.show(
-                    context: context,
+                    context: contexts,
                     type: QuickAlertType.info,
                     text:
-                    'Please provide your name, email, and phone number before submitting.',
+                        'Please provide your name, email, and phone number before submitting.',
                   );
                 }
               },
@@ -116,15 +131,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
       child: TextFormField(
         controller: _phoneController,
-        autofillHints:  const [AutofillHints.telephoneNumber],
+        autofillHints: const [AutofillHints.telephoneNumber],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Enter Mobile number'),
         keyboardType: TextInputType.phone,
         readOnly: true,
         validator: (String? value) {
-          Pattern pattern =
+          const Pattern pattern =
               r'^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$';
-          RegExp regex = RegExp(pattern.toString());
+          final RegExp regex = RegExp(pattern.toString());
           if (!regex.hasMatch(value!)) {
             return 'Enter a valid phone number';
           } else {
@@ -143,7 +158,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         filled: true,
         contentPadding: const EdgeInsets.only(left: 8),
         border: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.grey),
+          borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
@@ -156,9 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             color: Colors.grey,
           ),
         ),
-        disabledBorder: const OutlineInputBorder(
-
-        ));
+        disabledBorder: const OutlineInputBorder());
   }
 
   Widget nameFormFiledView() {
