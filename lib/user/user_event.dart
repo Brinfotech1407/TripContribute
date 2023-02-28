@@ -22,11 +22,11 @@ class LoadUser extends UserEvent{
 
 class AddUser extends UserEvent{
 
-  const AddUser({required this.userData});
-  final ProfileModel userData;
+  const AddUser({required this.name,required this.email,required this.mobileNo});
+  final String name;
+  final String email;
+  final String mobileNo;
 
-  @override
-  List<Object> get props => [userData];
 
 }
 class GetUserData extends UserEvent{

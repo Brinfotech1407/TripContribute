@@ -28,7 +28,7 @@ class DatabaseManager{
     return userID;
   }
 
-  Future<ProfileModel?> getSingleBlogList(String userID) async {
+  Future<ProfileModel?> getSingleUserList(String userID) async {
     final DocumentSnapshot <Map<String, dynamic>>doc =
     await _fireStore.collection('user').doc(userID).get();
     if(doc.exists) {

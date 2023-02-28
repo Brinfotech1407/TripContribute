@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
@@ -64,20 +63,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: InkWell(
               onTap: () {
                 submitForm();
-                setState(() {
-                  final ProfileModel userData = ProfileModel(
-                    name: _nameController.text,
-                    email: _emailController.text,
-                    mobileNo: _phoneController.text,
-                    id: '1',
-                  );
-
-                  contexts.read<UserBloc>().add(AddUser(userData: userData));
-                });
-
                 if (_emailController.text.isNotEmpty &&
                     _nameController.text.isNotEmpty &&
                     _phoneController.text.isNotEmpty) {
+                  contexts.read<UserBloc>().add(AddUser(
+                        name: _nameController.text,
+                        email: _emailController.text,
+                        mobileNo: _phoneController.text,
+                      ));
+
                   SchedulerBinding.instance.addPostFrameCallback((_) {
                     Future.delayed(Duration.zero, () async {
                       Navigator.of(contexts).push(MaterialPageRoute<void>(
