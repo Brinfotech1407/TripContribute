@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/login/cubit/auth_cubit.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
+import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/views/add_member_screen.dart';
 import 'package:trip_contribute/views/auth_views/login_screen.dart';
 import 'package:trip_contribute/views/create_trip.dart';
@@ -28,7 +30,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<UserBloc>(
-          create: (BuildContext context) => UserBloc(),
+          create: (BuildContext context) => UserBloc()
+      ..add(GetUserData()),
         ),
         BlocProvider<AuthCubit>(
           create: (BuildContext context) => AuthCubit(),

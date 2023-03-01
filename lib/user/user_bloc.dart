@@ -28,29 +28,31 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   }
 
   Future<void> _onAddUserDetails(AddUser event, Emitter<UserState> emit) async {
+    await _preferenceService.setUserPhoneNo(event.mobileNo.substring(3));
+    print('setUserPhoneNo ${event.mobileNo.substring(3)}');
     try {
-
       final ProfileModel userData = ProfileModel(
         name: event.name,
         email: event.email,
         mobileNo: event.mobileNo,
         id: _auth.currentUser?.uid,
       );
-
       DatabaseManager().setUserData(userData.toJson(), event.mobileNo.substring(3));
-      await _preferenceService.setUserPhoneNo(event.mobileNo.substring(3));
     }on Exception catch (e) {
       log('addUser Exception $e');
     }
   }
 
   Future<void> _onGetUserData(GetUserData event, Emitter<UserState> emit) async {
-    final String? userPhoneNo = _preferenceService.getUserPhoneNo()!;
+     String  userPhoneNo = '7777777777';//7777777777
+
+    //userPhoneNo = _preferenceService.getUserPhoneNo('USERPHONENO')?? '';
+
     print('_phoneNumber $userPhoneNo');
     emit(UserLoading());
     await Future<void>.delayed(const Duration(seconds: 1));
     try {
-      final ProfileModel? profileData = await DatabaseManager().getSingleUserList(userPhoneNo!);
+      final ProfileModel? profileData = await DatabaseManager().getSingleUserList(userPhoneNo);
       emit(GetSingleUser(userData:profileData!));
     } catch (exception) {
       emit( ProfileError(exception.toString()));

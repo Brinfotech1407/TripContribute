@@ -133,21 +133,27 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
   Widget _buildLoading() => const Center(child: CircularProgressIndicator());
   Padding createTripHeaderView({required String userName}) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8, top: 10, bottom: 10),
+      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children:  [
-          const Text(
-            'Hello',
-            textAlign: TextAlign.left,
-            style:
-                TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 1),
+          const Padding(
+            padding: EdgeInsets.only(bottom: 8.0,left: 8.0,top: 8.0),
+            child:  Text(
+              'Hello',
+              textAlign: TextAlign.left,
+              style:
+                  TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 1),
+            ),
           ),
-          Text(
-            userName,
-            textAlign: TextAlign.left,
-            style:
-                TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 1),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              userName,
+              textAlign: TextAlign.left,
+              style:
+                  TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 1),
+            ),
           ),
         ],
       ),
