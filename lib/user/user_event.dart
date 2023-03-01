@@ -30,11 +30,9 @@ class AddUser extends UserEvent{
 
 }
 class GetUserData extends UserEvent{
-
-  const  GetUserData({required this.userId});
-  final String userId;
+  const  GetUserData();
 
   @override
-  List<Object> get props => [userId];
+  List<Object> get props => [];
 }
 

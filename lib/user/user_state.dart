@@ -26,9 +26,9 @@ class UserLoaded extends UserState{
 
 }
 
-class GetUser extends UserState{
+class GetSingleUser extends UserState{
 
-  const GetUser({required this.userData});
+  const GetSingleUser({required this.userData});
   final ProfileModel userData;
 
   @override

@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/login/cubit/auth_cubit.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
+import 'package:trip_contribute/views/add_member_screen.dart';
 import 'package:trip_contribute/views/auth_views/login_screen.dart';
+import 'package:trip_contribute/views/create_trip.dart';
+import 'package:trip_contribute/views/create_trip_dialog_screen.dart';
 import 'package:trip_contribute/views/splash_screen.dart';
 
 import 'login/cubit/auth_state.dart';
@@ -43,13 +46,13 @@ class MyApp extends StatelessWidget {
             return previous is AuthInitialState;
           },
           builder: (BuildContext context, AuthState state) {
-            /*if (state is AuthLoggedInState) {
-              return const AddMemberScreen();
-            } else if (state is AuthLoggedOutState) {*/
+            if (state is AuthLoggedInState) {
+              return  CreateTripDialog();
+            } else if (state is AuthLoggedOutState) {
               return const MyHomePage();
-          /*  } else {
+            } else {
               return const SplashScreen();
-            }*/
+            }
           },
         ),
       ),

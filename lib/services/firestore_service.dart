@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:trip_contribute/models/profile_model.dart';
 class DatabaseManager{
   FirebaseFirestore get _fireStore {

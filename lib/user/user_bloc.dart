@@ -4,17 +4,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/services/firestore_service.dart';
+import 'package:trip_contribute/services/preference_service.dart';
 import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/user/user_state.dart';
+
 
 class UserBloc extends Bloc<UserEvent,UserState>{
   UserBloc() : super(UserLoading()) {
     on<LoadUser>(_onLoadUser);
     on<AddUser>(_onAddUserDetails);
-  //  on<GetUserData>(_onGetUserData);
+    on<GetUserData>(_onGetUserData);
   }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  /// Store local key-value pair data.
+  final PreferenceService _preferenceService = PreferenceService();
+
 
   void _onLoadUser(LoadUser event, Emitter<UserState> emit) {
     emit(
@@ -22,7 +27,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     );
   }
 
-  void _onAddUserDetails(AddUser event, Emitter<UserState> emit) {
+  Future<void> _onAddUserDetails(AddUser event, Emitter<UserState> emit) async {
     try {
 
       final ProfileModel userData = ProfileModel(
@@ -33,21 +38,23 @@ class UserBloc extends Bloc<UserEvent,UserState>{
       );
 
       DatabaseManager().setUserData(userData.toJson(), event.mobileNo.substring(3));
+      await _preferenceService.setUserPhoneNo(event.mobileNo.substring(3));
     }on Exception catch (e) {
       log('addUser Exception $e');
     }
   }
 
- /* Future<void> _onGetUserData(GetUserData event, Emitter<UserState> emit) async {
+  Future<void> _onGetUserData(GetUserData event, Emitter<UserState> emit) async {
+    final String? userPhoneNo = _preferenceService.getUserPhoneNo()!;
+    print('_phoneNumber $userPhoneNo');
     emit(UserLoading());
-   // await Future.delayed(const Duration(seconds: 1));
-
+    await Future<void>.delayed(const Duration(seconds: 1));
     try {
-      final ProfileModel? profileData = await DatabaseManager().getSingleBlogList(event.userId);
-      emit(GetUser(userData:profileData!));
+      final ProfileModel? profileData = await DatabaseManager().getSingleUserList(userPhoneNo!);
+      emit(GetSingleUser(userData:profileData!));
     } catch (exception) {
-      emit(const ProfileError("Failed to fetch data. is your device online?"));
+      emit( ProfileError(exception.toString()));
     }
-  }*/
+  }
 
 }
