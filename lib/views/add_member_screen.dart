@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:trip_contribute/tripUtils.dart';
 
 class AddMemberScreen extends StatefulWidget {
-  const AddMemberScreen({Key? key}) : super(key: key);
+  const AddMemberScreen({Key? key, required this.tripName}) : super(key: key);
+  final String tripName;
 
   @override
   State<AddMemberScreen> createState() => _AddMemberScreenState();
@@ -13,13 +14,11 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   final TextEditingController _createTripNameController =
       TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  List<String> selectedList = <String>['1','2','3'];
+  List<String> memberList = <String>[];
 
   @override
   void initState() {
-    /*Future.delayed(Duration(seconds: 1)).then((_) {
-      //buildShowModalBottomSheet(context);
-    });*/
+    memberList.add(widget.tripName);
     super.initState();
   }
 
@@ -30,37 +29,26 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildCreateTripIconButton(context),
             Row(
               children: [
-                const Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 14),
+              Expanded(
+                child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 10, bottom: 10),
                     child: Text(
-                      'Total Trip Expense',
-                      style: TextStyle(fontSize: 18),
+                      widget.tripName,
+                      style: const TextStyle(fontSize: 22),
                     ),
                   ),
-                ),
-                const Text(
-                  '6000',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  constraints: const BoxConstraints(),
-                  padding: const EdgeInsets.only(right: 8),
-                  onPressed: () {
-                    setState(() {});
-                  },
-                  icon: const Icon(Icons.currency_rupee_outlined),
-                ),
+              ),
+                buildCreateTripIconButton(context),
               ],
             ),
-            const SizedBox(height: 8,),
             Expanded(
               child: ListView.builder(
-                itemCount: selectedList.length,
-                itemBuilder: (context, index) {
+                itemCount: memberList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final String selactedMemeber = memberList[index];
                   return Card(
                     margin: const EdgeInsets.all(12),
                     elevation: 0,
@@ -82,23 +70,23 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                               style: TextStyle(),
                             ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 10),
+                           Padding(
+                            padding: const EdgeInsets.only(left: 10),
                             child: Text(
-                              'Bhavika',
-                              style: TextStyle(fontSize: 18),
+                              selactedMemeber.toString(),
+                              style: const TextStyle(fontSize: 18),
                             ),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
                                   '3500',
                                   style: TextStyle(
-                                      fontSize: 18, fontWeight: FontWeight.bold),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                               IconButton(
@@ -146,9 +134,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         padding: const EdgeInsets.only(top: 8, right: 10, bottom: 33),
         alignment: Alignment.topRight,
         onPressed: () {
-
-            buildShowCreateTripModalBottomSheet(context);
-
+          Navigator.pop(context);
         },
         icon: const Icon(Icons.check, size: 27),
       ),
@@ -159,99 +145,51 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     return showModalBottomSheet<void>(
       isScrollControlled: true,
       context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(
-                  height: 55,
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        const Text(
-                          'Add Trip Member',
-                          style: TextStyle(
-                            fontSize: 16,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                    height: 55,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          const Text(
+                            'Add Trip Member',
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          iconSize: 22,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            iconSize: 22,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                nameFormFiledView(),
-                mobileNumberFormFiledView(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 18),
-                  child: GestureDetector(
-                      onTap: () {},
-                      child: TripUtils()
-                          .bottomButtonDesignView(buttonText: 'Add')),
-                )
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
+                  nameFormFiledView(),
+                  mobileNumberFormFiledView(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0, bottom: 18),
+                    child: GestureDetector(
+                        onTap: () {
 
-  Future<void> buildShowCreateTripModalBottomSheet(BuildContext context) {
-    return showModalBottomSheet<void>(
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                SizedBox(
-                  height: 55,
-                  child: Container(
-                    margin: const EdgeInsets.only(left: 12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        const Text(
-                          'Create Trip',
-                          style: TextStyle(
-                            fontSize: 16,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          iconSize: 22,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                createTripNameFormFiledView(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, bottom: 18),
-                  child: GestureDetector(
-                      onTap: () {},
-                      child: TripUtils()
-                          .bottomButtonDesignView(buttonText: 'Create Trip')),
-                )
-              ],
-            );
-          },
+                        },
+                        child: TripUtils()
+                            .bottomButtonDesignView(buttonText: 'Add')),
+                  )
+                ],
+              ),
         );
+
       },
     );
   }
@@ -286,18 +224,16 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   Widget nameFormFiledView() {
     return Padding(
       padding: const EdgeInsets.only(left: 14, right: 14, top: 20),
-      child: TextFormField(
+      child: TextField(
         controller: _nameController,
         autofillHints: const [AutofillHints.name],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Name'),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return 'Please enter your name';
-          } else if (value.length <= 2) {
-            return 'Please enter your name more then 2 char';
-          }
-          return null;
+      onSubmitted:(String value) {
+          setState(() {
+            memberList.add(value);
+            _nameController.clear();
+          });
         },
         // keyboardType: TextInputType.text,
       ),
@@ -312,7 +248,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         autofillHints: const [AutofillHints.name],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Trip Name'),
-        validator: (value) {
+        validator: (String? value) {
           if (value!.isEmpty) {
             return 'Please enter your Trip name';
           } else if (value.length <= 2) {
@@ -328,21 +264,17 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   Widget mobileNumberFormFiledView() {
     return Padding(
       padding: const EdgeInsets.only(left: 14, right: 14, top: 20),
-      child: TextFormField(
+      child: TextField(
         controller: _phoneController,
         autofillHints: const [AutofillHints.telephoneNumber],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'mobile number'),
         keyboardType: TextInputType.phone,
-        validator: (value) {
-          Pattern pattern =
-              r'^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$';
-          RegExp regex = RegExp(pattern.toString());
-          if (!regex.hasMatch(value!)) {
-            return 'Enter a valid phone number';
-          } else {
-            return null;
-          }
+        onSubmitted:(String value) {
+          setState(() {
+            memberList.add(value);
+            _phoneController.clear();
+          });
         },
       ),
     );

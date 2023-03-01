@@ -7,7 +7,7 @@ import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/user/user_state.dart';
-import 'package:trip_contribute/views/add_member_screen.dart';
+import 'package:trip_contribute/views/create_trip.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key, required this.currentUser}) : super(key: key);
@@ -84,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Future.delayed(Duration.zero, () async {
                         Navigator.of(contexts).push(MaterialPageRoute<void>(
                           builder: (_) {
-                            return const AddMemberScreen();
+                            return  CrateTripScreen();
                           },
                         ));
                       });

@@ -17,9 +17,9 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   /// Store local key-value pair data.
   final PreferenceService _preferenceService = PreferenceService();
-
 
   void _onLoadUser(LoadUser event, Emitter<UserState> emit) {
     emit(
@@ -28,6 +28,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   }
 
   Future<void> _onAddUserDetails(AddUser event, Emitter<UserState> emit) async {
+    await _preferenceService.init();
     await _preferenceService.setUserPhoneNo(event.mobileNo.substring(3));
     print('setUserPhoneNo ${event.mobileNo.substring(3)}');
     try {
@@ -44,9 +45,10 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   }
 
   Future<void> _onGetUserData(GetUserData event, Emitter<UserState> emit) async {
-     String  userPhoneNo = '7777777777';//7777777777
+   await _preferenceService.init();
+     String  userPhoneNo = '';//7777777777
 
-    //userPhoneNo = _preferenceService.getUserPhoneNo('USERPHONENO')?? '';
+    userPhoneNo = _preferenceService.getUserPhoneNo('USERPHONENO')?? '';
 
     print('_phoneNumber $userPhoneNo');
     emit(UserLoading());

@@ -12,7 +12,6 @@ class PreferenceService{
  }
 
   Future<void> setUserPhoneNo(String userPhoneNo) async {
-   print('bhavika service screen $userPhoneNo');
     await _preferences?.setString(_userPhoneNo, userPhoneNo);
 
   }
@@ -22,7 +21,6 @@ class PreferenceService{
 }
 
   String? getUserPhoneNo(String key) {
-    print('bhavika get service screen $_userPhoneNo');
     return _preferences?.getString(key);
   }
 }
