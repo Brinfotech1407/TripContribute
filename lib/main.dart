@@ -1,14 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/login/cubit/auth_cubit.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
-import 'package:trip_contribute/views/add_member_screen.dart';
 import 'package:trip_contribute/views/auth_views/login_screen.dart';
 import 'package:trip_contribute/views/create_trip.dart';
-import 'package:trip_contribute/views/create_trip_dialog_screen.dart';
 import 'package:trip_contribute/views/splash_screen.dart';
 
 import 'login/cubit/auth_state.dart';
@@ -31,7 +28,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<UserBloc>(
           create: (BuildContext context) => UserBloc()
-      ..add(GetUserData()),
+      ..add(const GetUserData()),
         ),
         BlocProvider<AuthCubit>(
           create: (BuildContext context) => AuthCubit(),
@@ -50,7 +47,7 @@ class MyApp extends StatelessWidget {
           },
           builder: (BuildContext context, AuthState state) {
             if (state is AuthLoggedInState) {
-              return  CreateTripDialog();
+              return   CrateTripScreen();
             } else if (state is AuthLoggedOutState) {
               return const MyHomePage();
             } else {

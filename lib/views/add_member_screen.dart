@@ -146,9 +146,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         padding: const EdgeInsets.only(top: 8, right: 10, bottom: 33),
         alignment: Alignment.topRight,
         onPressed: () {
-          setState(() {
+
             buildShowCreateTripModalBottomSheet(context);
-          });
+
         },
         icon: const Icon(Icons.check, size: 27),
       ),
