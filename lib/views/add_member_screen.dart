@@ -44,55 +44,48 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           children: [
             buildHeaderView(context),
             Flexible(
-              child: Container(
-                height: 140,
-                child: Card(
-                  margin: const EdgeInsets.all(12),
-                  elevation: 0,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      side: BorderSide(
-                        width: 1,
-                        color: Colors.grey,
-                      )),
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: ListView.builder(
-                            itemCount: selectedMemberNameList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Text(
-                                selectedMemberNameList[index],
-                                style: TextStyle(fontSize: 17),
-                              );
-                            },
-                          ),
+              child: ListView.builder(
+                itemCount: selectedMemberNameList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 140,
+                    child: Card(
+                      margin: const EdgeInsets.all(12),
+                      elevation: 0,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          side: BorderSide(
+                            width: 1,
+                            color: Colors.grey,
+                          )),
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              selectedMemberNameList[index],
+                              style: const TextStyle(fontSize: 17),
+                            ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Text(
+                                    selectedMemberMnoList[index]
+                                        .substring(3))),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.delete),
+                            ),
+                          ],
                         ),
-                        Flexible(
-                          child: ListView.builder(
-                            itemCount: selectedMemberMnoList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Row(
-                                children: [
-                                  Expanded(
-                                      child: Text(selectedMemberMnoList[index]
-                                          .substring(3))),
-                                  IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.delete),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
           ],
