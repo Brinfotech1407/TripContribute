@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
-import 'package:trip_contribute/user/user_state.dart';
 
 class AddMemberScreen extends StatefulWidget {
   const AddMemberScreen(
@@ -22,8 +22,6 @@ class AddMemberScreen extends StatefulWidget {
 
 class _AddMemberScreenState extends State<AddMemberScreen> {
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _createTripNameController =
-      TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   List<String> selectedMemberNameList = <String>[];
   List<String> selectedMemberMnoList = <String>[];
@@ -39,76 +37,70 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: BlocListener<UserBloc, UserState>(
-          listener: (BuildContext context, Object? state) {
-        /*    if (state is ) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Users added!')));
-            }*/
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildHeaderView(context),
-              Flexible(
-                child: ListView.builder(
-                  itemCount: selectedMemberNameList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      height: 140,
-                      child: Card(
-                        margin: const EdgeInsets.all(12),
-                        elevation: 0,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                            side: BorderSide(
-                              width: 1,
-                              color: Colors.grey,
-                            )),
-                        child: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                selectedMemberNameList[index],
-                                style: const TextStyle(fontSize: 17),
-                              ),
-                          Row(
-                            children: [
-                              Expanded(
-                                  child: Text(
-                                      selectedMemberMnoList[index]
-                                          .substring(3))),
-                              IconButton(
-                                onPressed: () {},
-                                icon: const Icon(Icons.delete),
-                              ),
-                            ],
-                          ),
-                            ],
-                          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            buildHeaderView(context),
+            Flexible(
+              child: ListView.builder(
+                itemCount: selectedMemberNameList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: 140,
+                    child: Card(
+                      margin: const EdgeInsets.all(12),
+                      elevation: 0,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          side: BorderSide(
+                            color: Colors.grey,
+                          )),
+                      child: Padding(
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              selectedMemberNameList[index],
+                              style: const TextStyle(fontSize: 17),
+                            ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Text(
+                                    selectedMemberMnoList[index])),
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.delete),
+                            ),
+                          ],
+                        ),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
       // bottomSheet: buildShowModalBottomSheet(context),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          _nameController.text = '';
+          _phoneController.text = '';
           buildShowAddMemberModalBottomSheet(context);
         },
         backgroundColor: Colors.black,
         child: IconButton(
           onPressed: () {
             setState(() {
+              _nameController.text = '';
+              _phoneController.text = '';
               buildShowAddMemberModalBottomSheet(context);
             });
           },
@@ -181,6 +173,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                         icon: const Icon(Icons.close),
                         iconSize: 22,
                         onPressed: () {
+                          _nameController.clear();
+                          _phoneController.clear();
                           Navigator.pop(context);
                         },
                       ),
@@ -194,7 +188,23 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 padding: const EdgeInsets.only(top: 8.0, bottom: 18),
                 child: GestureDetector(
                     onTap: () {
-                      if (_nameController.text.isNotEmpty &&
+                     if(_nameController.text.length <= 2){
+                       QuickAlert.show(
+                         context: context,
+                         type: QuickAlertType.warning,
+                         title: 'Oops...',
+                         text:
+                         'The name must be at least 2 characters long',
+                       );
+                     }else if(_phoneController.text.length != 10){
+                       QuickAlert.show(
+                         context: context,
+                         type: QuickAlertType.warning,
+                         title: 'Oops...',
+                         text:
+                         'The mobile number you entered is invalid. Please enter a valid mobile number.',
+                       );
+                     }else if (_nameController.text.isNotEmpty &&
                           _phoneController.text.isNotEmpty) {
                         setState(() {
                           selectedMemberMnoList.add(_phoneController.text);
@@ -203,9 +213,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           _phoneController.clear();
                           Navigator.pop(context);
                         });
-
-                        print(selectedMemberMnoList);
-                        print(selectedMemberNameList);
                       }
                     },
                     child:
@@ -226,7 +233,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         filled: true,
         contentPadding: const EdgeInsets.only(left: 8),
         border: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.grey),
+          borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
@@ -237,11 +244,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
-            width: 1.0,
           ),
         ),
         disabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.black),
+
         ));
   }
 
@@ -255,8 +261,10 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         decoration: inputDecoration(hintText: 'Name'),
         onSubmitted: (String value) {
           setState(() {
-            selectedMemberNameList.add(value);
-            _nameController.clear();
+            if(value.isNotEmpty) {
+              selectedMemberNameList.add(value);
+              _nameController.clear();
+            }
           });
         },
         // keyboardType: TextInputType.text,
@@ -264,26 +272,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     );
   }
 
-  Widget createTripNameFormFiledView() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 14, right: 14, top: 20),
-      child: TextFormField(
-        controller: _createTripNameController,
-        autofillHints: const [AutofillHints.name],
-        cursorColor: Colors.black,
-        decoration: inputDecoration(hintText: 'Trip Name'),
-        validator: (String? value) {
-          if (value!.isEmpty) {
-            return 'Please enter your Trip name';
-          } else if (value.length <= 2) {
-            return 'Please enter your Trip name more then 1 char';
-          }
-          return null;
-        },
-        // keyboardType: TextInputType.text,
-      ),
-    );
-  }
 
   Widget mobileNumberFormFiledView() {
     return Padding(
@@ -303,6 +291,4 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       ),
     );
   }
-
-  Widget _buildLoading() => const Center(child: CircularProgressIndicator());
 }

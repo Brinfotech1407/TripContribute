@@ -7,7 +7,7 @@ import 'package:trip_contribute/user/user_state.dart';
 import 'package:trip_contribute/views/add_member_screen.dart';
 
 class CrateTripScreen extends StatefulWidget {
-  CrateTripScreen({Key? key,  this.tripName}) : super(key: key);
+  const CrateTripScreen({Key? key,  this.tripName}) : super(key: key);
   final String? tripName;
 
   @override
@@ -34,7 +34,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
   @override
   Widget build(BuildContext context) {
     final DateTime date = DateTime.now();
-    final String formattedDate = "${date.day}-${date.month}-${date.year}";
+    final String formattedDate = '${date.day}-${date.month}-${date.year}';
 
     return Scaffold(
       body: SafeArea(
@@ -128,12 +128,13 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _createTripNameController.dispose();
+          _createTripNameController.text = '';
           buildShowCreateTripModalBottomSheet(context);
         },
         backgroundColor: Colors.black,
         child: IconButton(
           onPressed: () {
+            _createTripNameController.text = '';
             buildShowCreateTripModalBottomSheet(context);
           },
           icon: const Icon(Icons.add),
@@ -199,6 +200,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                         iconSize: 22,
                         onPressed: () {
                           Navigator.pop(context);
+                          _createTripNameController.clear();
                         },
                       ),
                     ],
@@ -216,8 +218,9 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                            Navigator.of(context).push(
                               MaterialPageRoute<List<String>>(
                                   builder: (_) =>
-                                      AddMemberScreen(tripName:_createTripNameController.text,
+                                      AddMemberScreen(tripName:userName,
                                       userMno: userMno,userName: userName,)));
+                          _createTripNameController.clear();
                         }else{
                           QuickAlert.show(
                             context: context,
@@ -272,7 +275,6 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
-            width: 1.0,
           ),
         ),
         disabledBorder: const OutlineInputBorder(
