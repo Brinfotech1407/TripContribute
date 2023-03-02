@@ -15,6 +15,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     on<LoadUser>(_onLoadUser);
     on<AddUser>(_onAddUserDetails);
     on<AddMemberDetails>(_onAddMemberDetails);
+    on<GetTripData>(_onGetTripMemberData);
     on<GetUserData>(_onGetUserData);
   }
 
@@ -34,7 +35,6 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   Future<void> _onAddUserDetails(AddUser event, Emitter<UserState> emit) async {
     await _preferenceService.init();
     await _preferenceService.setUserPhoneNo(event.mobileNo.substring(3));
-    print('setUserPhoneNo ${event.mobileNo.substring(3)}');
     try {
       final ProfileModel userData = ProfileModel(
         name: event.name,
@@ -51,15 +51,30 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   Future<void> _onAddMemberDetails(AddMemberDetails event, Emitter<UserState> emit) async {
     try {
       final TripModel memberData = TripModel(event.tripName, event.tripMemberName,event.tripMemberMno);
-      DatabaseManager().setMembersData(memberData.toJson(), '7777777777');
+      DatabaseManager().setMembersData(memberData.toJson(), userMobileNumber);
     }on Exception catch (e) {
       log('addUser Exception $e');
     }
   }
 
+  Future<void> _onGetTripMemberData(GetTripData event, Emitter<UserState> emit) async {
+    await _preferenceService.init();
+
+    userMobileNumber = _preferenceService.getUserPhoneNo('USERPHONENO')?? '';
+
+    print('_phoneNumber $userMobileNumber');
+    emit(UserLoading());
+    await Future<void>.delayed(const Duration(seconds: 1));
+    try {
+      final TripModel? tripMemberData = await DatabaseManager().getSingleTripMemberList(userMobileNumber);
+      emit(GetTripMemberData(tripMemberData:tripMemberData!));
+    } catch (exception) {
+      emit( ProfileError(exception.toString()));
+    }
+  }
+
   Future<void> _onGetUserData(GetUserData event, Emitter<UserState> emit) async {
    await _preferenceService.init();
-     //\\String  userPhoneNo = '';//7777777777
 
      userMobileNumber = _preferenceService.getUserPhoneNo('USERPHONENO')?? '';
 

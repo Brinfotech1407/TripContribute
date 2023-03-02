@@ -28,8 +28,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
   @override
   void initState() {
-    selectedMemberNameList.add(widget.userName);
-    selectedMemberMnoList.add(widget.userMno);
+    selectedMemberNameList.add('bhavika');
+    selectedMemberMnoList.add('7777777777');
     super.initState();
   }
 
@@ -134,12 +134,22 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         padding: const EdgeInsets.only(top: 8, right: 10, bottom: 33),
         alignment: Alignment.topRight,
         onPressed: () {
-          context.read<UserBloc>().add(AddMemberDetails(
-            tripName: widget.tripName ,
-            tripMemberName: selectedMemberNameList.first,
-            tripMemberMno: selectedMemberMnoList.first,
-          ));
-          Navigator.pop(context);
+          if(selectedMemberMnoList.isNotEmpty && selectedMemberNameList.isNotEmpty) {
+            context.read<UserBloc>().add(AddMemberDetails(
+              tripName: widget.tripName,
+              tripMemberName: selectedMemberNameList,
+              tripMemberMno: selectedMemberMnoList,
+            ));
+            Navigator.pop(context);
+          }else{
+            QuickAlert.show(
+              context: context,
+              type: QuickAlertType.warning,
+              title: 'Oops...',
+              text:
+              'Please fill the proper details',
+            );
+          }
         },
         icon: const Icon(Icons.check, size: 27),
       ),

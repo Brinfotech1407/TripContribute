@@ -13,8 +13,8 @@ class TripModel {
   TripModel(this.tripName,this.tripMemberName,this.tripMemberMno);
 
   String tripName;
-  String tripMemberName;
-  String tripMemberMno;
+  List<String> tripMemberName;
+  List<String> tripMemberMno;
 
   @override
   List<Object?> get props => [

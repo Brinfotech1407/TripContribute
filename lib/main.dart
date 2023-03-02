@@ -28,12 +28,12 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<UserBloc>(
           create: (BuildContext context) => UserBloc()
-      ..add(const GetUserData()),
+            ..add(const GetTripData())
+            ..add(const GetUserData()),
         ),
         BlocProvider<AuthCubit>(
           create: (BuildContext context) => AuthCubit(),
         ),
-
       ],
       child: MaterialApp(
         title: 'Trip Contribute',
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           },
           builder: (BuildContext context, AuthState state) {
             if (state is AuthLoggedInState) {
-              return   CrateTripScreen();
+              return const CrateTripScreen();
             } else if (state is AuthLoggedOutState) {
               return const MyHomePage();
             } else {

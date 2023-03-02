@@ -7,7 +7,7 @@ import 'package:trip_contribute/user/user_state.dart';
 import 'package:trip_contribute/views/add_member_screen.dart';
 
 class CrateTripScreen extends StatefulWidget {
-  const CrateTripScreen({Key? key,  this.tripName}) : super(key: key);
+  const CrateTripScreen({Key? key, this.tripName}) : super(key: key);
   final String? tripName;
 
   @override
@@ -15,16 +15,18 @@ class CrateTripScreen extends StatefulWidget {
 }
 
 class _CrateTripScreenState extends State<CrateTripScreen> {
-  final TextEditingController _createTripNameController = TextEditingController();
+  final TextEditingController _createTripNameController =
+      TextEditingController();
   List<String> selectedList = <String>[];
   List<String> addMemberList = <String>[];
-   String userName = '';
-   String userMno = '';
+  String? userName;
+  String userMno = '';
 
   @override
   void initState() {
     super.initState();
   }
+
   @override
   void dispose() {
     _createTripNameController.dispose();
@@ -36,20 +38,113 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
     final DateTime date = DateTime.now();
     final String formattedDate = '${date.day}-${date.month}-${date.year}';
 
+    List<MaterialColor> colors = [
+      Colors.grey,
+      Colors.lightGreen,
+      Colors.cyan,
+      Colors.green,
+      Colors.yellow,
+    ];
     return Scaffold(
       body: SafeArea(
         child: BlocBuilder<UserBloc, UserState>(
           builder: (BuildContext context, UserState state) {
-            if (state is GetSingleUser) {
-              userName =state.userData.name;
-              userMno =state.userData.mobileNo;
+            if (state is GetTripMemberData) {
+              selectedList.add(state.tripMemberData.tripMemberName.first);
               return Column(
                 children: [
                   Align(
                       alignment: Alignment.centerLeft,
-                      child: createTripHeaderView(
-                          userName: state.userData.name)),
-                  if(selectedList.isNotEmpty)...<Widget>[
+                      child: createTripHeaderView(userName: userName)),
+                  Card(
+                    margin: const EdgeInsets.all(12),
+                    elevation: 0,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        side: BorderSide(
+                          color: Colors.grey,
+                        )),
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, bottom: 8),
+                                  child: Text(
+                                    state.tripMemberData.tripName,
+                                    style: const TextStyle(),
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  formattedDate,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            height: 60,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Flexible(
+                                  child: ListView.builder(
+                                    itemCount: state
+                                        .tripMemberData.tripMemberName.length,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      final String memberName = state
+                                          .tripMemberData.tripMemberName[index];
+                                      return Row(
+                                        children: [
+                                          Container(
+                                          color: colors[index],
+                                            margin: const EdgeInsets.all(8),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(6.0),
+                                              child: Text(memberName),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
+                                IconButton(
+                                  constraints: const BoxConstraints(),
+                                  padding: const EdgeInsets.only(right: 8),
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.add),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            } else if (state is GetSingleUser) {
+              userName = state.userData.name;
+              userMno = state.userData.mobileNo;
+              return Column(
+                children: [
+                  Align(
+                      alignment: Alignment.centerLeft,
+                      child:
+                          createTripHeaderView(userName: state.userData.name)),
+                  if (selectedList.isNotEmpty) ...<Widget>[
                     Expanded(
                       child: ListView.builder(
                         itemCount: selectedList.length,
@@ -59,8 +154,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                             margin: const EdgeInsets.all(12),
                             elevation: 0,
                             shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(8)),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
                                 side: BorderSide(
                                   color: Colors.grey,
                                 )),
@@ -94,20 +189,20 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                     children: [
                                       Container(
                                         color: Colors.yellowAccent,
-                                        child:  Padding(
+                                        child: Padding(
                                           padding: EdgeInsets.all(6.0),
                                           child: Text(state.userData.name),
                                         ),
                                       ),
                                       IconButton(
                                         constraints: const BoxConstraints(),
-                                        padding: const EdgeInsets.only(right: 8),
+                                        padding:
+                                            const EdgeInsets.only(right: 8),
                                         onPressed: () {},
                                         icon: const Icon(Icons.add),
                                       ),
                                     ],
                                   ),
-
                                 ],
                               ),
                             ),
@@ -118,9 +213,9 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                   ],
                 ],
               );
-              }else if (state is UserLoading) {
+            } else if (state is UserLoading) {
               return _buildLoading();
-               }else {
+            } else {
               return const Text('data not fetched!');
             }
           },
@@ -144,40 +239,42 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
   }
 
   Widget _buildLoading() => const Center(child: CircularProgressIndicator());
-  Padding createTripHeaderView({required String userName}) {
+
+  Padding createTripHeaderView({String? userName}) {
     return Padding(
       padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:  [
+        children: [
           const Padding(
-            padding: EdgeInsets.only(bottom: 6,left: 8.0,top: 8.0),
-            child:  Text(
+            padding: EdgeInsets.only(bottom: 6, left: 8.0, top: 8.0),
+            child: Text(
               'Hello',
               textAlign: TextAlign.left,
-              style:
-                  TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 1),
+              style: TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.bold, height: 1),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              userName,
+              userName ?? 'bhavika',
               textAlign: TextAlign.left,
-              style:
-                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, height: 1),
+              style: const TextStyle(
+                  fontSize: 16, fontWeight: FontWeight.bold, height: 1),
             ),
           ),
         ],
       ),
     );
   }
+
   Future<void> buildShowCreateTripModalBottomSheet(BuildContext context) {
     return showModalBottomSheet<void>(
-     isScrollControlled: true,
+      isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
-        return  Padding(
+        return Padding(
           padding: MediaQuery.of(context).viewInsets,
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -213,21 +310,23 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                 child: GestureDetector(
                     onTap: () {
                       setState(() {
-                        if(_createTripNameController.text.isNotEmpty) {
+                        if (_createTripNameController.text.isNotEmpty) {
                           selectedList.add(_createTripNameController.text);
-                           Navigator.of(context).push(
-                              MaterialPageRoute<List<String>>(
-                                  builder: (_) =>
-                                      AddMemberScreen(tripName:userName,
-                                      userMno: userMno,userName: userName,)));
+                          Navigator.of(context)
+                              .push(MaterialPageRoute<List<String>>(
+                                  builder: (_) => AddMemberScreen(
+                                        tripName: selectedList.last,
+                                        userMno: userMno,
+                                        userName: userName ?? 'bhavika',
+                                      )));
                           _createTripNameController.clear();
-                        }else{
+                        } else {
                           QuickAlert.show(
                             context: context,
                             type: QuickAlertType.warning,
                             title: 'Oops...',
                             text:
-                            'You forgot to enter the Trip Name. Please enter the Trip Name to continue.',
+                                'You forgot to enter the Trip Name. Please enter the Trip Name to continue.',
                           );
                         }
                       });
@@ -242,19 +341,19 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       },
     );
   }
+
   Widget createTripNameFormFiledView() {
     return Padding(
       padding: const EdgeInsets.only(left: 14, right: 14, top: 20),
       child: TextField(
         controller: _createTripNameController,
-        autofillHints: const [AutofillHints.name],
+        autofillHints:  const [AutofillHints.name],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Trip Name'),
-         keyboardType: TextInputType.text,
+        keyboardType: TextInputType.text,
       ),
     );
   }
-
 
   InputDecoration inputDecoration({required String hintText}) {
     return InputDecoration(
@@ -277,7 +376,6 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
             color: Colors.grey,
           ),
         ),
-        disabledBorder: const OutlineInputBorder(
-        ));
+        disabledBorder: const OutlineInputBorder());
   }
 }

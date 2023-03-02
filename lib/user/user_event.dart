@@ -34,8 +34,8 @@ class AddMemberDetails extends UserEvent{
 
   const AddMemberDetails({required this.tripName,required this.tripMemberName,required this.tripMemberMno});
   final String tripName;
-  final String tripMemberName;
-  final String tripMemberMno;
+  final  List<String> tripMemberName;
+  final  List<String> tripMemberMno;
 
 
 }
@@ -46,4 +46,14 @@ class GetUserData extends UserEvent{
   @override
   List<Object> get props => [];
 }
+
+
+class GetTripData extends UserEvent{
+  const  GetTripData();
+
+  @override
+  List<Object> get props => [];
+}
+
+
 

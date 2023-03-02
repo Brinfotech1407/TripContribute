@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:trip_contribute/models/profile_model.dart';
+import 'package:trip_contribute/models/trip_model.dart';
 class DatabaseManager{
   FirebaseFirestore get _fireStore {
     final FirebaseFirestore fireStoreInstance =
@@ -62,5 +63,21 @@ class DatabaseManager{
     }
   }
 
+
+  Future<TripModel?> getSingleTripMemberList(String userID) async {
+    final DocumentSnapshot <Map<String, dynamic>>doc =
+    await _fireStore.collection('Members').doc(userID).get();
+    if(doc.exists) {
+      try {
+        final TripModel user = TripModel.fromJson(doc.data()!);
+        print('Members $user');
+        return user;
+      } catch (e) {
+        throw Exception(e.toString());
+      }
+    }else{
+      return null;
+    }
+  }
 
 }
