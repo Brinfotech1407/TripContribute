@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/tripUtils.dart';
+import 'package:trip_contribute/user/user_bloc.dart';
+import 'package:trip_contribute/user/user_state.dart';
 
 class AddMemberScreen extends StatefulWidget {
-  const AddMemberScreen({Key? key, required this.tripName}) : super(key: key);
+  const AddMemberScreen(
+      {Key? key,
+      required this.tripName,
+      required this.userName,
+      required this.userMno})
+      : super(key: key);
   final String tripName;
+  final String userName;
+  final String userMno;
 
   @override
   State<AddMemberScreen> createState() => _AddMemberScreenState();
@@ -14,11 +24,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   final TextEditingController _createTripNameController =
       TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  List<String> memberList = <String>[];
+  List<String> selectedMemberNameList = <String>[];
+  List<String> selectedMemberMnoList = <String>[];
 
   @override
   void initState() {
-    memberList.add(widget.tripName);
+    selectedMemberNameList.add(widget.userName);
+    selectedMemberMnoList.add(widget.userMno);
     super.initState();
   }
 
@@ -28,82 +40,59 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: [
-              Expanded(
-                child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 10, bottom: 10),
-                    child: Text(
-                      widget.tripName,
-                      style: const TextStyle(fontSize: 22),
+            buildHeaderView(context),
+            Flexible(
+              child: Container(
+                height: 140,
+                child: Card(
+                  margin: const EdgeInsets.all(12),
+                  elevation: 0,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      side: BorderSide(
+                        width: 1,
+                        color: Colors.grey,
+                      )),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: ListView.builder(
+                            itemCount: selectedMemberNameList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Text(
+                                selectedMemberNameList[index],
+                                style: TextStyle(fontSize: 17),
+                              );
+                            },
+                          ),
+                        ),
+                        Flexible(
+                          child: ListView.builder(
+                            itemCount: selectedMemberMnoList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Row(
+                                children: [
+                                  Expanded(
+                                      child: Text(selectedMemberMnoList[index]
+                                          .substring(3))),
+                                  IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(Icons.delete),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-              ),
-                buildCreateTripIconButton(context),
-              ],
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: memberList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final String selactedMemeber = memberList[index];
-                  return Card(
-                    margin: const EdgeInsets.all(12),
-                    elevation: 0,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        side: BorderSide(
-                          width: 1,
-                          color: Colors.grey,
-                        )),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 10, bottom: 8),
-                            child: Text(
-                              'Total Expense of',
-                              style: TextStyle(),
-                            ),
-                          ),
-                           Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Text(
-                              selactedMemeber.toString(),
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const Align(
-                                alignment: Alignment.centerRight,
-                                child: Text(
-                                  '3500',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              IconButton(
-                                constraints: const BoxConstraints(),
-                                padding: const EdgeInsets.only(right: 8),
-                                onPressed: () {
-                                  setState(() {});
-                                },
-                                icon: const Icon(Icons.currency_rupee_outlined),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
+                ),
               ),
             ),
           ],
@@ -124,6 +113,23 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           icon: const Icon(Icons.add),
         ),
       ),
+    );
+  }
+
+  Row buildHeaderView(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10, bottom: 10),
+            child: Text(
+              widget.tripName,
+              style: const TextStyle(fontSize: 22),
+            ),
+          ),
+        ),
+        buildCreateTripIconButton(context),
+      ],
     );
   }
 
@@ -149,47 +155,58 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         return Padding(
           padding: MediaQuery.of(context).viewInsets,
           child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                    height: 55,
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          const Text(
-                            'Add Trip Member',
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.close),
-                            iconSize: 22,
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SizedBox(
+                height: 55,
+                child: Container(
+                  margin: const EdgeInsets.only(left: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      const Text(
+                        'Add Trip Member',
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                  ),
-                  nameFormFiledView(),
-                  mobileNumberFormFiledView(),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 18),
-                    child: GestureDetector(
-                        onTap: () {
-
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        iconSize: 22,
+                        onPressed: () {
+                          Navigator.pop(context);
                         },
-                        child: TripUtils()
-                            .bottomButtonDesignView(buttonText: 'Add')),
-                  )
-                ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
-        );
+              nameFormFiledView(),
+              mobileNumberFormFiledView(),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 18),
+                child: GestureDetector(
+                    onTap: () {
+                      if (_nameController.text.isNotEmpty &&
+                          _phoneController.text.isNotEmpty) {
+                        setState(() {
+                          selectedMemberMnoList.add(_phoneController.text);
+                          selectedMemberNameList.add(_nameController.text);
+                          _nameController.clear();
+                          _phoneController.clear();
+                          Navigator.pop(context);
+                        });
 
+                        print(selectedMemberMnoList);
+                        print(selectedMemberNameList);
+                      }
+                    },
+                    child:
+                        TripUtils().bottomButtonDesignView(buttonText: 'Add')),
+              )
+            ],
+          ),
+        );
       },
     );
   }
@@ -229,9 +246,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         autofillHints: const [AutofillHints.name],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Name'),
-      onSubmitted:(String value) {
+        onSubmitted: (String value) {
           setState(() {
-            memberList.add(value);
+            selectedMemberNameList.add(value);
             _nameController.clear();
           });
         },
@@ -270,13 +287,15 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'mobile number'),
         keyboardType: TextInputType.phone,
-        onSubmitted:(String value) {
+        onSubmitted: (String value) {
           setState(() {
-            memberList.add(value);
+            selectedMemberNameList.add(value);
             _phoneController.clear();
           });
         },
       ),
     );
   }
+
+  Widget _buildLoading() => const Center(child: CircularProgressIndicator());
 }

@@ -18,6 +18,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
   final TextEditingController _createTripNameController = TextEditingController();
   List<String> selectedList = <String>[];
   List<String> addMemberList = <String>[];
+   String userName = '';
+   String userMno = '';
 
   @override
   void initState() {
@@ -33,11 +35,14 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
   Widget build(BuildContext context) {
     final DateTime date = DateTime.now();
     final String formattedDate = "${date.day}-${date.month}-${date.year}";
+
     return Scaffold(
       body: SafeArea(
         child: BlocBuilder<UserBloc, UserState>(
           builder: (BuildContext context, UserState state) {
             if (state is GetSingleUser) {
+              userName =state.userData.name;
+              userMno =state.userData.mobileNo;
               return Column(
                 children: [
                   Align(
@@ -211,7 +216,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                            Navigator.of(context).push(
                               MaterialPageRoute<List<String>>(
                                   builder: (_) =>
-                                      AddMemberScreen(tripName:_createTripNameController.text)));
+                                      AddMemberScreen(tripName:_createTripNameController.text,
+                                      userMno: userMno,userName: userName,)));
                         }else{
                           QuickAlert.show(
                             context: context,
