@@ -29,6 +29,23 @@ class DatabaseManager{
     return userID;
   }
 
+  Future<String> setMembersData(
+      Map<String, dynamic> data,
+      String tripID,
+      ) async {
+    try {
+      _fireStore.collection('Members').doc(tripID).set(
+        data,
+        SetOptions(
+          merge: true,
+        ),
+      );
+    } on Exception catch (e) {
+      log('Exception $e');
+    }
+    return '';
+  }
+
   Future<ProfileModel?> getSingleUserList(String userID) async {
     final DocumentSnapshot <Map<String, dynamic>>doc =
     await _fireStore.collection('user').doc(userID).get();

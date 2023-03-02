@@ -29,6 +29,17 @@ class AddUser extends UserEvent{
 
 
 }
+
+class AddMemberDetails extends UserEvent{
+
+  const AddMemberDetails({required this.tripName,required this.tripMemberName,required this.tripMemberMno});
+  final String tripName;
+  final String tripMemberName;
+  final String tripMemberMno;
+
+
+}
+
 class GetUserData extends UserEvent{
   const  GetUserData();
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
+import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/user/user_state.dart';
 
 class AddMemberScreen extends StatefulWidget {
@@ -38,57 +39,65 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            buildHeaderView(context),
-            Flexible(
-              child: ListView.builder(
-                itemCount: selectedMemberNameList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: 140,
-                    child: Card(
-                      margin: const EdgeInsets.all(12),
-                      elevation: 0,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          side: BorderSide(
-                            width: 1,
-                            color: Colors.grey,
-                          )),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              selectedMemberNameList[index],
-                              style: const TextStyle(fontSize: 17),
-                            ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Text(
-                                    selectedMemberMnoList[index]
-                                        .substring(3))),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.delete),
-                            ),
-                          ],
-                        ),
-                          ],
+        child: BlocListener<UserBloc, UserState>(
+          listener: (BuildContext context, Object? state) {
+        /*    if (state is ) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Users added!')));
+            }*/
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildHeaderView(context),
+              Flexible(
+                child: ListView.builder(
+                  itemCount: selectedMemberNameList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      height: 140,
+                      child: Card(
+                        margin: const EdgeInsets.all(12),
+                        elevation: 0,
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            side: BorderSide(
+                              width: 1,
+                              color: Colors.grey,
+                            )),
+                        child: Padding(
+                          padding: const EdgeInsets.all(14),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                selectedMemberNameList[index],
+                                style: const TextStyle(fontSize: 17),
+                              ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: Text(
+                                      selectedMemberMnoList[index]
+                                          .substring(3))),
+                              IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.delete),
+                              ),
+                            ],
+                          ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       // bottomSheet: buildShowModalBottomSheet(context),
@@ -133,6 +142,11 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         padding: const EdgeInsets.only(top: 8, right: 10, bottom: 33),
         alignment: Alignment.topRight,
         onPressed: () {
+          context.read<UserBloc>().add(AddMemberDetails(
+            tripName: widget.tripName ,
+            tripMemberName: selectedMemberNameList.first,
+            tripMemberMno: selectedMemberMnoList.first,
+          ));
           Navigator.pop(context);
         },
         icon: const Icon(Icons.check, size: 27),

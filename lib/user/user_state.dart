@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/models/profile_model.dart';
 
 abstract class UserState extends Equatable{
@@ -33,6 +34,17 @@ class GetSingleUser extends UserState{
 
   @override
   List<Object> get props =>[userData];
+
+}
+
+
+class GetTripMemberData extends UserState{
+
+  const GetTripMemberData({required this.tripMemberData});
+  final TripModel tripMemberData;
+
+  @override
+  List<Object> get props =>[tripMemberData];
 
 }
 
