@@ -84,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Future.delayed(Duration.zero, () async {
                         Navigator.of(contexts).push(MaterialPageRoute<void>(
                           builder: (_) {
-                            return  CrateTripScreen();
+                            return  CrateTripScreen(userName:  _nameController.text,);
                           },
                         ));
                       });

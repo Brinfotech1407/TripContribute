@@ -4,6 +4,7 @@ import 'package:quickalert/quickalert.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
+import 'package:uuid/uuid.dart';
 
 class AddMemberScreen extends StatefulWidget {
   const AddMemberScreen(
@@ -28,8 +29,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
   @override
   void initState() {
-    selectedMemberNameList.add('bhavika');
-    selectedMemberMnoList.add('7777777777');
+    selectedMemberNameList.add(widget.userName);
+    selectedMemberMnoList.add(widget.userMno);
     super.initState();
   }
 
@@ -137,6 +138,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           if(selectedMemberMnoList.isNotEmpty && selectedMemberNameList.isNotEmpty) {
             context.read<UserBloc>().add(AddMemberDetails(
               tripName: widget.tripName,
+              id: const Uuid().v4(),
               tripMemberName: selectedMemberNameList,
               tripMemberMno: selectedMemberMnoList,
             ));

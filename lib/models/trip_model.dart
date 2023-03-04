@@ -10,15 +10,17 @@ part 'trip_model.g.dart';
 /// JSON serialization logic to be generated.
 @JsonSerializable()
 class TripModel {
-  TripModel(this.tripName,this.tripMemberName,this.tripMemberMno);
+  TripModel(this.tripName,this.tripId,this.tripMemberName,this.tripMemberMno);
 
   String tripName;
+  String tripId;
   List<String> tripMemberName;
   List<String> tripMemberMno;
 
   @override
   List<Object?> get props => [
     tripName,
+    tripId,
     tripMemberName,
     tripMemberMno,
   ];

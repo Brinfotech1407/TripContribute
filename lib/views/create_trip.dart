@@ -7,8 +7,8 @@ import 'package:trip_contribute/user/user_state.dart';
 import 'package:trip_contribute/views/add_member_screen.dart';
 
 class CrateTripScreen extends StatefulWidget {
-  const CrateTripScreen({Key? key, this.tripName}) : super(key: key);
-  final String? tripName;
+  const CrateTripScreen({Key? key, this.userName}) : super(key: key);
+  final String? userName;
 
   @override
   State<CrateTripScreen> createState() => _CrateTripScreenState();
@@ -19,8 +19,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       TextEditingController();
   List<String> selectedList = <String>[];
   List<String> addMemberList = <String>[];
-  String? userName;
-  String userMno = '';
+  String? tripUserName;
+  String tripUserMno = '';
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                 children: [
                   Align(
                       alignment: Alignment.centerLeft,
-                      child: createTripHeaderView(userName: userName)),
+                      child: createTripHeaderView()),
                   Card(
                     margin: const EdgeInsets.all(12),
                     elevation: 0,
@@ -107,7 +107,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                       return Row(
                                         children: [
                                           Container(
-                                          color: colors[index],
+                                            color: colors[index],
                                             margin: const EdgeInsets.all(8),
                                             child: Padding(
                                               padding:
@@ -136,14 +136,11 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                 ],
               );
             } else if (state is GetSingleUser) {
-              userName = state.userData.name;
-              userMno = state.userData.mobileNo;
               return Column(
                 children: [
                   Align(
                       alignment: Alignment.centerLeft,
-                      child:
-                          createTripHeaderView(userName: state.userData.name)),
+                      child: createTripHeaderView()),
                   if (selectedList.isNotEmpty) ...<Widget>[
                     Expanded(
                       child: ListView.builder(
@@ -258,7 +255,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              userName ?? 'bhavika',
+             widget.userName ?? 'bhavika',
               textAlign: TextAlign.left,
               style: const TextStyle(
                   fontSize: 16, fontWeight: FontWeight.bold, height: 1),
@@ -316,8 +313,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                               .push(MaterialPageRoute<List<String>>(
                                   builder: (_) => AddMemberScreen(
                                         tripName: selectedList.last,
-                                        userMno: userMno,
-                                        userName: userName ?? 'bhavika',
+                                        userMno: tripUserMno,
+                                        userName: tripUserName ?? 'bhavika',
                                       )));
                           _createTripNameController.clear();
                         } else {

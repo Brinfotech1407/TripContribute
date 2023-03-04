@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           },
           builder: (BuildContext context, AuthState state) {
             if (state is AuthLoggedInState) {
-              return const CrateTripScreen();
+              return  CrateTripScreen(userName: state.firebaseUser.displayName);
             } else if (state is AuthLoggedOutState) {
               return const MyHomePage();
             } else {

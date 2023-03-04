@@ -8,6 +8,7 @@ part of 'trip_model.dart';
 
 TripModel _$TripModelFromJson(Map<String, dynamic> json) => TripModel(
       json['tripName'] as String,
+      json['tripId'] as String,
       (json['tripMemberName'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
@@ -16,6 +17,7 @@ TripModel _$TripModelFromJson(Map<String, dynamic> json) => TripModel(
 
 Map<String, dynamic> _$TripModelToJson(TripModel instance) => <String, dynamic>{
       'tripName': instance.tripName,
+      'tripId': instance.tripId,
       'tripMemberName': instance.tripMemberName,
       'tripMemberMno': instance.tripMemberMno,
     };

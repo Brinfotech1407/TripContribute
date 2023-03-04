@@ -32,8 +32,9 @@ class AddUser extends UserEvent{
 
 class AddMemberDetails extends UserEvent{
 
-  const AddMemberDetails({required this.tripName,required this.tripMemberName,required this.tripMemberMno});
+  const AddMemberDetails({required this.tripName,required this.id,required this.tripMemberName,required this.tripMemberMno});
   final String tripName;
+  final String id;
   final  List<String> tripMemberName;
   final  List<String> tripMemberMno;
 
