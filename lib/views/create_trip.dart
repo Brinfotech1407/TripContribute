@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:trip_contribute/models/trip_member_model.dart';
-import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
+import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/user/user_state.dart';
 import 'package:trip_contribute/views/add_member_screen.dart';
 
@@ -21,12 +21,13 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       TextEditingController();
   List<String> tripNameList = <String>[];
   List<String> addMemberList = <String>[];
-  String? tripUserName;
+  String  tripUserName = '';
   String tripUserMno = '';
 
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<UserBloc>(context).add(GetUserData());
   }
 
   @override
@@ -138,6 +139,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                 ],
               );
             } else if (state is GetSingleUser) {
+              tripUserName =state.userData.name;
+              tripUserMno =state.userData.mobileNo;
               return Column(
                 children: [
                   Align(
@@ -257,7 +260,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-             widget.userName ?? 'bhavika',
+             userName ?? 'Bhavika',
               textAlign: TextAlign.left,
               style: const TextStyle(
                   fontSize: 16, fontWeight: FontWeight.bold, height: 1),
@@ -315,8 +318,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                               .push(MaterialPageRoute<List<String>>(
                                   builder: (_) => AddMemberScreen(
                                         tripName: tripNameList.last,
-                                        userMno: tripUserMno,
-                                        userName: tripUserName ?? 'Bhavika',
+                                        userMno: tripUserMno.substring(3),
+                                        userName: tripUserName,
                                       )));
                           _createTripNameController.clear();
                         } else {

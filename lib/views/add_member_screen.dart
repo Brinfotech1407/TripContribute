@@ -138,14 +138,16 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         padding: const EdgeInsets.only(top: 8, right: 10, bottom: 33),
         alignment: Alignment.topRight,
         onPressed: () {
-          if(selectedMemberMnoList.isNotEmpty && selectedMemberNameList.isNotEmpty) {
-           final TripMemberModel a = TripMemberModel(memberName, memberMno);
-        final List<TripMemberModel> arrMemberDetails = [a];
+          if(memberName.isNotEmpty && memberMno.isNotEmpty) {
+           final TripMemberModel memberDetails = TripMemberModel(memberName, memberMno);
+        final List<TripMemberModel> arrMemberDetails = [memberDetails];
             context.read<UserBloc>().add(AddMemberDetails(
               tripName: widget.tripName,
               id: const Uuid().v4(),
               tripMemberDetails: arrMemberDetails,
             ));
+           ScaffoldMessenger.of(context)
+               .showSnackBar(const SnackBar(content: Text('members data is added!')));
             Navigator.pop(context);
           }else{
             QuickAlert.show(
