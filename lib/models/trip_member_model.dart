@@ -12,8 +12,8 @@ part 'trip_member_model.g.dart';
 class TripMemberModel {
   TripMemberModel(this.tripMemberName,this.tripMemberMno);
 
- String  tripMemberName;
- String tripMemberMno;
+  List<String>?  tripMemberName;
+  List<String>? tripMemberMno;
 
   @override
   List<Object?> get props => [

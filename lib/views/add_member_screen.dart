@@ -139,7 +139,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         alignment: Alignment.topRight,
         onPressed: () {
           if(memberName.isNotEmpty && memberMno.isNotEmpty) {
-           final TripMemberModel memberDetails = TripMemberModel(memberName, memberMno);
+           final TripMemberModel memberDetails = TripMemberModel(selectedMemberNameList, selectedMemberMnoList);
         final List<TripMemberModel> arrMemberDetails = [memberDetails];
             context.read<UserBloc>().add(AddMemberDetails(
               tripName: widget.tripName,

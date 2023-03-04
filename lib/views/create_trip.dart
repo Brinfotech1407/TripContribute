@@ -21,7 +21,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       TextEditingController();
   List<String> tripNameList = <String>[];
   List<String> addMemberList = <String>[];
-  String  tripUserName = '';
+  String tripUserName = '';
   String tripUserMno = '';
 
   @override
@@ -100,13 +100,14 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                               children: [
                                 Flexible(
                                   child: ListView.builder(
-                                    itemCount: state
-                                        .tripMemberData.tripMemberDetails?.length,
+                                    itemCount: state.tripMemberData
+                                        .tripMemberDetails?.last.tripMemberName!.length,
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      final  TripMemberModel memberName = state
-                                          .tripMemberData.tripMemberDetails![index];
+                                      final  String? memberName = state
+                                          .tripMemberData
+                                          .tripMemberDetails?.last.tripMemberName![index];
                                       return Row(
                                         children: [
                                           Container(
@@ -115,7 +116,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(6.0),
-                                              child: Text(memberName.tripMemberName),
+                                              child: Text(memberName!),
                                             ),
                                           ),
                                         ],
@@ -126,7 +127,9 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                 IconButton(
                                   constraints: const BoxConstraints(),
                                   padding: const EdgeInsets.only(right: 8),
-                                  onPressed: () {},
+                                  onPressed: () {
+
+                                  },
                                   icon: const Icon(Icons.add),
                                 ),
                               ],
@@ -139,8 +142,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                 ],
               );
             } else if (state is GetSingleUser) {
-              tripUserName =state.userData.name;
-              tripUserMno =state.userData.mobileNo;
+              tripUserName = state.userData.name;
+              tripUserMno = state.userData.mobileNo;
               return Column(
                 children: [
                   Align(
@@ -151,7 +154,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                       child: ListView.builder(
                         itemCount: tripNameList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          final  String tripName = tripNameList[index];
+                          final String tripName = tripNameList[index];
                           return Card(
                             margin: const EdgeInsets.all(12),
                             elevation: 0,
@@ -200,7 +203,16 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                         constraints: const BoxConstraints(),
                                         padding:
                                             const EdgeInsets.only(right: 8),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute<List<String>>(
+                                              builder: (_) => AddMemberScreen(
+                                                tripName: tripNameList.last,
+                                                userMno: tripUserMno.substring(3),
+                                                userName: tripUserName,
+                                              ),
+                                          ),);
+                                        },
                                         icon: const Icon(Icons.add),
                                       ),
                                     ],
@@ -260,7 +272,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-             userName ?? 'Bhavika',
+              userName ?? 'Bhavika',
               textAlign: TextAlign.left,
               style: const TextStyle(
                   fontSize: 16, fontWeight: FontWeight.bold, height: 1),
@@ -349,7 +361,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       padding: const EdgeInsets.only(left: 14, right: 14, top: 20),
       child: TextField(
         controller: _createTripNameController,
-        autofillHints:  const [AutofillHints.name],
+        autofillHints: const [AutofillHints.name],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Trip Name'),
         keyboardType: TextInputType.text,
