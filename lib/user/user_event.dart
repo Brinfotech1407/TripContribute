@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:trip_contribute/models/profile_model.dart';
+import 'package:trip_contribute/models/trip_member_model.dart';
 
 abstract class UserEvent extends Equatable{
 const UserEvent();
@@ -32,12 +33,10 @@ class AddUser extends UserEvent{
 
 class AddMemberDetails extends UserEvent{
 
-  const AddMemberDetails({required this.tripName,required this.id,required this.tripMemberName,required this.tripMemberMno});
+  const AddMemberDetails({required this.tripName,required this.id,required this.tripMemberDetails,});
   final String tripName;
   final String id;
-  final  List<String> tripMemberName;
-  final  List<String> tripMemberMno;
-
+  final List<TripMemberModel> tripMemberDetails;
 
 }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:trip_contribute/models/trip_member_model.dart';
+import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_state.dart';
@@ -17,7 +19,7 @@ class CrateTripScreen extends StatefulWidget {
 class _CrateTripScreenState extends State<CrateTripScreen> {
   final TextEditingController _createTripNameController =
       TextEditingController();
-  List<String> selectedList = <String>[];
+  List<String> tripNameList = <String>[];
   List<String> addMemberList = <String>[];
   String? tripUserName;
   String tripUserMno = '';
@@ -50,7 +52,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
         child: BlocBuilder<UserBloc, UserState>(
           builder: (BuildContext context, UserState state) {
             if (state is GetTripMemberData) {
-              selectedList.add(state.tripMemberData.tripMemberName.first);
+              tripNameList.add(state.tripMemberData.tripName);
               return Column(
                 children: [
                   Align(
@@ -98,12 +100,12 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                 Flexible(
                                   child: ListView.builder(
                                     itemCount: state
-                                        .tripMemberData.tripMemberName.length,
+                                        .tripMemberData.tripMemberDetails?.length,
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder:
                                         (BuildContext context, int index) {
-                                      final String memberName = state
-                                          .tripMemberData.tripMemberName[index];
+                                      final  TripMemberModel memberName = state
+                                          .tripMemberData.tripMemberDetails![index];
                                       return Row(
                                         children: [
                                           Container(
@@ -112,7 +114,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(6.0),
-                                              child: Text(memberName),
+                                              child: Text(memberName.tripMemberName),
                                             ),
                                           ),
                                         ],
@@ -141,12 +143,12 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                   Align(
                       alignment: Alignment.centerLeft,
                       child: createTripHeaderView()),
-                  if (selectedList.isNotEmpty) ...<Widget>[
+                  if (tripNameList.isNotEmpty) ...<Widget>[
                     Expanded(
                       child: ListView.builder(
-                        itemCount: selectedList.length,
+                        itemCount: tripNameList.length,
                         itemBuilder: (BuildContext context, int index) {
-                          final String tripName = selectedList[index];
+                          final  String tripName = tripNameList[index];
                           return Card(
                             margin: const EdgeInsets.all(12),
                             elevation: 0,
@@ -213,7 +215,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
             } else if (state is UserLoading) {
               return _buildLoading();
             } else {
-              return const Text('data not fetched!');
+              return const Text('trip name data not fetched!');
             }
           },
         ),
@@ -308,13 +310,13 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                     onTap: () {
                       setState(() {
                         if (_createTripNameController.text.isNotEmpty) {
-                          selectedList.add(_createTripNameController.text);
+                          tripNameList.add(_createTripNameController.text);
                           Navigator.of(context)
                               .push(MaterialPageRoute<List<String>>(
                                   builder: (_) => AddMemberScreen(
-                                        tripName: selectedList.last,
+                                        tripName: tripNameList.last,
                                         userMno: tripUserMno,
-                                        userName: tripUserName ?? 'bhavika',
+                                        userName: tripUserName ?? 'Bhavika',
                                       )));
                           _createTripNameController.clear();
                         } else {

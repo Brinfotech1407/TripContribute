@@ -35,7 +35,7 @@ class DatabaseManager{
       String tripID,
       ) async {
     try {
-      _fireStore.collection('Members').doc(tripID).set(
+      _fireStore.collection('Trip').doc(tripID).set(
         data,
         SetOptions(
           merge: true,

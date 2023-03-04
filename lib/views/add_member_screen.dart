@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
@@ -26,6 +27,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   final TextEditingController _phoneController = TextEditingController();
   List<String> selectedMemberNameList = <String>[];
   List<String> selectedMemberMnoList = <String>[];
+ String memberName = '';
+ String memberMno = '';
 
   @override
   void initState() {
@@ -136,11 +139,12 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         alignment: Alignment.topRight,
         onPressed: () {
           if(selectedMemberMnoList.isNotEmpty && selectedMemberNameList.isNotEmpty) {
+           final TripMemberModel a = TripMemberModel(memberName, memberMno);
+        final List<TripMemberModel> arrMemberDetails = [a];
             context.read<UserBloc>().add(AddMemberDetails(
               tripName: widget.tripName,
               id: const Uuid().v4(),
-              tripMemberName: selectedMemberNameList,
-              tripMemberMno: selectedMemberMnoList,
+              tripMemberDetails: arrMemberDetails,
             ));
             Navigator.pop(context);
           }else{
@@ -221,6 +225,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                         setState(() {
                           selectedMemberMnoList.add(_phoneController.text);
                           selectedMemberNameList.add(_nameController.text);
+                          memberName = _nameController.text;
+                          memberMno = _phoneController.text;
                           _nameController.clear();
                           _phoneController.clear();
                           Navigator.pop(context);
