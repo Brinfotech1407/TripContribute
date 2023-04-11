@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/models/trip_model.dart';
@@ -32,7 +33,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     );
   }
 
-  Future<void> _onAddUserDetails(AddUser event, Emitter<UserState> emit) async {
+  Future<void> _onAddUserDetails(AddUser event, Emitter<UserState> emit,) async {
     await _preferenceService.init();
     await _preferenceService.setUserPhoneNo(event.mobileNo.substring(3));
     try {
@@ -42,7 +43,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
         mobileNo: event.mobileNo,
         id: _auth.currentUser?.uid,
       );
-      DatabaseManager().setUserData(userData.toJson(), event.mobileNo.substring(3));
+      DatabaseManager().setUserData(userData, event.mobileNo.substring(3),event.context);
     }on Exception catch (e) {
       log('addUser Exception $e');
     }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:trip_contribute/services/preference_service.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
@@ -78,17 +79,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           name: _nameController.text,
                           email: _emailController.text,
                           mobileNo: _phoneController.text,
+                      context: contexts,
                         ));
+                    Navigator.of(contexts).push(MaterialPageRoute<void>(
+                      builder: (_) {
+                        return  CrateTripScreen(userName:  _nameController.text,);
+                      },
+                    ));
 
-                    SchedulerBinding.instance.addPostFrameCallback((_) {
-                      Future.delayed(Duration.zero, () async {
-                        Navigator.of(contexts).push(MaterialPageRoute<void>(
-                          builder: (_) {
-                            return  CrateTripScreen(userName:  _nameController.text,);
-                          },
-                        ));
-                      });
-                    });
                   } else {
                     QuickAlert.show(
                       context: contexts,

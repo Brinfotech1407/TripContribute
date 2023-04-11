@@ -2,9 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/login/cubit/auth_cubit.dart';
+import 'package:trip_contribute/services/preference_service.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/views/auth_views/login_screen.dart';
+import 'package:trip_contribute/views/auth_views/profile_screen.dart';
 import 'package:trip_contribute/views/create_trip.dart';
 import 'package:trip_contribute/views/splash_screen.dart';
 
@@ -14,12 +16,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //when app load then firebase also initialize
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+   MyApp({super.key});
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -68,6 +69,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final PreferenceService _preferenceService = PreferenceService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +79,13 @@ class _MyHomePageState extends State<MyHomePage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const SplashScreen();
           } else {
-            return const LoginScreen();
+            var userLogin = _preferenceService.getUserType();
+            if(userLogin){
+              return SplashScreen();
+            }else{
+              return const LoginScreen();
+            }
+
           }
         },
       ),

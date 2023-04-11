@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/models/trip_member_model.dart';
 
@@ -23,10 +24,11 @@ class LoadUser extends UserEvent{
 
 class AddUser extends UserEvent{
 
-  const AddUser({required this.name,required this.email,required this.mobileNo});
+   AddUser({required this.name,required this.email,required this.mobileNo,required this.context,});
   final String name;
   final String email;
   final String mobileNo;
+  final BuildContext context;
 
 
 }

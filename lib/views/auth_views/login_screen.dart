@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
                       } else {
                         final String phoneNo = '+91' + _phoneController.text;
-                        BlocProvider.of<AuthCubit>(context).sendOTP(phoneNo);
+                        BlocProvider.of<AuthCubit>(context).sendOTP(phoneNo,context);
                       }
                       submitForm();
                     },

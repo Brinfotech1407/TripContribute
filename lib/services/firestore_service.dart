@@ -1,8 +1,11 @@
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/models/trip_model.dart';
+import 'package:trip_contribute/services/preference_service.dart';
 class DatabaseManager{
   FirebaseFirestore get _fireStore {
     final FirebaseFirestore fireStoreInstance =
@@ -11,17 +14,31 @@ class DatabaseManager{
     return fireStoreInstance;
   }
 
+  final PreferenceService _preferenceService = PreferenceService();
+  Future<String> setUserData(ProfileModel userData, String userID,BuildContext context) async {
 
-  Future<String> setUserData(Map<String, dynamic>? userData, String userID) async {
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot = await _fireStore
+        .collection('user')
+        .where('mobileNo', isEqualTo: userData.mobileNo)
+        .get();
 
-    if(userData !=null) {
+    if (querySnapshot.docs.isNotEmpty) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.warning,
+        title: '',
+        text: 'mobileNo already exists.',
+      );
+      throw "Email already exists";
+    } else {
       try {
         _fireStore.collection('user').doc(userID).set(
-          userData,
+          userData.toJson(),
           SetOptions(
             merge: true,
           ),
         );
+        await _preferenceService.setUserType(true);
         print('data added $userData');
       } on Exception catch (e) {
         log('Exception $e');

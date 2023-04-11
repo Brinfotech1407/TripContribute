@@ -5,6 +5,7 @@ class PreferenceService{
 
 
   static const String _userPhoneNo = 'USERPHONENO';
+  static const String userLogin = 'USER_LOGIN';
 
 
  Future<void> init() async {
@@ -23,4 +24,11 @@ class PreferenceService{
   String? getUserPhoneNo(String key) {
     return _preferences?.getString(key);
   }
+
+ Future<void> setUserType(bool userTypeValue) async {
+   await _preferences?.setBool(userLogin, userTypeValue);
+ }
+ bool getUserType() {
+   return _preferences?.getBool(userLogin) ?? false;
+ }
 }
