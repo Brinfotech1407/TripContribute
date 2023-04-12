@@ -146,9 +146,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
               id: const Uuid().v4(),
               tripMemberDetails: arrMemberDetails,
             ));
+           Navigator.pop(context);
            ScaffoldMessenger.of(context)
                .showSnackBar(const SnackBar(content: Text('members data is added!')));
-            Navigator.pop(context);
           }else{
             QuickAlert.show(
               context: context,

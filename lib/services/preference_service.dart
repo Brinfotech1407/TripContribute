@@ -4,7 +4,8 @@ class PreferenceService{
  static SharedPreferences? _preferences;
 
 
-  static const String _userPhoneNo = 'USERPHONENO';
+  static const String User_PhoneNo = 'USERPHONENO';
+  static const String User_Name = 'USERNAME';
   static const String userLogin = 'USER_LOGIN';
 
 
@@ -12,23 +13,21 @@ class PreferenceService{
    _preferences = await SharedPreferences.getInstance();
  }
 
-  Future<void> setUserPhoneNo(String userPhoneNo) async {
-    await _preferences?.setString(_userPhoneNo, userPhoneNo);
-
-  }
-
-  bool? checkValue()  {
- return _preferences?.containsKey(_userPhoneNo);
-}
-
-  String? getUserPhoneNo(String key) {
-    return _preferences?.getString(key);
-  }
-
- Future<void> setUserType(bool userTypeValue) async {
-   await _preferences?.setBool(userLogin, userTypeValue);
+ Future<bool>? setString(String key, String? value) {
+   return _preferences?.setString(key, value ?? '');
  }
- bool getUserType() {
-   return _preferences?.getBool(userLogin) ?? false;
+
+ String? getString(String key) {
+   return _preferences?.getString(key);
  }
+
+
+ Future<bool>? setBool(String key, bool? value) {
+   return _preferences?.setBool(key, value ?? false);
+ }
+
+ bool? getBool(String key) {
+   return _preferences?.getBool(key);
+ }
+
 }

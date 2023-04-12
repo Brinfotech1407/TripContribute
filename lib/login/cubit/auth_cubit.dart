@@ -34,7 +34,12 @@ class AuthCubit extends Cubit<AuthState> {
         .where('mobileNo', isEqualTo: _auth.currentUser?.phoneNumber)
         .get();
 
-    if (snapshot.docs.isEmpty) {
+if(snapshot.docs.isNotEmpty) {
+  final QueryDocumentSnapshot<Map<String, dynamic>> userDoc = snapshot.docs
+      .first;
+  ProfileModel user = ProfileModel.fromJson(userDoc.data());
+
+  /*  if (snapshot.docs.isEmpty) {
       return QuickAlert.show(
         context: context,
         type: QuickAlertType.warning,
@@ -42,34 +47,33 @@ class AuthCubit extends Cubit<AuthState> {
         text: 'No user found with the given email.',
       );
     }
-    final QueryDocumentSnapshot<Map<String, dynamic>> userDoc = snapshot.docs.first;
-    ProfileModel user = ProfileModel.fromJson(userDoc.data());
+     */
 
-    if (user.mobileNo == phoneNo) {
-      return QuickAlert.show(
-        context: context,
-        type: QuickAlertType.warning,
-        title: '',
-        text: 'Enter Mobile number is already store',
-      );
-    }else {
-      _auth.verifyPhoneNumber(
-        phoneNumber: phoneNo,
-        codeSent: (String verificationId, int? forceResendingToken) {
-          _verificationOTP = verificationId;
-          emit(AuthCodeSentState());
-        },
-        verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {
-          signInWithPhone(phoneAuthCredential);
-        },
-        verificationFailed: (FirebaseAuthException error) {
-          emit(AuthErrorState(error.message.toString()));
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          // _verificationOTP = verificationId;
-        },
-      );
-    }
+  if (user.mobileNo == phoneNo) {
+    return QuickAlert.show(
+      context: context,
+      type: QuickAlertType.warning,
+      title: '',
+      text: 'Enter Mobile number is already store',
+    );
+  }
+}
+    _auth.verifyPhoneNumber(
+      phoneNumber: phoneNo,
+      codeSent: (String verificationId, int? forceResendingToken) {
+        _verificationOTP = verificationId;
+        emit(AuthCodeSentState());
+      },
+      verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {
+        signInWithPhone(phoneAuthCredential);
+      },
+      verificationFailed: (FirebaseAuthException error) {
+        emit(AuthErrorState(error.message.toString()));
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        // _verificationOTP = verificationId;
+      },
+    );
   }
 
   void verifyOTP(String otp) async {

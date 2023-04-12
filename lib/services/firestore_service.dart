@@ -29,6 +29,7 @@ class DatabaseManager{
         title: '',
         text: 'mobileNo already exists.',
       );
+      await _preferenceService.setBool(PreferenceService.userLogin,false);
       throw "Email already exists";
     } else {
       try {
@@ -38,7 +39,10 @@ class DatabaseManager{
             merge: true,
           ),
         );
-        await _preferenceService.setUserType(true);
+        await _preferenceService.setString(PreferenceService.User_Name, userData.name);
+        await _preferenceService.setString(PreferenceService.User_PhoneNo ,userData.mobileNo.substring(3));
+        await _preferenceService.setBool(PreferenceService.userLogin,true);
+
         print('data added $userData');
       } on Exception catch (e) {
         log('Exception $e');

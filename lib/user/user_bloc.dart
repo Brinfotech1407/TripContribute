@@ -34,8 +34,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   }
 
   Future<void> _onAddUserDetails(AddUser event, Emitter<UserState> emit,) async {
-    await _preferenceService.init();
-    await _preferenceService.setUserPhoneNo(event.mobileNo.substring(3));
+
     try {
       final ProfileModel userData = ProfileModel(
         name: event.name,
@@ -61,7 +60,6 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   Future<void> _onGetTripMemberData(GetTripData event, Emitter<UserState> emit) async {
     await _preferenceService.init();
 
-    userMobileNumber = _preferenceService.getUserPhoneNo('USERPHONENO')?? '';
 
     print('_phoneNumber $userMobileNumber');
     emit(UserLoading());
@@ -77,7 +75,6 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   Future<void> _onGetUserData(GetUserData event, Emitter<UserState> emit) async {
    await _preferenceService.init();
 
-     userMobileNumber = _preferenceService.getUserPhoneNo('USERPHONENO')?? '';
 
     print('_phoneNumber $userMobileNumber');
     emit(UserLoading());

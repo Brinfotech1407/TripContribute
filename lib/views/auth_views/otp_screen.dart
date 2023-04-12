@@ -85,7 +85,7 @@ class _OTPScreenState extends State<OTPScreen> {
                 if (state is AuthLoggedInState) {
                   Navigator.popUntil(context, (Route route) => route.isFirst);
                   Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
-                      builder: (_) =>  ProfileScreen(currentUser: state.firebaseUser,)));
+                      builder: (_) =>  ProfileScreen(currentPhoneNumber: state.firebaseUser.phoneNumber??'',)));
                 } else if (state is AuthErrorState) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(state.error),

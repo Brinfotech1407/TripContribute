@@ -11,8 +11,8 @@ import 'package:trip_contribute/user/user_state.dart';
 import 'package:trip_contribute/views/create_trip.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key, required this.currentUser}) : super(key: key);
-  final User currentUser;
+  const ProfileScreen({Key? key, required this.currentPhoneNumber}) : super(key: key);
+  final String currentPhoneNumber;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -26,8 +26,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    if (widget.currentUser.phoneNumber != null) {
-      _phoneController.text = widget.currentUser.phoneNumber!;
+    if (widget.currentPhoneNumber != null) {
+      _phoneController.text = widget.currentPhoneNumber;
     }
     super.initState();
   }

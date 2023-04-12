@@ -79,11 +79,12 @@ class _MyHomePageState extends State<MyHomePage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const SplashScreen();
           } else {
-            var userLogin = _preferenceService.getUserType();
-            if(userLogin){
-              return SplashScreen();
-            }else{
+            bool? userLogin = _preferenceService.getBool(PreferenceService.userLogin);
+            String? userName = _preferenceService.getString(PreferenceService.User_Name);
+            if(userLogin == false){
               return const LoginScreen();
+            }else{
+              return CrateTripScreen(userName: userName,);
             }
 
           }

@@ -12,7 +12,7 @@ import 'package:trip_contribute/user/user_state.dart';
 import 'package:trip_contribute/views/add_member_screen.dart';
 
 class CrateTripScreen extends StatefulWidget {
-  const CrateTripScreen({Key? key, this.userName}) : super(key: key);
+   CrateTripScreen({Key? key, this.userName}) : super(key: key);
   final String? userName;
 
   @override
@@ -236,7 +236,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
             } else if (state is UserLoading) {
               return _buildLoading();
             } else {
-              return const Text('trip name data not fetched!');
+              return const Center(child: Text('no data found!'));
             }
           },
         ),
