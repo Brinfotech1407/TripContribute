@@ -333,13 +333,14 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                         if (_createTripNameController.text.isNotEmpty) {
                           tripNameList.add(_createTripNameController.text);
                           Navigator.of(context)
-                              .push(MaterialPageRoute<List<String>>(
+                              .pushReplacement(MaterialPageRoute<List<String>>(
                                   builder: (_) => AddMemberScreen(
                                         tripName: tripNameList.last,
                                         userMno: tripUserMno.substring(3),
                                         userName: tripUserName,
                                       )));
                           _createTripNameController.clear();
+                          //Navigator.pop(context);
                         } else {
                           QuickAlert.show(
                             context: context,
