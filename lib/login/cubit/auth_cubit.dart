@@ -2,10 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:trip_contribute/login/cubit/auth_state.dart';
-import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/services/preference_service.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -34,30 +31,6 @@ class AuthCubit extends Cubit<AuthState> {
         .where('mobileNo', isEqualTo: _auth.currentUser?.phoneNumber)
         .get();
 
-if(snapshot.docs.isNotEmpty) {
-  final QueryDocumentSnapshot<Map<String, dynamic>> userDoc = snapshot.docs
-      .first;
-  ProfileModel user = ProfileModel.fromJson(userDoc.data());
-
-  /*  if (snapshot.docs.isEmpty) {
-      return QuickAlert.show(
-        context: context,
-        type: QuickAlertType.warning,
-        title: '',
-        text: 'No user found with the given email.',
-      );
-    }
-     */
-
-  if (user.mobileNo == phoneNo) {
-    return QuickAlert.show(
-      context: context,
-      type: QuickAlertType.warning,
-      title: '',
-      text: 'Enter Mobile number is already store',
-    );
-  }
-}
     _auth.verifyPhoneNumber(
       phoneNumber: phoneNo,
       codeSent: (String verificationId, int? forceResendingToken) {

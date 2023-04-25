@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/models/profile_model.dart';
+import 'package:trip_contribute/models/trip_model.dart';
 
 abstract class UserState extends Equatable{
   const UserState();
@@ -18,25 +18,32 @@ class UserLoading extends UserState{
   List<Object> get props => [];
 }
 
-class UserLoaded extends UserState{
-   const UserLoaded({this.userData =  const <ProfileModel>[]});
+class UserLoaded extends UserState {
+  const UserLoaded({this.userData = const <ProfileModel>[]});
+
   final List<ProfileModel> userData;
 
   @override
-  List<Object> get props =>[userData];
-
+  List<Object> get props => [userData];
 }
 
-class GetSingleUser extends UserState{
+class UserCheckAlready extends UserState {
+  const UserCheckAlready({required this.isUSerAlreadyProfile});
 
+  final bool isUSerAlreadyProfile;
+
+  @override
+  List<Object> get props => [isUSerAlreadyProfile];
+}
+
+class GetSingleUser extends UserState {
   const GetSingleUser({required this.userData});
+
   final ProfileModel userData;
 
   @override
-  List<Object> get props =>[userData];
-
+  List<Object> get props => [userData];
 }
-
 
 class GetTripMemberData extends UserState{
 

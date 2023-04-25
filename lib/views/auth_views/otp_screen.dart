@@ -29,7 +29,7 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contexts) {
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -85,7 +85,11 @@ class _OTPScreenState extends State<OTPScreen> {
                 if (state is AuthLoggedInState) {
                   Navigator.popUntil(context, (Route route) => route.isFirst);
                   Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
-                      builder: (_) =>  ProfileScreen(currentPhoneNumber: state.firebaseUser.phoneNumber??'',)));
+                      builder: (_) => ProfileScreen(
+                            currentPhoneNumber:
+                                state.firebaseUser.phoneNumber ?? '',
+                            context: contexts,
+                          )));
                 } else if (state is AuthErrorState) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(state.error),

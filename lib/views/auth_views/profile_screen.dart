@@ -8,8 +8,11 @@ import 'package:trip_contribute/user/user_state.dart';
 import 'package:trip_contribute/views/create_trip.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key, required this.currentPhoneNumber}) : super(key: key);
+  const ProfileScreen(
+      {Key? key, required this.currentPhoneNumber, required this.context})
+      : super(key: key);
   final String currentPhoneNumber;
+  final BuildContext context;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -23,9 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    if (widget.currentPhoneNumber != null) {
-      _phoneController.text = widget.currentPhoneNumber;
-    }
+    _phoneController.text = widget.currentPhoneNumber;
     super.initState();
   }
 
@@ -33,70 +34,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext contexts) {
     return Scaffold(
       body: SafeArea(
-        child: BlocListener<UserBloc, UserState>(
-          listener: (BuildContext context, UserState state) {
-            if (state is UserLoaded) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Users added!')));
-            }
-          },
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 10, top: 30, bottom: 10),
-              child: Text(
-                'Profile',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    //color: Color.fromRGBO(37, 37, 37, 1),
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    height: 1),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 10, bottom: 30),
-              child: Text(
-                'First complete your profile details',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    // color: Color.fromRGBO(37, 37, 37, 1),
-                    fontSize: 14,
-                    height: 1),
-              ),
-            ),
-            textFiledViews(),
-            Align(
-              child: InkWell(
-                onTap: () {
-                  submitForm();
-                  if (_emailController.text.isNotEmpty &&
-                      _nameController.text.isNotEmpty &&
-                      _phoneController.text.isNotEmpty) {
-                    contexts.read<UserBloc>().add(AddUser(
-                          name: _nameController.text,
-                          email: _emailController.text,
-                          mobileNo: _phoneController.text,
-                      context: contexts,
-                        ));
-                    Navigator.of(contexts).push(MaterialPageRoute<void>(
-                      builder: (_) {
-                        return  CrateTripScreen(userName:  _nameController.text,);
-                      },
-                    ));
+        child: BlocProvider<UserBloc>(
+          create: (BuildContext context) => UserBloc()
+            ..add(UserProfileAlreadyStore(mobileNo: widget.currentPhoneNumber)),
+          child: BlocListener<UserBloc, UserState>(
+            listener: (BuildContext context, UserState state) {
+              if (state is UserLoaded) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Users added!')));
+              }
 
-                  } else {
-                    QuickAlert.show(
-                      context: contexts,
-                      type: QuickAlertType.info,
-                      text:
-                          'Please provide your name, email, and phone number before submitting.',
+              if (state is UserCheckAlready) {
+                Navigator.of(contexts).push(MaterialPageRoute<void>(
+                  builder: (_) {
+                    return CrateTripScreen(
+                      userName: _nameController.text,
                     );
-                  }
-                },
-                child: TripUtils().bottomButtonDesignView(buttonText: 'Submit'),
+                  },
+                ));
+              }
+            },
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              const Padding(
+                padding: EdgeInsets.only(left: 10, top: 30, bottom: 10),
+                child: Text(
+                  'Profile',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      //color: Color.fromRGBO(37, 37, 37, 1),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      height: 1),
+                ),
               ),
-            ),
-          ]),
+              const Padding(
+                padding: EdgeInsets.only(left: 10, bottom: 30),
+                child: Text(
+                  'First complete your profile details',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                      // color: Color.fromRGBO(37, 37, 37, 1),
+                      fontSize: 14,
+                      height: 1),
+                ),
+              ),
+              textFiledViews(),
+              Align(
+                child: InkWell(
+                  onTap: () {
+                    submitForm();
+                    if (_emailController.text.isNotEmpty &&
+                        _nameController.text.isNotEmpty &&
+                        _phoneController.text.isNotEmpty) {
+                      contexts.read<UserBloc>().add(AddUser(
+                            name: _nameController.text,
+                            email: _emailController.text,
+                            mobileNo: _phoneController.text,
+                            context: contexts,
+                          ));
+                      Navigator.of(contexts).push(MaterialPageRoute<void>(
+                        builder: (_) {
+                          return CrateTripScreen(
+                            userName: _nameController.text,
+                          );
+                        },
+                      ));
+                    } else {
+                      QuickAlert.show(
+                        context: contexts,
+                        type: QuickAlertType.info,
+                        text:
+                            'Please provide your name, email, and phone number before submitting.',
+                      );
+                    }
+                  },
+                  child:
+                      TripUtils().bottomButtonDesignView(buttonText: 'Submit'),
+                ),
+              ),
+            ]),
+          ),
         ),
       ),
     );

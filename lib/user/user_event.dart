@@ -3,59 +3,64 @@ import 'package:flutter/cupertino.dart';
 import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/models/trip_member_model.dart';
 
-abstract class UserEvent extends Equatable{
-const UserEvent();
+abstract class UserEvent extends Equatable {
+  const UserEvent();
 
-@override
-List<Object> get props => [];
+  @override
+  List<Object> get props => [];
 }
 
-
-class LoadUser extends UserEvent{
-   const LoadUser(this.userData);
+class LoadUser extends UserEvent {
+  const LoadUser(this.userData);
 
   final List<ProfileModel> userData;
 
-
   @override
   List<Object> get props => [userData];
-
 }
 
-class AddUser extends UserEvent{
+class AddUser extends UserEvent {
+  const AddUser({
+    required this.name,
+    required this.email,
+    required this.mobileNo,
+    required this.context,
+  });
 
-   AddUser({required this.name,required this.email,required this.mobileNo,required this.context,});
   final String name;
   final String email;
   final String mobileNo;
   final BuildContext context;
-
-
 }
 
-class AddMemberDetails extends UserEvent{
+class UserProfileAlreadyStore extends UserEvent {
+  const UserProfileAlreadyStore({required this.mobileNo});
 
-  const AddMemberDetails({required this.tripName,required this.id,required this.tripMemberDetails,});
+  final String mobileNo;
+}
+
+class AddMemberDetails extends UserEvent {
+  const AddMemberDetails({
+    required this.tripName,
+    required this.id,
+    required this.tripMemberDetails,
+  });
+
   final String tripName;
   final String id;
   final List<TripMemberModel> tripMemberDetails;
-
 }
 
-class GetUserData extends UserEvent{
-  const  GetUserData();
+class GetUserData extends UserEvent {
+  const GetUserData();
 
   @override
   List<Object> get props => [];
 }
 
-
-class GetTripData extends UserEvent{
-  const  GetTripData();
+class GetTripData extends UserEvent {
+  const GetTripData();
 
   @override
   List<Object> get props => [];
 }
-
-
-

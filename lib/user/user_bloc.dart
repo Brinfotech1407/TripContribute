@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/models/trip_model.dart';
@@ -15,6 +14,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   UserBloc() : super(UserLoading()) {
     on<LoadUser>(_onLoadUser);
     on<AddUser>(_onAddUserDetails);
+    on<UserProfileAlreadyStore>(_onCheckUserAlready);
     on<AddMemberDetails>(_onAddMemberDetails);
     on<GetTripData>(_onGetTripMemberData);
     on<GetUserData>(_onGetUserData);
@@ -42,17 +42,33 @@ class UserBloc extends Bloc<UserEvent,UserState>{
         mobileNo: event.mobileNo,
         id: _auth.currentUser?.uid,
       );
-      DatabaseManager().setUserData(userData, event.mobileNo.substring(3),event.context);
-    }on Exception catch (e) {
+      DatabaseManager()
+          .setUserData(userData, event.mobileNo.substring(3), event.context);
+    } on Exception catch (e) {
       log('addUser Exception $e');
     }
   }
 
-  Future<void> _onAddMemberDetails(AddMemberDetails event, Emitter<UserState> emit,) async {
+  Future<bool> _onCheckUserAlready(
+    UserProfileAlreadyStore event,
+    Emitter<UserState> emit,
+  ) async {
+    final String userData = event.mobileNo;
+    bool userAlready =
+        await DatabaseManager().userProfileAlreadyStore(userData);
+    emit(UserCheckAlready(isUSerAlreadyProfile: userAlready));
+    return userAlready;
+  }
+
+  Future<void> _onAddMemberDetails(
+    AddMemberDetails event,
+    Emitter<UserState> emit,
+  ) async {
     try {
-      final TripModel memberData = TripModel(event.tripName, event.id,event.tripMemberDetails);
+      final TripModel memberData =
+          TripModel(event.tripName, event.id, event.tripMemberDetails);
       DatabaseManager().setMembersData(memberData.toJson(), event.id);
-    }on Exception catch (e) {
+    } on Exception catch (e) {
       log('addUser Exception $e');
     }
   }
