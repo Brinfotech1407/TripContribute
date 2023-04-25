@@ -54,7 +54,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     Emitter<UserState> emit,
   ) async {
     final String userData = event.mobileNo;
-    bool userAlready =
+    final bool userAlready =
         await DatabaseManager().userProfileAlreadyStore(userData);
     emit(UserCheckAlready(isUSerAlreadyProfile: userAlready));
     return userAlready;
@@ -76,8 +76,6 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   Future<void> _onGetTripMemberData(GetTripData event, Emitter<UserState> emit) async {
     await _preferenceService.init();
 
-
-    print('_phoneNumber $userMobileNumber');
     emit(UserLoading());
     await Future<void>.delayed(const Duration(seconds: 1));
     try {
@@ -92,7 +90,6 @@ class UserBloc extends Bloc<UserEvent,UserState>{
    await _preferenceService.init();
 
 
-    print('_phoneNumber $userMobileNumber');
     emit(UserLoading());
     await Future<void>.delayed(const Duration(seconds: 1));
     try {

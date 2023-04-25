@@ -42,7 +42,6 @@ class DatabaseManager{
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
-      await _preferenceService.setBool(PreferenceService.userLogin, false);
       return true;
     }
     return false;
