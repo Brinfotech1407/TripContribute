@@ -1,4 +1,5 @@
 import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:quickalert/models/quickalert_type.dart';
@@ -30,7 +31,6 @@ class DatabaseManager{
         text: 'mobileNo already exists.',
       );
       await _preferenceService.setBool(PreferenceService.userLogin,false);
-      throw "Email already exists";
     } else {
       try {
         _fireStore.collection('user').doc(userID).set(
