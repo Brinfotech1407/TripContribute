@@ -3,14 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:trip_contribute/login/cubit/auth_state.dart';
+import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/services/preference_service.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitialState()) {
     final User? currentUser = _auth.currentUser;
     final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-    final PreferenceService _preferenceService = PreferenceService();
-
+    preferenceService = PreferenceService();
+    preferenceService.init();
     if (currentUser != null) {
       //profile view set then put the condition
       emit(AuthLoggedInState(currentUser));
@@ -19,17 +20,15 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  late PreferenceService preferenceService;
+
 
   String? _verificationOTP;
 
   void sendOTP(String phoneNo, BuildContext context) async {
     emit(AuthLoadingState());
-    final QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-        .instance
-        .collection('user')
-        .where('mobileNo', isEqualTo: _auth.currentUser?.phoneNumber)
-        .get();
 
     _auth.verifyPhoneNumber(
       phoneNumber: phoneNo,
@@ -61,6 +60,33 @@ class AuthCubit extends Cubit<AuthState> {
           await _auth.signInWithCredential(phoneAuthCredential);
 
       if (userCredential.user != null) {
+        print('userCredential ${userCredential.user}');
+
+        final QuerySnapshot<
+            Map<String, dynamic>> snapshot = await FirebaseFirestore
+            .instance
+            .collection('user')
+            .where('mobileNo', isEqualTo: _auth.currentUser?.phoneNumber)
+            .get();
+
+        final List<
+            QueryDocumentSnapshot<Map<String, dynamic>>> userDocs = snapshot
+            .docs;
+
+        if (snapshot.docs.isNotEmpty) {
+          final ProfileModel user =
+          ProfileModel.fromJson(userDocs.first.data());
+
+          print('user Data ${user.name}');
+
+          await preferenceService.setString(
+              PreferenceService.User_Name, user.name);
+          await preferenceService.setString(
+              PreferenceService.User_PhoneNo, user.mobileNo);
+          await preferenceService.setString(
+              PreferenceService.User_Email, user.email);
+        }
+
         emit(AuthLoggedInState(userCredential.user!));
       }
     } on FirebaseAuthException catch (ex) {

@@ -4,9 +4,10 @@ class PreferenceService{
  static SharedPreferences? _preferences;
 
 
-  static const String User_PhoneNo = 'USERPHONENO';
-  static const String User_Name = 'USERNAME';
-  static const String userLogin = 'USER_LOGIN';
+ static const String User_PhoneNo = 'USERPHONENO';
+ static const String User_Name = 'USERNAME';
+ static const String User_Email = 'USEREEMAIL';
+ static const String userLogin = 'USER_LOGIN';
 
 
  Future<void> init() async {

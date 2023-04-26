@@ -36,6 +36,15 @@ class UserCheckAlready extends UserState {
   List<Object> get props => [isUSerAlreadyProfile];
 }
 
+class PreferenceServiceInit extends UserState {
+  PreferenceServiceInit({required this.preferenceService});
+
+  Future<void> preferenceService;
+
+  @override
+  List<Object> get props => [preferenceService];
+}
+
 class GetSingleUser extends UserState {
   const GetSingleUser({required this.userData});
 

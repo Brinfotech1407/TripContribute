@@ -15,6 +15,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     on<LoadUser>(_onLoadUser);
     on<AddUser>(_onAddUserDetails);
     on<UserProfileAlreadyStore>(_onCheckUserAlready);
+    on<UserPreferenceServiceInit>(_onPreferenceServiceInit);
     on<AddMemberDetails>(_onAddMemberDetails);
     on<GetTripData>(_onGetTripMemberData);
     on<GetUserData>(_onGetUserData);
@@ -22,10 +23,10 @@ class UserBloc extends Bloc<UserEvent,UserState>{
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-   String userMobileNumber = '';
+  String userMobileNumber = '';
 
   /// Store local key-value pair data.
-  final PreferenceService _preferenceService = PreferenceService();
+  final PreferenceService preferenceService = PreferenceService();
 
   void _onLoadUser(LoadUser event, Emitter<UserState> emit) {
     emit(
@@ -33,8 +34,10 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     );
   }
 
-  Future<void> _onAddUserDetails(AddUser event, Emitter<UserState> emit,) async {
-
+  Future<void> _onAddUserDetails(
+    AddUser event,
+    Emitter<UserState> emit,
+  ) async {
     try {
       final ProfileModel userData = ProfileModel(
         name: event.name,
@@ -49,24 +52,30 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     }
   }
 
-  Future<bool> _onCheckUserAlready(
-    UserProfileAlreadyStore event,
-    Emitter<UserState> emit,
-  ) async {
+  Future<bool> _onCheckUserAlready(UserProfileAlreadyStore event,
+      Emitter<UserState> emit,) async {
     final String userData = event.mobileNo;
     final bool userAlready =
-        await DatabaseManager().userProfileAlreadyStore(userData);
+    await DatabaseManager().userProfileAlreadyStore(userData);
     emit(UserCheckAlready(isUSerAlreadyProfile: userAlready));
     return userAlready;
   }
 
-  Future<void> _onAddMemberDetails(
-    AddMemberDetails event,
-    Emitter<UserState> emit,
-  ) async {
+  Future<void> _onPreferenceServiceInit(UserPreferenceServiceInit event,
+      Emitter<UserState> emit) async {
+    await preferenceService.init();
+
+    Future<void> preService = preferenceService.init();
+
+    emit(PreferenceServiceInit(preferenceService: preService));
+  }
+
+
+  Future<void> _onAddMemberDetails(AddMemberDetails event,
+      Emitter<UserState> emit,) async {
     try {
       final TripModel memberData =
-          TripModel(event.tripName, event.id, event.tripMemberDetails);
+      TripModel(event.tripName, event.id, event.tripMemberDetails);
       DatabaseManager().setMembersData(memberData.toJson(), event.id);
     } on Exception catch (e) {
       log('addUser Exception $e');
@@ -74,7 +83,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   }
 
   Future<void> _onGetTripMemberData(GetTripData event, Emitter<UserState> emit) async {
-    await _preferenceService.init();
+    //await preferenceService.init();
 
     emit(UserLoading());
     await Future<void>.delayed(const Duration(seconds: 1));
@@ -87,8 +96,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   }
 
   Future<void> _onGetUserData(GetUserData event, Emitter<UserState> emit) async {
-   await _preferenceService.init();
-
+    //await preferenceService.init();
 
     emit(UserLoading());
     await Future<void>.delayed(const Duration(seconds: 1));

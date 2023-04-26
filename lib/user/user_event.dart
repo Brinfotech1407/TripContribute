@@ -39,6 +39,10 @@ class UserProfileAlreadyStore extends UserEvent {
   final String mobileNo;
 }
 
+class UserPreferenceServiceInit extends UserEvent {
+  const UserPreferenceServiceInit();
+}
+
 class AddMemberDetails extends UserEvent {
   const AddMemberDetails({
     required this.tripName,
