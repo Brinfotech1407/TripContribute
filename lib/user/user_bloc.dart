@@ -11,13 +11,14 @@ import 'package:trip_contribute/user/user_state.dart';
 
 
 class UserBloc extends Bloc<UserEvent,UserState>{
-  UserBloc() : super(UserLoading()) {
+  UserBloc() : super(TripLoading()) {
     on<LoadUser>(_onLoadUser);
     on<AddUser>(_onAddUserDetails);
     on<UserProfileAlreadyStore>(_onCheckUserAlready);
     on<UserPreferenceServiceInit>(_onPreferenceServiceInit);
     on<AddMemberDetails>(_onAddMemberDetails);
     on<GetTripData>(_onGetTripMemberData);
+    on<FetchData>(_onGetTripData);
     on<GetUserData>(_onGetUserData);
   }
 
@@ -85,26 +86,41 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   Future<void> _onGetTripMemberData(GetTripData event, Emitter<UserState> emit) async {
     //await preferenceService.init();
 
-    emit(UserLoading());
+    emit(TripLoading());
     await Future<void>.delayed(const Duration(seconds: 1));
     try {
-      final TripModel? tripMemberData = await DatabaseManager().getSingleTripMemberList(userMobileNumber);
-      emit(GetTripMemberData(tripMemberData:tripMemberData!));
+      final TripModel? tripMemberData =
+          await DatabaseManager().getSingleTripMemberList(userMobileNumber);
+      emit(GetTripMemberData(tripMemberData: tripMemberData!));
     } catch (exception) {
-      emit( ProfileError(exception.toString()));
+      emit(ProfileError(exception.toString()));
     }
   }
 
-  Future<void> _onGetUserData(GetUserData event, Emitter<UserState> emit) async {
-    //await preferenceService.init();
-
-    emit(UserLoading());
+  Future<void> _onGetTripData(FetchData event, Emitter<UserState> emit) async {
+    emit(TripLoading());
     await Future<void>.delayed(const Duration(seconds: 1));
     try {
-      final ProfileModel? profileData = await DatabaseManager().getSingleUserList(userMobileNumber);
-      emit(GetSingleUser(userData:profileData!));
+      final List<TripModel> tripData =
+          await DatabaseManager().listenTripsData(userMobileNumber);
+      emit(FetchTripDataLoaded(tripData: tripData));
     } catch (exception) {
-      emit( ProfileError(exception.toString()));
+      emit(ProfileError(exception.toString()));
+    }
+  }
+
+  Future<void> _onGetUserData(
+      GetUserData event, Emitter<UserState> emit) async {
+    //await preferenceService.init();
+
+    emit(TripLoading());
+    await Future<void>.delayed(const Duration(seconds: 1));
+    try {
+      final ProfileModel? profileData =
+          await DatabaseManager().getSingleUserList(userMobileNumber);
+      emit(GetSingleUser(userData: profileData!));
+    } catch (exception) {
+      emit(ProfileError(exception.toString()));
     }
   }
 

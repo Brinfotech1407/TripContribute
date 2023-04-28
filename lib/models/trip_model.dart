@@ -17,8 +17,8 @@ class TripModel {
 
   String tripName;
   String tripId;
-  TripMemberModel tripMemberDetails;
-  TripGridColumn columnNames;
+  List<TripMemberModel>? tripMemberDetails;
+  List<TripGridColumn>? columnNames;
 
   @override
   List<Object?> get props => [

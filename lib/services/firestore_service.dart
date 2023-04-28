@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:trip_contribute/models/profile_model.dart';
 import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/services/preference_service.dart';
@@ -92,9 +93,54 @@ class DatabaseManager{
       } catch (e) {
         throw Exception(e.toString());
       }
-    }else{
+    } else {
       return null;
     }
   }
 
+  Future<List<TripModel>> listenTripsData(String userID) async {
+    var proList = <TripModel>[];
+    try {
+      final pro = await _fireStore.collection('Trip').get();
+
+      pro.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
+        return proList.add(TripModel.fromJson(element.data()));
+      });
+      return proList;
+    } on FirebaseException catch (e) {
+      if (kDebugMode) {
+        print("Failed with error '${e.code}': ${e.message}");
+      }
+      return proList;
+    } catch (e) {
+      throw Exception(e);
+    }
+
+    /*  _fireStore
+        .collection('Trip')
+        .where('tripMemberDetails', arrayContains: userID)
+        .snapshots()
+        .listen(
+          (QuerySnapshot<Map<String, dynamic>> event) {
+        final List<TripModel> arr = event.docs
+            .map((QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+            TripModel.fromJson(e.data()))
+            .toList();
+        print('listenNotes :: ${arr.toList()}');
+      },
+    );
+
+    return _fireStore
+        .collection('Trip')
+        .where('tripMemberDetails', arrayContains: userID)
+        .snapshots()
+        .map(
+          (QuerySnapshot<Map<String, dynamic>> event) {
+        return event.docs
+            .map((QueryDocumentSnapshot<Map<String, dynamic>> e) =>
+            TripModel.fromJson(e.data()))
+            .toList();
+      },
+    );*/
+  }
 }

@@ -13,7 +13,7 @@ abstract class UserState extends Equatable{
 
 class UserInitial extends UserState {}
 
-class UserLoading extends UserState{
+class TripLoading extends UserState {
   @override
   List<Object> get props => [];
 }
@@ -54,18 +54,26 @@ class GetSingleUser extends UserState {
   List<Object> get props => [userData];
 }
 
-class GetTripMemberData extends UserState{
-
+class GetTripMemberData extends UserState {
   const GetTripMemberData({required this.tripMemberData});
+
   final TripModel tripMemberData;
 
   @override
-  List<Object> get props =>[tripMemberData];
+  List<Object> get props => [tripMemberData];
+}
 
+class FetchTripDataLoaded extends UserState {
+  const FetchTripDataLoaded({required this.tripData});
+
+  final List<TripModel> tripData;
+
+  @override
+  List<Object> get props => [tripData];
 }
 
 class ProfileError extends UserState {
   const ProfileError(this.message);
+
   final String message;
 }
-

@@ -54,12 +54,19 @@ class AddMemberDetails extends UserEvent {
 
   final String tripName;
   final String id;
-  final TripMemberModel? tripMemberDetails;
-  final TripGridColumn? tripGridColumnDetails;
+  final List<TripMemberModel>? tripMemberDetails;
+  final List<TripGridColumn>? tripGridColumnDetails;
 }
 
 class GetUserData extends UserEvent {
   const GetUserData();
+
+  @override
+  List<Object> get props => [];
+}
+
+class FetchData extends UserEvent {
+  const FetchData();
 
   @override
   List<Object> get props => [];

@@ -31,6 +31,7 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) => UserBloc()
             ..add(const GetTripData())
             ..add(const GetUserData())
+            ..add(const FetchData())
             ..add(const UserPreferenceServiceInit()),
         ),
         BlocProvider<AuthCubit>(
