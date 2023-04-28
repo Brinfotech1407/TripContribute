@@ -3,32 +3,33 @@ import 'package:json_annotation/json_annotation.dart';
 /// This allows the `User` class to access private members in
 /// the generated file. The value for this is *.g.dart, where
 /// the star denotes the source file name.
-part 'trip_member_model.g.dart';
-
+part 'column_name_model.g.dart';
 
 /// An annotation for the code generator to know that this class needs the
 /// JSON serialization logic to be generated.
 @JsonSerializable()
-class TripMemberModel {
-  TripMemberModel(this.tripMemberName, this.tripMemberMno);
+class ColumnNameModel {
+  ColumnNameModel(this.tripName, this.description, this.amount);
 
-  String? tripMemberName;
-  String? tripMemberMno;
+  String? tripName;
+  String? description;
+  String? amount;
 
   @override
-  List<Object?> get props =>
-      [
-        tripMemberName,
-        tripMemberMno,
+  List<Object?> get props => [
+        tripName,
+        description,
+        amount,
       ];
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.
-  factory TripMemberModel.fromJson(Map<String, dynamic> json) => _$TripMemberModelFromJson(json);
+  factory ColumnNameModel.fromJson(Map<String, dynamic> json) =>
+      _$ColumnNameModelFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated
   /// helper method `_$UserToJson`.
-  Map<String, dynamic> toJson() => _$TripMemberModelToJson(this);
+  Map<String, dynamic> toJson() => _$ColumnNameModelToJson(this);
 }

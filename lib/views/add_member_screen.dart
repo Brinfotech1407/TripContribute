@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
-import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/tripUtils.dart';
-import 'package:trip_contribute/user/user_bloc.dart';
-import 'package:trip_contribute/user/user_event.dart';
-import 'package:uuid/uuid.dart';
 
 class AddMemberScreen extends StatefulWidget {
   const AddMemberScreen(
@@ -139,17 +134,17 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         alignment: Alignment.topRight,
         onPressed: () {
           if(memberName.isNotEmpty && memberMno.isNotEmpty) {
-           final TripMemberModel memberDetails = TripMemberModel(selectedMemberNameList, selectedMemberMnoList);
-        final List<TripMemberModel> arrMemberDetails = [memberDetails];
-            context.read<UserBloc>().add(AddMemberDetails(
+            // final TripMemberModel memberDetails = TripMemberModel(selectedMemberNameList, selectedMemberMnoList);
+            //  final List<TripMemberModel> arrMemberDetails = [memberDetails];
+            /* context.read<UserBloc>().add(AddMemberDetails(
               tripName: widget.tripName,
               id: const Uuid().v4(),
               tripMemberDetails: arrMemberDetails,
-            ));
-           Navigator.pop(context);
-           ScaffoldMessenger.of(context)
-               .showSnackBar(const SnackBar(content: Text('members data is added!')));
-          }else{
+            ));*/
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('members data is added!')));
+          } else{
             QuickAlert.show(
               context: context,
               type: QuickAlertType.warning,

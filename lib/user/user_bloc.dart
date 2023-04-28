@@ -74,8 +74,8 @@ class UserBloc extends Bloc<UserEvent,UserState>{
   Future<void> _onAddMemberDetails(AddMemberDetails event,
       Emitter<UserState> emit,) async {
     try {
-      final TripModel memberData =
-      TripModel(event.tripName, event.id, event.tripMemberDetails);
+      final TripModel memberData = TripModel(event.tripName, event.id,
+          event.tripMemberDetails!, event.tripGridColumnDetails!);
       DatabaseManager().setMembersData(memberData.toJson(), event.id);
     } on Exception catch (e) {
       log('addUser Exception $e');

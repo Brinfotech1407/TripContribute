@@ -9,14 +9,15 @@ part of 'trip_model.dart';
 TripModel _$TripModelFromJson(Map<String, dynamic> json) => TripModel(
       json['tripName'] as String,
       json['tripId'] as String,
-      (json['tripMemberDetails'] as List<dynamic>?)
-          ?.map((e) => TripMemberModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      TripMemberModel.fromJson(
+          json['tripMemberDetails'] as Map<String, dynamic>),
+      TripGridColumn.fromJson(json['columnNames'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$TripModelToJson(TripModel instance) => <String, dynamic>{
+Map<String, dynamic> _$TripModelToJson(TripModel instance) =>
+    <String, dynamic>{
       'tripName': instance.tripName,
       'tripId': instance.tripId,
-      'tripMemberDetails':
-          instance.tripMemberDetails?.map((e) => e.toJson()).toList(),
+      'tripMemberDetails': instance.tripMemberDetails.toJson(),
+      'columnNames': instance.columnNames.toJson(),
     };

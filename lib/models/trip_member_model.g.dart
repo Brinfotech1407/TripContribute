@@ -8,12 +8,8 @@ part of 'trip_member_model.dart';
 
 TripMemberModel _$TripMemberModelFromJson(Map<String, dynamic> json) =>
     TripMemberModel(
-      (json['tripMemberName'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      (json['tripMemberMno'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      json['tripMemberName'] as String?,
+      json['tripMemberMno'] as String?,
     );
 
 Map<String, dynamic> _$TripMemberModelToJson(TripMemberModel instance) =>

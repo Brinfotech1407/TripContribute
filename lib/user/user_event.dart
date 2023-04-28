@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:trip_contribute/models/profile_model.dart';
+import 'package:trip_contribute/models/trip_grid_data.dart';
 import 'package:trip_contribute/models/trip_member_model.dart';
 
 abstract class UserEvent extends Equatable {
@@ -48,11 +49,13 @@ class AddMemberDetails extends UserEvent {
     required this.tripName,
     required this.id,
     required this.tripMemberDetails,
+    required this.tripGridColumnDetails,
   });
 
   final String tripName;
   final String id;
-  final List<TripMemberModel> tripMemberDetails;
+  final TripMemberModel? tripMemberDetails;
+  final TripGridColumn? tripGridColumnDetails;
 }
 
 class GetUserData extends UserEvent {

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:trip_contribute/models/trip_grid_data.dart';
 import 'package:trip_contribute/models/trip_member_model.dart';
 
 /// This allows the `User` class to access private members in
@@ -11,19 +12,21 @@ part 'trip_model.g.dart';
 /// JSON serialization logic to be generated.
 @JsonSerializable(explicitToJson: true)
 class TripModel {
-  TripModel(this.tripName,this.tripId,this.tripMemberDetails);
+  TripModel(
+      this.tripName, this.tripId, this.tripMemberDetails, this.columnNames);
 
   String tripName;
   String tripId;
-  List<TripMemberModel>? tripMemberDetails;
-
+  TripMemberModel tripMemberDetails;
+  TripGridColumn columnNames;
 
   @override
   List<Object?> get props => [
-    tripName,
-    tripId,
-    tripMemberDetails,
-  ];
+        tripName,
+        tripId,
+        tripMemberDetails,
+        columnNames,
+      ];
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.

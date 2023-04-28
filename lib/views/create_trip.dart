@@ -3,15 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:trip_contribute/models/trip_grid_data.dart';
+import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/services/preference_service.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/user/user_state.dart';
 import 'package:trip_contribute/views/add_member_screen.dart';
+import 'package:uuid/uuid.dart';
 
 class CrateTripScreen extends StatefulWidget {
-   CrateTripScreen({Key? key, this.userName}) : super(key: key);
+  CrateTripScreen({Key? key, this.userName}) : super(key: key);
   final String? userName;
 
   @override
@@ -116,14 +119,9 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Flexible(
+                                  /* Flexible(
                                     child: ListView.builder(
-                                      itemCount: state
-                                          .tripMemberData
-                                          .tripMemberDetails
-                                          ?.last
-                                          .tripMemberName!
-                                          .length,
+                                      itemCount:
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder:
                                           (BuildContext context, int index) {
@@ -147,7 +145,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                         );
                                       },
                                     ),
-                                  ),
+                                  ),*/
                                   IconButton(
                                     constraints: const BoxConstraints(),
                                     padding: const EdgeInsets.only(right: 8),
@@ -254,7 +252,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
               } else if (state is UserLoading) {
                 return _buildLoading();
               } else {
-                return const Center(child: Text('no data found!'));
+                return const Center(child: Text('no trip(s) found!'));
               }
             },
           ),
@@ -352,6 +350,20 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                         if (_createTripNameController.text.isNotEmpty) {
                           tripNameList.add(_createTripNameController.text);
                           print('tripUserName $tripUserName');
+                          final TripGridColumn itemToInsert = TripGridColumn(
+                            name: '',
+                            columnType: 'Free Text',
+                            isRequired: true,
+                            showAutoSuggestion: true,
+                          );
+
+                          context.read<UserBloc>().add(AddMemberDetails(
+                                tripName: _createTripNameController.text,
+                                id: const Uuid().v4(),
+                                tripMemberDetails:
+                                    TripMemberModel('908776677', 'abc'),
+                                tripGridColumnDetails: itemToInsert,
+                              ));
 
                           Navigator.of(context)
                               .pushReplacement(MaterialPageRoute<List<String>>(
