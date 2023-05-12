@@ -101,8 +101,8 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     emit(TripLoading());
     await Future<void>.delayed(const Duration(seconds: 1));
     try {
-      final List<TripModel> tripData =
-          await DatabaseManager().listenTripsData(userMobileNumber);
+      final Stream<List<TripModel>> tripData =
+      DatabaseManager().listenTripsData(userID: userMobileNumber);
       emit(FetchTripDataLoaded(tripData: tripData));
     } catch (exception) {
       emit(ProfileError(exception.toString()));

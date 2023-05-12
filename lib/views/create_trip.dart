@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:trip_contribute/models/trip_grid_data.dart';
 import 'package:trip_contribute/models/trip_member_model.dart';
+import 'package:trip_contribute/models/trip_model.dart';
+import 'package:trip_contribute/services/firestore_service.dart';
 import 'package:trip_contribute/services/preference_service.dart';
 import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
@@ -69,84 +71,83 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
           },
           child: BlocBuilder<UserBloc, UserState>(
             builder: (BuildContext context, UserState state) {
-              if (state is FetchTripDataLoaded) {
-                var data = state.tripData;
-                return Column(
-                  children: [
-                    createTripHeaderView(),
-                    Card(
-                      margin: const EdgeInsets.all(12),
-                      elevation: 0,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(8)),
-                          side: BorderSide(
-                            color: Colors.grey,
-                          )),
-                      child: Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Column(
+              // if (state is FetchTripDataLoaded) {
+              return Padding(
+                padding: const EdgeInsets.all(8),
+                child: StreamBuilder<List<TripModel>>(
+                    builder: (BuildContext context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Container(
-                              height: 60,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    child: ListView.builder(
-                                      itemCount: state.tripData.length,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        final TripMemberModel memberName = data
-                                            .first.tripMemberDetails![index];
-                                        return Row(
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.all(8),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(6.0),
-                                                child:
-                                                    Text(data.first.tripName),
+                            createTripHeaderView(
+                                userName: snapshot.data!.first
+                                    .tripMemberDetails!.first.tripMemberName),
+                            Flexible(
+                              child: ListView.builder(
+                                itemCount: snapshot.data!.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final TripModel tripData =
+                                      snapshot.data![index];
+                                  return Card(
+                                    margin: const EdgeInsets.all(12),
+                                    elevation: 0,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8)),
+                                        side: BorderSide(
+                                          color: Colors.grey,
+                                        )),
+                                    child: Container(
+                                      margin: const EdgeInsets.all(10),
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(tripData.tripName,
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 17)),
+                                          Row(
+                                            children: [
+                                              Text(tripData
+                                                  .tripMemberDetails![index]
+                                                  .tripMemberName!),
+                                              IconButton(
+                                                constraints:
+                                                    const BoxConstraints(),
+                                                padding: const EdgeInsets.only(
+                                                    right: 8),
+                                                onPressed: () {},
+                                                icon: const Icon(Icons.add),
                                               ),
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.all(8),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(6.0),
-                                                child: Text(
-                                                    memberName.tripMemberName ??
-                                                        'hi'),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  IconButton(
-                                    constraints: const BoxConstraints(),
-                                    padding: const EdgeInsets.only(right: 8),
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.add),
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              } else if (state is TripLoading) {
+                        );
+                      } else if (snapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return _buildLoading();
+                      } else {
+                        return const Center(child: Text('no trip(s) found!'));
+                      }
+                    },
+                    stream: DatabaseManager().listenTripsData(userID: '11')),
+              );
+              /* } else if (state is TripLoading) {
                 return _buildLoading();
               } else {
                 return const Center(child: Text('no trip(s) found!'));
-              }
+              }*/
             },
           ),
         ),
