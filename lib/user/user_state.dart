@@ -63,8 +63,17 @@ class GetTripMemberData extends UserState {
   List<Object> get props => [tripMemberData];
 }
 
+class GetTripUpdatedMemberData extends UserState {
+  const GetTripUpdatedMemberData({required this.tripMemberData});
+
+  final Future<void> tripMemberData;
+
+  @override
+  List<Object> get props => [tripMemberData];
+}
+
 class FetchTripDataLoaded extends UserState {
-   const FetchTripDataLoaded({required this.tripData});
+  const FetchTripDataLoaded({required this.tripData});
 
   final Stream<List<TripModel>> tripData;
 

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/tripUtils.dart';
+import 'package:trip_contribute/user/user_bloc.dart';
+import 'package:trip_contribute/user/user_event.dart';
 
 class AddMemberScreen extends StatefulWidget {
   const AddMemberScreen(
@@ -22,8 +26,9 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   final TextEditingController _phoneController = TextEditingController();
   List<String> selectedMemberNameList = <String>[];
   List<String> selectedMemberMnoList = <String>[];
- String memberName = '';
- String memberMno = '';
+  String memberName = '';
+  String memberMno = '';
+  List<TripMemberModel> arrMemberList = <TripMemberModel>[];
 
   @override
   void initState() {
@@ -134,29 +139,34 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         alignment: Alignment.topRight,
         onPressed: () {
           if(memberName.isNotEmpty && memberMno.isNotEmpty) {
-            // final TripMemberModel memberDetails = TripMemberModel(selectedMemberNameList, selectedMemberMnoList);
-            //  final List<TripMemberModel> arrMemberDetails = [memberDetails];
-            /* context.read<UserBloc>().add(AddMemberDetails(
-              tripName: widget.tripName,
-              id: const Uuid().v4(),
-              tripMemberDetails: arrMemberDetails,
-            ));*/
-            Navigator.pop(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('members data is added!')));
+            addMemberName(tripUserName: memberName, tripUserMno: memberMno);
+            if (arrMemberList.isNotEmpty) {
+              context.read<UserBloc>().add(UpdateTripMemberData(
+                    tripMemberDetails: arrMemberList,
+                  ));
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('members data is added!')));
+            }
           } else{
             QuickAlert.show(
               context: context,
               type: QuickAlertType.warning,
               title: 'Oops...',
-              text:
-              'Please fill the proper details',
+              text: 'Please fill the proper details',
             );
           }
         },
         icon: const Icon(Icons.check, size: 27),
       ),
     );
+  }
+
+  void addMemberName(
+      {required String tripUserName, required String tripUserMno}) {
+    final TripMemberModel itemName = TripMemberModel(tripUserName, tripUserMno);
+    arrMemberList
+      ..clear()
+      ..add(itemName);
   }
 
   Future<void> buildShowAddMemberModalBottomSheet(BuildContext context) {

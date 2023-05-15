@@ -72,6 +72,14 @@ class FetchData extends UserEvent {
   List<Object> get props => [];
 }
 
+class UpdateTripMemberData extends UserEvent {
+  const UpdateTripMemberData({
+    required this.tripMemberDetails,
+  });
+
+  final List<TripMemberModel>? tripMemberDetails;
+}
+
 class GetTripData extends UserEvent {
   const GetTripData();
 

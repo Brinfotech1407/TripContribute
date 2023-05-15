@@ -12,7 +12,7 @@ import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/user/user_state.dart';
-import 'package:trip_contribute/views/add_member_screen.dart';
+import 'package:trip_contribute/views/member/add_member_screen.dart';
 import 'package:uuid/uuid.dart';
 
 class CrateTripScreen extends StatefulWidget {
@@ -53,9 +53,6 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final DateTime date = DateTime.now();
-    final String formattedDate = '${date.day}-${date.month}-${date.year}';
-
     return Scaffold(
       body: SafeArea(
         child: BlocListener<UserBloc, UserState>(
@@ -71,16 +68,16 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
           },
           child: BlocBuilder<UserBloc, UserState>(
             builder: (BuildContext context, UserState state) {
-              // if (state is FetchTripDataLoaded) {
               return Padding(
                 padding: const EdgeInsets.all(8),
                 child: StreamBuilder<List<TripModel>>(
-                    builder: (BuildContext context, snapshot) {
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<TripModel>> snapshot) {
                       if (snapshot.hasData) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisSize: MainAxisSize.min,
-                          children: [
+                          children: <Widget>[
                             createTripHeaderView(
                                 userName: snapshot.data!.first
                                     .tripMemberDetails!.first.tripMemberName),
@@ -90,42 +87,51 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                 itemBuilder: (BuildContext context, int index) {
                                   final TripModel tripData =
                                       snapshot.data![index];
-                                  return Card(
-                                    margin: const EdgeInsets.all(12),
-                                    elevation: 0,
-                                    shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8)),
-                                        side: BorderSide(
-                                          color: Colors.grey,
-                                        )),
-                                    child: Container(
-                                      margin: const EdgeInsets.all(10),
-                                      padding: const EdgeInsets.only(left: 4),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(tripData.tripName,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 17)),
-                                          Row(
-                                            children: [
-                                              Text(tripData
-                                                  .tripMemberDetails![index]
-                                                  .tripMemberName!),
-                                              IconButton(
-                                                constraints:
-                                                    const BoxConstraints(),
-                                                padding: const EdgeInsets.only(
-                                                    right: 8),
-                                                onPressed: () {},
-                                                icon: const Icon(Icons.add),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+
+                                  final List<TripMemberModel>?
+                                      selectedTripMemberName =
+                                      tripData.tripMemberDetails;
+                                  String? memberName;
+                                  String? memberMno;
+                                  if (selectedTripMemberName != null) {
+                                    for (final TripMemberModel item
+                                        in selectedTripMemberName) {
+                                      memberName = item.tripMemberName;
+                                      memberMno = item.tripMemberMno;
+                                    }
+                                  }
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).pushReplacement(
+                                          MaterialPageRoute<List<String>>(
+                                              builder: (_) => AddMemberScreen(
+                                                    tripName: tripData.tripName,
+                                                    userMno: tripUserMno,
+                                                    userName: tripUserName,
+                                                  )));
+                                    },
+                                    child: Card(
+                                      margin: const EdgeInsets.all(12),
+                                      elevation: 0,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8)),
+                                          side: BorderSide(
+                                            color: Colors.grey,
+                                          )),
+                                      child: Container(
+                                        margin: const EdgeInsets.all(10),
+                                        padding: const EdgeInsets.only(left: 4),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(tripData.tripName,
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 17)),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   );
@@ -143,11 +149,6 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                     },
                     stream: DatabaseManager().listenTripsData(userID: '11')),
               );
-              /* } else if (state is TripLoading) {
-                return _buildLoading();
-              } else {
-                return const Center(child: Text('no trip(s) found!'));
-              }*/
             },
           ),
         ),
@@ -176,7 +177,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       padding: const EdgeInsets.only(left: 10, top: 10, bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           const Padding(
             padding: EdgeInsets.only(bottom: 6, left: 8.0, top: 8.0),
             child: Text(
@@ -189,7 +190,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              userName ?? 'Bhavika',
+              userName ?? 'Trip Name',
               textAlign: TextAlign.left,
               style: const TextStyle(
                   fontSize: 16, fontWeight: FontWeight.bold, height: 1),
@@ -243,7 +244,6 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                       setState(() {
                         if (_createTripNameController.text.isNotEmpty) {
                           tripNameList.add(_createTripNameController.text);
-                          print('tripUserName $tripUserName');
                           addTripColumn();
                           addMemberName();
 
@@ -262,7 +262,6 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                         userName: tripUserName,
                                       )));
                           _createTripNameController.clear();
-                          //Navigator.pop(context);
                         } else {
                           QuickAlert.show(
                             context: context,

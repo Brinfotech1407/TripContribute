@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:trip_contribute/models/profile_model.dart';
+import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/services/preference_service.dart';
 
@@ -103,58 +104,28 @@ class DatabaseManager {
     final Query<Map<String, dynamic>> query =
     FirebaseFirestore.instance.collection('Trip');
     return query.snapshots().map(
-          (QuerySnapshot<Map<String, dynamic>> event) {
+      (QuerySnapshot<Map<String, dynamic>> event) {
         return event.docs
             .map((QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-            TripModel.fromJson(e.data() as Map<String, dynamic>))
+                TripModel.fromJson(e.data() as Map<String, dynamic>))
             .toList();
       },
     );
   }
 
-/*Future<List<TripModel>> listenTripsData(String userID) async {
-    final proList = <TripModel>[];
+  Future<void> updateTripMember({
+    String? id,
+    List<TripMemberModel>? newlyAddedMembers,
+  }) async {
+    final List<dynamic> arr = <dynamic>[newlyAddedMembers];
     try {
-      final pro = await _fireStore.collection('Trip').get();
-
-      pro.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> element) {
-        return proList.add(TripModel.fromJson(element.data()));
-      });
-      return proList;
-    } on FirebaseException catch (e) {
-      if (kDebugMode) {
-        print("Failed with error '${e.code}': ${e.message}");
-      }
-      return proList;
+      _fireStore.collection('Trip').doc(id).update(
+        {
+          'tripMemberDetails': FieldValue.arrayUnion(arr),
+        },
+      );
     } catch (e) {
-      throw Exception(e);
+      print(e);
     }
-
-    */ /*  _fireStore
-        .collection('Trip')
-        .where('tripMemberDetails', arrayContains: userID)
-        .snapshots()
-        .listen(
-          (QuerySnapshot<Map<String, dynamic>> event) {
-        final List<TripModel> arr = event.docs
-            .map((QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-            TripModel.fromJson(e.data()))
-            .toList();
-        print('listenNotes :: ${arr.toList()}');
-      },
-    );
-
-    return _fireStore
-        .collection('Trip')
-        .where('tripMemberDetails', arrayContains: userID)
-        .snapshots()
-        .map(
-          (QuerySnapshot<Map<String, dynamic>> event) {
-        return event.docs
-            .map((QueryDocumentSnapshot<Map<String, dynamic>> e) =>
-            TripModel.fromJson(e.data()))
-            .toList();
-      },
-    );*/ /*
-  }*/
+  }
 }

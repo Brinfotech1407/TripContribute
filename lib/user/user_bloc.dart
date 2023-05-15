@@ -9,8 +9,7 @@ import 'package:trip_contribute/services/preference_service.dart';
 import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/user/user_state.dart';
 
-
-class UserBloc extends Bloc<UserEvent,UserState>{
+class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(TripLoading()) {
     on<LoadUser>(_onLoadUser);
     on<AddUser>(_onAddUserDetails);
@@ -18,6 +17,7 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     on<UserPreferenceServiceInit>(_onPreferenceServiceInit);
     on<AddMemberDetails>(_onAddMemberDetails);
     on<GetTripData>(_onGetTripMemberData);
+    on<UpdateTripMemberData>(_onUpdateTripMember);
     on<FetchData>(_onGetTripData);
     on<GetUserData>(_onGetUserData);
   }
@@ -53,17 +53,19 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     }
   }
 
-  Future<bool> _onCheckUserAlready(UserProfileAlreadyStore event,
-      Emitter<UserState> emit,) async {
+  Future<bool> _onCheckUserAlready(
+    UserProfileAlreadyStore event,
+    Emitter<UserState> emit,
+  ) async {
     final String userData = event.mobileNo;
     final bool userAlready =
-    await DatabaseManager().userProfileAlreadyStore(userData);
+        await DatabaseManager().userProfileAlreadyStore(userData);
     emit(UserCheckAlready(isUSerAlreadyProfile: userAlready));
     return userAlready;
   }
 
-  Future<void> _onPreferenceServiceInit(UserPreferenceServiceInit event,
-      Emitter<UserState> emit) async {
+  Future<void> _onPreferenceServiceInit(
+      UserPreferenceServiceInit event, Emitter<UserState> emit) async {
     await preferenceService.init();
 
     Future<void> preService = preferenceService.init();
@@ -71,9 +73,10 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     emit(PreferenceServiceInit(preferenceService: preService));
   }
 
-
-  Future<void> _onAddMemberDetails(AddMemberDetails event,
-      Emitter<UserState> emit,) async {
+  Future<void> _onAddMemberDetails(
+    AddMemberDetails event,
+    Emitter<UserState> emit,
+  ) async {
     try {
       final TripModel memberData = TripModel(event.tripName, event.id,
           event.tripMemberDetails!, event.tripGridColumnDetails!);
@@ -83,7 +86,8 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     }
   }
 
-  Future<void> _onGetTripMemberData(GetTripData event, Emitter<UserState> emit) async {
+  Future<void> _onGetTripMemberData(
+      GetTripData event, Emitter<UserState> emit) async {
     //await preferenceService.init();
 
     emit(TripLoading());
@@ -97,12 +101,24 @@ class UserBloc extends Bloc<UserEvent,UserState>{
     }
   }
 
+  Future<void> _onUpdateTripMember(
+      UpdateTripMemberData event, Emitter<UserState> emit) async {
+    await Future<void>.delayed(const Duration(seconds: 1));
+    try {
+      DatabaseManager().updateTripMember(
+          id: '949bbfcc-ed7c-4e00-8430-d83e79fe3e70',
+          newlyAddedMembers: event.tripMemberDetails);
+    } catch (exception) {
+      log('add memeber');
+    }
+  }
+
   Future<void> _onGetTripData(FetchData event, Emitter<UserState> emit) async {
     emit(TripLoading());
     await Future<void>.delayed(const Duration(seconds: 1));
     try {
       final Stream<List<TripModel>> tripData =
-      DatabaseManager().listenTripsData(userID: userMobileNumber);
+          DatabaseManager().listenTripsData(userID: userMobileNumber);
       emit(FetchTripDataLoaded(tripData: tripData));
     } catch (exception) {
       emit(ProfileError(exception.toString()));
@@ -123,5 +139,4 @@ class UserBloc extends Bloc<UserEvent,UserState>{
       emit(ProfileError(exception.toString()));
     }
   }
-
 }
