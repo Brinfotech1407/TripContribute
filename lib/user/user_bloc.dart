@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:trip_contribute/models/profile_model.dart';
+import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/services/firestore_service.dart';
 import 'package:trip_contribute/services/preference_service.dart';
@@ -105,11 +106,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       UpdateTripMemberData event, Emitter<UserState> emit) async {
     await Future<void>.delayed(const Duration(seconds: 1));
     try {
-      DatabaseManager().updateTripMember(
-          id: '949bbfcc-ed7c-4e00-8430-d83e79fe3e70',
-          newlyAddedMembers: event.tripMemberDetails);
+      for (final TripMemberModel arrItem in event.tripMemberDetails!) {
+        DatabaseManager().updateTripMember(
+            id: event.tripId, newlyAddedMembers: arrItem.toJson());
+      }
     } catch (exception) {
-      log('add memeber');
+      log('member added successfully');
     }
   }
 
@@ -118,7 +120,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     await Future<void>.delayed(const Duration(seconds: 1));
     try {
       final Stream<List<TripModel>> tripData =
-          DatabaseManager().listenTripsData(userID: userMobileNumber);
+          DatabaseManager().listenTripsData();
       emit(FetchTripDataLoaded(tripData: tripData));
     } catch (exception) {
       emit(ProfileError(exception.toString()));

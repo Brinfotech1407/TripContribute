@@ -11,11 +11,13 @@ class AddMemberScreen extends StatefulWidget {
       {Key? key,
       required this.tripName,
       required this.userName,
-      required this.userMno})
+      required this.userMno,
+      required this.tripId})
       : super(key: key);
   final String tripName;
   final String userName;
   final String userMno;
+  final String tripId;
 
   @override
   State<AddMemberScreen> createState() => _AddMemberScreenState();
@@ -70,17 +72,16 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                               selectedMemberNameList[index],
                               style: const TextStyle(fontSize: 17),
                             ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Text(
-                                    selectedMemberMnoList[index])),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.delete),
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: Text(selectedMemberMnoList[index])),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.delete),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
                           ],
                         ),
                       ),
@@ -138,16 +139,18 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         padding: const EdgeInsets.only(top: 8, right: 10, bottom: 33),
         alignment: Alignment.topRight,
         onPressed: () {
-          if(memberName.isNotEmpty && memberMno.isNotEmpty) {
+          if (memberName.isNotEmpty && memberMno.isNotEmpty) {
             addMemberName(tripUserName: memberName, tripUserMno: memberMno);
+
             if (arrMemberList.isNotEmpty) {
               context.read<UserBloc>().add(UpdateTripMemberData(
+                    tripId: widget.tripId,
                     tripMemberDetails: arrMemberList,
                   ));
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('members data is added!')));
             }
-          } else{
+          } else {
             QuickAlert.show(
               context: context,
               type: QuickAlertType.warning,
@@ -211,23 +214,22 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                 padding: const EdgeInsets.only(top: 8.0, bottom: 18),
                 child: GestureDetector(
                     onTap: () {
-                     if(_nameController.text.length <= 2){
-                       QuickAlert.show(
-                         context: context,
-                         type: QuickAlertType.warning,
-                         title: 'Oops...',
-                         text:
-                         'The name must be at least 2 characters long',
-                       );
-                     }else if(_phoneController.text.length != 10){
-                       QuickAlert.show(
-                         context: context,
-                         type: QuickAlertType.warning,
-                         title: 'Oops...',
-                         text:
-                         'The mobile number you entered is invalid. Please enter a valid mobile number.',
-                       );
-                     }else if (_nameController.text.isNotEmpty &&
+                      if (_nameController.text.length <= 2) {
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.warning,
+                          title: 'Oops...',
+                          text: 'The name must be at least 2 characters long',
+                        );
+                      } else if (_phoneController.text.length != 10) {
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.warning,
+                          title: 'Oops...',
+                          text:
+                              'The mobile number you entered is invalid. Please enter a valid mobile number.',
+                        );
+                      } else if (_nameController.text.isNotEmpty &&
                           _phoneController.text.isNotEmpty) {
                         setState(() {
                           selectedMemberMnoList.add(_phoneController.text);
@@ -271,9 +273,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
             color: Colors.grey,
           ),
         ),
-        disabledBorder: const OutlineInputBorder(
-
-        ));
+        disabledBorder: const OutlineInputBorder());
   }
 
   Widget nameFormFiledView() {
@@ -286,7 +286,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         decoration: inputDecoration(hintText: 'Name'),
         onSubmitted: (String value) {
           setState(() {
-            if(value.isNotEmpty) {
+            if (value.isNotEmpty) {
               selectedMemberNameList.add(value);
               _nameController.clear();
             }
@@ -296,7 +296,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       ),
     );
   }
-
 
   Widget mobileNumberFormFiledView() {
     return Padding(

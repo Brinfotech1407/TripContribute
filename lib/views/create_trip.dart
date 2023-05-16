@@ -30,6 +30,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
   List<String> addMemberList = <String>[];
   String tripUserName = '';
   String tripUserMno = '';
+  String tripId = '';
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final CollectionReference<Map<String, dynamic>> ref =
@@ -88,6 +89,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                   final TripModel tripData =
                                       snapshot.data![index];
 
+                                  tripId = tripData.tripId;
+
                                   final List<TripMemberModel>?
                                       selectedTripMemberName =
                                       tripData.tripMemberDetails;
@@ -105,9 +108,10 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                       Navigator.of(context).pushReplacement(
                                           MaterialPageRoute<List<String>>(
                                               builder: (_) => AddMemberScreen(
-                                                    tripName: tripData.tripName,
+                                                tripName: tripData.tripName,
                                                     userMno: tripUserMno,
                                                     userName: tripUserName,
+                                                    tripId: tripData.tripId,
                                                   )));
                                     },
                                     child: Card(
@@ -147,7 +151,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                         return const Center(child: Text('no trip(s) found!'));
                       }
                     },
-                    stream: DatabaseManager().listenTripsData(userID: '11')),
+                    stream: DatabaseManager().listenTripsData()),
               );
             },
           ),
@@ -248,8 +252,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                           addMemberName();
 
                           context.read<UserBloc>().add(AddMemberDetails(
-                                tripName: _createTripNameController.text,
-                                id: const Uuid().v4(),
+                            tripName: _createTripNameController.text,
+                                id: tripUserId(),
                                 tripMemberDetails: arrMemberIDListNotifier,
                                 tripGridColumnDetails: arrGridTripColumn,
                               ));
@@ -257,9 +261,10 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                           Navigator.of(context)
                               .pushReplacement(MaterialPageRoute<List<String>>(
                                   builder: (_) => AddMemberScreen(
-                                        tripName: tripNameList.last,
+                                    tripName: tripNameList.last,
                                         userMno: tripUserMno, //.stringsub(3),
                                         userName: tripUserName,
+                                        tripId: tripId,
                                       )));
                           _createTripNameController.clear();
                         } else {
@@ -283,6 +288,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       },
     );
   }
+
+  String tripUserId() => const Uuid().v4();
 
   void addTripColumn() {
     final TripGridColumn itemName = TripGridColumn(

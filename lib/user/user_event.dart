@@ -75,9 +75,11 @@ class FetchData extends UserEvent {
 class UpdateTripMemberData extends UserEvent {
   const UpdateTripMemberData({
     required this.tripMemberDetails,
+    required this.tripId,
   });
 
   final List<TripMemberModel>? tripMemberDetails;
+  final String? tripId;
 }
 
 class GetTripData extends UserEvent {
