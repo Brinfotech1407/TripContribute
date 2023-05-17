@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
@@ -23,7 +25,7 @@ class CrateTripScreen extends StatefulWidget {
 
 class _CrateTripScreenState extends State<CrateTripScreen> {
   final TextEditingController _createTripNameController =
-      TextEditingController();
+  TextEditingController();
   List<String> tripNameList = <String>[];
   List<String> addMemberList = <String>[];
   String tripUserName = '';
@@ -56,7 +58,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                   _preferenceService.getString(PreferenceService.User_Name) ??
                       '';
               tripUserMno = _preferenceService
-                      .getString(PreferenceService.User_PhoneNo) ??
+                  .getString(PreferenceService.User_PhoneNo) ??
                   '';
             }
           },
@@ -77,13 +79,13 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                             child: ListView.builder(
                               itemCount: snapshot.data!.length,
                               itemBuilder: (BuildContext context, int index) {
-                                  final TripModel tripData =
-                                      snapshot.data![index];
+                                final TripModel tripData =
+                                    snapshot.data![index];
 
-                                  tripId = tripData.tripId;
+                                tripId = tripData.tripId;
 
-                                  return GestureDetector(
-                                    onTap: () {
+                                return GestureDetector(
+                                  onTap: () {
                                     /*Navigator.of(context).pushReplacement(
                                       MaterialPageRoute<List<String>>(
                                           builder: (_) => AddMemberScreen(
@@ -93,33 +95,87 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                                 tripId: tripData.tripId,
                                               )));*/
                                   },
-                                    child: Card(
-                                      margin: const EdgeInsets.all(12),
-                                      elevation: 0,
-                                      shape: const RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(8)),
-                                          side: BorderSide(
-                                            color: Colors.grey,
-                                          )),
-                                      child: Container(
-                                        margin: const EdgeInsets.all(10),
-                                        padding: const EdgeInsets.only(left: 4),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(tripData.tripName,
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 17)),
-                                          ],
-                                        ),
+                                  child: Card(
+                                    margin: const EdgeInsets.all(12),
+                                    elevation: 0,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8)),
+                                        side: BorderSide(
+                                          color: Colors.grey,
+                                        )),
+                                    child: Container(
+                                      margin: const EdgeInsets.all(10),
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(tripData.tripName,
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20)),
+                                          Container(
+                                            height: 40,
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Flexible(
+                                                  child: ListView.builder(
+                                                    shrinkWrap: true,
+                                                    scrollDirection:
+                                                        Axis.horizontal,
+                                                    itemCount: tripData
+                                                        .tripMemberDetails!
+                                                        .length,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      final TripMemberModel
+                                                          memberName =
+                                                          tripData.tripMemberDetails![
+                                                              index];
+                                                      return Container(
+                                                        height: 40,
+                                                        width: 40,
+                                                        margin: const EdgeInsets
+                                                            .only(right: 5),
+                                                        decoration: BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            border: Border.all(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade700)),
+                                                        child: Center(
+                                                          child: Text(
+                                                              memberName
+                                                                  .tripMemberName!
+                                                                  .substring(
+                                                                      0, 1)
+                                                                  .toUpperCase(),
+                                                              style: TextStyle(
+                                                                color: Color((math.Random().nextDouble() *
+                                                                            0xFFFFFF)
+                                                                        .toInt())
+                                                                    .withOpacity(
+                                                                        1.0),
+                                                              )),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
                                       ),
                                     ),
-                                  );
-                                },
-                              ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ],
                       );
@@ -229,16 +285,16 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                           tripId = tripUserId();
 
                           context.read<UserBloc>().add(CreateTripData(
-                                tripName: _createTripNameController.text,
-                                id: tripId,
-                                tripMemberDetails: arrMemberIDListNotifier,
-                                tripGridColumnDetails: arrGridTripColumn,
-                              ));
+                            tripName: _createTripNameController.text,
+                            id: tripId,
+                            tripMemberDetails: arrMemberIDListNotifier,
+                            tripGridColumnDetails: arrGridTripColumn,
+                          ));
 
                           Navigator.of(context)
                               .pushReplacement(MaterialPageRoute<List<String>>(
-                                  builder: (_) => AddMemberScreen(
-                                    tripName: tripNameList.last,
+                              builder: (_) => AddMemberScreen(
+                                tripName: tripNameList.last,
                                         userMno: tripUserMno, //.stringsub(3),
                                         userName: tripUserName,
                                         tripId: tripId,
@@ -250,7 +306,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                             type: QuickAlertType.warning,
                             title: 'Oops...',
                             text:
-                                'You forgot to enter the Trip Name. Please enter the Trip Name to continue.',
+                            'You forgot to enter the Trip Name. Please enter the Trip Name to continue.',
                           );
                         }
                       });
@@ -289,10 +345,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       isRequired: true,
       showTotal: true,
     );
-    arrGridTripColumn
-      ..add(itemName)
-      ..add(itemDescription)
-      ..add(itemAmount);
+    arrGridTripColumn..add(itemName)..add(itemDescription)..add(itemAmount);
   }
 
   Widget createTripNameFormFiledView() {
