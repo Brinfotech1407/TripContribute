@@ -8,10 +8,11 @@ import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/services/firestore_service.dart';
 import 'package:trip_contribute/services/preference_service.dart';
-import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/user/user_state.dart';
+import 'package:trip_contribute/utils/tripUtils.dart';
+import 'package:trip_contribute/views/expense_listing.dart';
 import 'package:trip_contribute/views/member/add_member_screen.dart';
 import 'package:uuid/uuid.dart';
 
@@ -25,7 +26,7 @@ class CrateTripScreen extends StatefulWidget {
 
 class _CrateTripScreenState extends State<CrateTripScreen> {
   final TextEditingController _createTripNameController =
-  TextEditingController();
+      TextEditingController();
   List<String> tripNameList = <String>[];
   List<String> addMemberList = <String>[];
   String tripUserName = '';
@@ -58,7 +59,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                   _preferenceService.getString(PreferenceService.User_Name) ??
                       '';
               tripUserMno = _preferenceService
-                  .getString(PreferenceService.User_PhoneNo) ??
+                      .getString(PreferenceService.User_PhoneNo) ??
                   '';
             }
           },
@@ -86,14 +87,11 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
 
                                 return GestureDetector(
                                   onTap: () {
-                                    /*Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute<List<String>>(
-                                          builder: (_) => AddMemberScreen(
-                                            tripName: tripData.tripName,
-                                                userMno: tripUserMno,
-                                                userName: tripUserName,
-                                                tripId: tripData.tripId,
-                                              )));*/
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute<List<String>>(
+                                            builder: (_) => ExpenseListing(
+                                                  tripId: tripData.tripId,
+                                                )));
                                   },
                                   child: Card(
                                     margin: const EdgeInsets.all(12),
@@ -285,16 +283,16 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                           tripId = tripUserId();
 
                           context.read<UserBloc>().add(CreateTripData(
-                            tripName: _createTripNameController.text,
-                            id: tripId,
-                            tripMemberDetails: arrMemberIDListNotifier,
-                            tripGridColumnDetails: arrGridTripColumn,
-                          ));
+                                tripName: _createTripNameController.text,
+                                id: tripId,
+                                tripMemberDetails: arrMemberIDListNotifier,
+                                tripGridColumnDetails: arrGridTripColumn,
+                              ));
 
                           Navigator.of(context)
                               .pushReplacement(MaterialPageRoute<List<String>>(
-                              builder: (_) => AddMemberScreen(
-                                tripName: tripNameList.last,
+                                  builder: (_) => AddMemberScreen(
+                                        tripName: tripNameList.last,
                                         userMno: tripUserMno, //.stringsub(3),
                                         userName: tripUserName,
                                         tripId: tripId,
@@ -306,7 +304,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                             type: QuickAlertType.warning,
                             title: 'Oops...',
                             text:
-                            'You forgot to enter the Trip Name. Please enter the Trip Name to continue.',
+                                'You forgot to enter the Trip Name. Please enter the Trip Name to continue.',
                           );
                         }
                       });
@@ -332,20 +330,15 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       showAutoSuggestion: true,
     );
 
-    final TripGridColumn itemDescription = TripGridColumn(
-      name: 'Description',
-      columnType: 'Free Text',
-      isRequired: true,
-      showAutoSuggestion: true,
-    );
-
     final TripGridColumn itemAmount = TripGridColumn(
       name: 'Amount',
       columnType: 'Numeric',
       isRequired: true,
       showTotal: true,
     );
-    arrGridTripColumn..add(itemName)..add(itemDescription)..add(itemAmount);
+    arrGridTripColumn
+      ..add(itemName)
+      ..add(itemAmount);
   }
 
   Widget createTripNameFormFiledView() {

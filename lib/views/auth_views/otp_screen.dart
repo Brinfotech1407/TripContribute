@@ -5,7 +5,7 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:trip_contribute/login/cubit/auth_cubit.dart';
 import 'package:trip_contribute/login/cubit/auth_state.dart';
-import 'package:trip_contribute/tripUtils.dart';
+import 'package:trip_contribute/utils/tripUtils.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'profile_screen.dart';

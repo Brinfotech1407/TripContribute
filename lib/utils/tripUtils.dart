@@ -45,14 +45,48 @@ class TripUtils {
                Color.fromRGBO(107, 105, 105, 1)
              ]),
        ),
-       child:  Padding(
-         padding:
-         const EdgeInsets.only(left: 18, bottom: 8, top: 8, right: 18),
-         child: Text(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 18, bottom: 8, top: 8, right: 18),
+        child: Text(
           buttonText,
-           style: const TextStyle(fontSize: 15, color: Colors.white),
-         ),
-       ),
-     );
+          style: const TextStyle(fontSize: 15, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  static List<String> arrAlphabets = <String>[];
+
+  static List<String> getAlphabetsList() {
+    arrAlphabets
+      ..clear()
+      ..add('')
+      ..add('A')
+      ..add('B')
+      ..add('C')
+      ..add('D')
+      ..add('E')
+      ..add('F')
+      ..add('G')
+      ..add('H')
+      ..add('I')
+      ..add('J')
+      ..add('K')
+      ..add('L')
+      ..add('M')
+      ..add('N')
+      ..add('O')
+      ..add('P')
+      ..add('Q')
+      ..add('R')
+      ..add('S')
+      ..add('T')
+      ..add('U')
+      ..add('W')
+      ..add('X')
+      ..add('Y')
+      ..add('Z');
+
+    return arrAlphabets;
   }
 }

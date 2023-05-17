@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:trip_contribute/models/trip_member_model.dart';
-import 'package:trip_contribute/tripUtils.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
 import 'package:trip_contribute/user/user_event.dart';
+import 'package:trip_contribute/utils/tripUtils.dart';
 
 class AddMemberScreen extends StatefulWidget {
   const AddMemberScreen(

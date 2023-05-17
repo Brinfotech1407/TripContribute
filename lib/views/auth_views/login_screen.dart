@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:trip_contribute/login/cubit/auth_cubit.dart';
 import 'package:trip_contribute/login/cubit/auth_state.dart';
 import 'package:trip_contribute/services/preference_service.dart';
-
-import 'package:trip_contribute/tripUtils.dart';
+import 'package:trip_contribute/utils/tripUtils.dart';
 import 'package:trip_contribute/views/auth_views/otp_screen.dart';
-import 'package:quickalert/quickalert.dart';
-import 'package:trip_contribute/views/create_trip.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
