@@ -50,7 +50,7 @@ class DatabaseManager {
     return false;
   }
 
-  Future<String> setMembersData(
+  Future<String> setTripData(
     Map<String, dynamic> data,
     String tripID,
   ) async {

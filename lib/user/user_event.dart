@@ -44,8 +44,8 @@ class UserPreferenceServiceInit extends UserEvent {
   const UserPreferenceServiceInit();
 }
 
-class AddMemberDetails extends UserEvent {
-  const AddMemberDetails({
+class CreateTripData extends UserEvent {
+  const CreateTripData({
     required this.tripName,
     required this.id,
     required this.tripMemberDetails,

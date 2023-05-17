@@ -228,7 +228,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                           addMemberName();
                           tripId = tripUserId();
 
-                          context.read<UserBloc>().add(AddMemberDetails(
+                          context.read<UserBloc>().add(CreateTripData(
                                 tripName: _createTripNameController.text,
                                 id: tripId,
                                 tripMemberDetails: arrMemberIDListNotifier,

@@ -16,7 +16,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<AddUser>(_onAddUserDetails);
     on<UserProfileAlreadyStore>(_onCheckUserAlready);
     on<UserPreferenceServiceInit>(_onPreferenceServiceInit);
-    on<AddMemberDetails>(_onAddMemberDetails);
+    on<CreateTripData>(_onCreateTripDetails);
     on<UpdateTripMemberData>(_onUpdateTripMember);
   }
 
@@ -71,19 +71,18 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     emit(PreferenceServiceInit(preferenceService: preService));
   }
 
-  Future<void> _onAddMemberDetails(
-    AddMemberDetails event,
+  Future<void> _onCreateTripDetails(
+    CreateTripData event,
     Emitter<UserState> emit,
   ) async {
     try {
       final TripModel memberData = TripModel(event.tripName, event.id,
           event.tripMemberDetails!, event.tripGridColumnDetails!);
-      DatabaseManager().setMembersData(memberData.toJson(), event.id);
+      DatabaseManager().setTripData(memberData.toJson(), event.id);
     } on Exception catch (e) {
       log('addUser Exception $e');
     }
   }
-
 
   Future<void> _onUpdateTripMember(
       UpdateTripMemberData event, Emitter<UserState> emit) async {
