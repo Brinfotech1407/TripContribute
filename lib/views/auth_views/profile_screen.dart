@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:trip_contribute/tripUtils.dart';
-import 'package:trip_contribute/views/add_member_screen.dart';
+import 'package:trip_contribute/user/user_bloc.dart';
+import 'package:trip_contribute/user/user_event.dart';
+import 'package:trip_contribute/user/user_state.dart';
+import 'package:trip_contribute/views/create_trip.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen(
+      {Key? key, required this.currentPhoneNumber, required this.context})
+      : super(key: key);
+  final String currentPhoneNumber;
+  final BuildContext context;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -17,82 +25,133 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    _phoneController.text = widget.currentPhoneNumber;
+    print('current user${widget.currentPhoneNumber}');
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext contexts) {
     return Scaffold(
       body: SafeArea(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 10, top: 30, bottom: 10),
-            child: Text(
-              'Profile',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  //color: Color.fromRGBO(37, 37, 37, 1),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  height: 1),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.only(left: 10, bottom: 30),
-            child: Text(
-              'First complete your profile details',
-              textAlign: TextAlign.left,
-              style: TextStyle(
-                  // color: Color.fromRGBO(37, 37, 37, 1),
-                  fontSize: 14,
-                  height: 1),
-            ),
-          ),
-          textFiledViews(),
-          Align(
-            child: InkWell(
-              onTap: () {
-                submitForm();
-                if (_emailController.text.isNotEmpty &&
-                    _nameController.text.isNotEmpty &&
-                    _phoneController.text.isNotEmpty) {
-                  SchedulerBinding.instance.addPostFrameCallback((_) {
-                    Future.delayed(Duration.zero, () async {
-                      Navigator.of(context).push(MaterialPageRoute<void>(
-                        builder: (_) {
-                          return const AddMemberScreen();
-                        },));
-                    });
-                  });
-                } else {
-                  const SnackBar(content: Text('Please enter proper Details'));
+        child: BlocProvider<UserBloc>(
+          create: (BuildContext context) => UserBloc()
+            ..add(UserProfileAlreadyStore(mobileNo: widget.currentPhoneNumber)),
+          child: BlocListener<UserBloc, UserState>(
+            listener: (BuildContext context, UserState state) {
+              if (state is UserLoaded) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Users added!')));
+              }
+              if (state is UserCheckAlready) {
+                if (state.isUSerAlreadyProfile) {
+                  Navigator.of(contexts).push(MaterialPageRoute<void>(
+                    builder: (_) {
+                      return CrateTripScreen(
+                        userName: _nameController.text,
+                      );
+                    },
+                  ));
                 }
-                const SnackBar(content: Text('Please Fill the above details'));
+              }
+            },
+            // ignore: always_specify_types
+            child: BlocBuilder<UserBloc, UserState>(
+              builder: (BuildContext context, UserState state) {
+                /*if (state is UserCheckAlready) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {*/
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 10, top: 30, bottom: 10),
+                        child: Text(
+                          'Profile',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              //color: Color.fromRGBO(37, 37, 37, 1),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              height: 1),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 10, bottom: 30),
+                        child: Text(
+                          'First complete your profile details',
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              // color: Color.fromRGBO(37, 37, 37, 1),
+                              fontSize: 14,
+                              height: 1),
+                        ),
+                      ),
+                      textFiledViews(),
+                      Align(
+                        child: InkWell(
+                          onTap: () {
+                            submitForm();
+                            if (_emailController.text.isNotEmpty &&
+                                _nameController.text.isNotEmpty &&
+                                _phoneController.text.isNotEmpty) {
+                              contexts.read<UserBloc>().add(AddUser(
+                                    name: _nameController.text,
+                                    email: _emailController.text,
+                                    mobileNo: _phoneController.text,
+                                    context: contexts,
+                                  ));
+                              Navigator.of(contexts)
+                                  .push(MaterialPageRoute<void>(
+                                builder: (_) {
+                                  return CrateTripScreen(
+                                    userName: _nameController.text,
+                                  );
+                                },
+                              ));
+                            } else {
+                              QuickAlert.show(
+                                context: contexts,
+                                type: QuickAlertType.info,
+                                text:
+                                    'Please provide your name, email, and phone number before submitting.',
+                              );
+                            }
+                          },
+                          child: TripUtils()
+                              .bottomButtonDesignView(buttonText: 'Submit'),
+                        ),
+                      ),
+                    ]);
+                // }
               },
-                child:TripUtils().bottomButtonDesignView(buttonText: 'Submit'),
             ),
           ),
-        ]),
+        ),
       ),
     );
   }
 
-  Widget textFiledViews(){
+  Widget textFiledViews() {
     return Form(
-      key: _formKey,
+        key: _formKey,
         child: Column(
           children: [
             mobileNumberFormFiledView(),
             nameFormFiledView(),
             emailFormFiledView(),
           ],
-        )
-    );
+        ));
   }
 
   void submitForm() {
     final FormState formState = _formKey.currentState!;
     if (formState.validate()) {
-      print( 'form is valid');
+      print('form is valid');
       formState.save();
     } else {
-      print( 'form is invalid');
+      print('form is invalid');
     }
   }
 
@@ -105,6 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'Enter Mobile number'),
         keyboardType: TextInputType.phone,
+        readOnly: true,
         validator: (String? value) {
           const Pattern pattern =
               r'^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$';
@@ -138,12 +198,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.grey,
-            width: 1.0,
           ),
         ),
-        disabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.black),
-        ));
+        disabledBorder: const OutlineInputBorder());
   }
 
   Widget nameFormFiledView() {
@@ -158,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (value!.isEmpty) {
             return 'Please enter your name';
           } else if (value.length <= 2) {
-            return 'Please enter your name more then 2 char';
+            return 'Your name must be at least 2 characters long';
           }
           return null;
         },
@@ -167,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget emailFormFiledView(){
+  Widget emailFormFiledView() {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
       child: TextFormField(

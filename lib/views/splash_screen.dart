@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trip_contribute/blocs/ok_done_bloc/ok_done_accessor.dart';
-import 'package:trip_contribute/blocs/ok_done_bloc/ok_done_view_model.dart';
-import 'package:trip_contribute/views/auth_views/login_screen.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -40,54 +38,46 @@ class _SplashScreenState extends State<SplashScreen> with
    void dispose() {
      _animController!.dispose();
      super.dispose();
-
    }
 
 
 @override
   Widget build(BuildContext context) {
-    return OkDoneConnector(
-      onInitState: (OkDoneViewModel model) {
-         model.redirectToHomeScreen();
-      },
-      condition: (OkDoneViewModel previous, OkDoneViewModel current) {
-        if(previous.isLoading ==false && current.isLoading ==true){
-          Navigator.of(context).push(
-              MaterialPageRoute<List<String>>(
-                  builder: (_) =>
-                  const LoginScreen()));
-        }
-        return true;
-      },
-      builder: (BuildContext context, OkDoneViewModel model) {
-        return  Scaffold(
-          body: AnimatedBuilder(
-            animation: _animController!,
-            builder: (BuildContext context, Widget? child) {
-              return  Container(
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only( right: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Trip',
-                        textAlign: TextAlign.right,
-                        style: buildTextStyle(),
-                      ),
-                      Text(
-                        'Contribute',
-                        textAlign: TextAlign.right,
-                        style: buildTextStyle(),
-                      )
+  final double width = MediaQuery.of(context).size.width;
+    return Scaffold(
+      body: AnimatedBuilder(
+        animation: _animController!,
+        builder: (BuildContext context, Widget? child) {
+          return  Container(
+              alignment: Alignment.centerRight,
+              padding: const EdgeInsets.only( right: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+              VxShimmer(
+                gradient:const LinearGradient(
+              colors: [
 
-                    ],
-                  ));
-            },
-          ),
-        );
-      },
+                Color.fromRGBO(38, 38, 38, 0.4),
+              Color.fromRGBO(107, 105, 105, 1)
+              ],
+                  begin: Alignment(6.123234262925839e-17, 1),
+                  end: Alignment(-1, 6.123234262925839e-17),
+                ),
+                primaryColor: Colors.lightBlueAccent,
+                secondaryColor: Colors.black,
+                child: Text(
+                  'Trip\nContribute',
+                  textAlign: TextAlign.right,
+                  style: buildTextStyle(),
+                ),
+              ),
+          ],
+            ),
+          );
+        },
+      ),
     );
   }
 

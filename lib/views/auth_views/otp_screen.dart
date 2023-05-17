@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pinput/pinput.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
+import 'package:trip_contribute/login/cubit/auth_cubit.dart';
+import 'package:trip_contribute/login/cubit/auth_state.dart';
 import 'package:trip_contribute/tripUtils.dart';
-
+import 'package:velocity_x/velocity_x.dart';
 
 import 'profile_screen.dart';
 
@@ -13,10 +18,8 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController otpController = TextEditingController();
   final FocusNode focusNode = FocusNode();
-
 
   @override
   void dispose() {
@@ -25,9 +28,8 @@ class _OTPScreenState extends State<OTPScreen> {
     super.dispose();
   }
 
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext contexts) {
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -57,75 +59,79 @@ class _OTPScreenState extends State<OTPScreen> {
                     height: 1),
               ),
             ),
-        Align(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Directionality(
-                  textDirection: TextDirection.ltr,
-                  child: Pinput(
-                    length: 6,
-                    controller: otpController,
-                    focusNode: focusNode,
-                    listenForMultipleSmsOnAndroid: true,
-                    defaultPinTheme: defaultPinTheme,
-
-                    validator: (String? value) {
-                      return value == '123456' ? null : 'Pin is incorrect';
-                    },
-                    hapticFeedbackType: HapticFeedbackType.lightImpact,
-                    onCompleted: (String pin) {
-                      debugPrint('onCompleted: $pin');
-                    },
-                    onChanged: (String value) {
-                      debugPrint('onChanged: $value');
-                    },
-                    cursor: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 9),
-                          width: 22,
-                          height: 1,
-                          color: Colors.red,
-                        ),
-                      ],
-                    ),
-                    focusedPinTheme: defaultPinTheme.copyWith(
-                      decoration: defaultPinTheme.decoration!.copyWith(
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(color: Colors.grey.shade900),
-                      ),
-                    ),
-                    submittedPinTheme: defaultPinTheme.copyWith(
-                      decoration: defaultPinTheme.decoration!.copyWith(
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: Colors.grey),
-                      ),
-                    ),
-                    errorPinTheme: defaultPinTheme.copyBorderWith(
-                      border: Border.all(color: Colors.redAccent),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+            20.heightBox,
             Align(
-              child: InkWell(
-                onTap: () {
+              child: VxPinView(
+                onEditingComplete: () {},
+                onSubmitted: (String value) {
+                  value == '123456' ? null : 'Pin is incorrect';
+                },
+                count: 6,
+                size: 45,
+                color: Colors.grey,
+                obscureText: false,
+                focusNode: focusNode,
+                keyboardType: TextInputType.number,
+                onChanged: (String value) {
+                  print('Test value=$value');
                   setState(() {
-                    if (otpController.text.isNotEmpty) {
-                      Navigator.of(context).push(MaterialPageRoute<void>(
-                          builder: (_) => const ProfileScreen()));
-                    }
+                    otpController.text = value;
                   });
                 },
-                child: TripUtils().bottomButtonDesignView(buttonText: 'Verifying OTP'),
               ),
+            ),
+            BlocConsumer<AuthCubit, AuthState>(
+              listener: (BuildContext context, Object? state) {
+                if (state is AuthLoggedInState) {
+                  Navigator.popUntil(context, (Route route) => route.isFirst);
+                  Navigator.of(context).pushReplacement(MaterialPageRoute<void>(
+                      builder: (_) => ProfileScreen(
+                            currentPhoneNumber:
+                                state.firebaseUser.phoneNumber ?? '',
+                            context: contexts,
+                          )));
+                } else if (state is AuthErrorState) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(state.error),
+                    duration: const Duration(milliseconds: 600),
+                    backgroundColor: Colors.redAccent,
+                  ));
+                }
+              },
+              builder: (BuildContext context, Object? state) {
+                if (state is AuthLoadingState) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                return Align(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    onTap: () {
+                      if (otpController.text.isEmpty) {
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.info,
+                          title: 'Oops...',
+                          text:
+                              'You forgot to enter the OTP. Please enter the OTP to continue.',
+                        );
+                      } else if (state is AuthErrorState) {
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.warning,
+                          title: 'Oops...',
+                          text:
+                              'The OTP you entered is incorrect. Please try again',
+                        );
+                      } else {
+                        BlocProvider.of<AuthCubit>(context)
+                            .verifyOTP(otpController.text);
+                      }
+                    },
+                    child: TripUtils()
+                        .bottomButtonDesignView(buttonText: 'Verifying OTP'),
+                  ),
+                );
+              },
             ),
           ],
         ),
