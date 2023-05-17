@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
@@ -32,9 +30,6 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
   String tripUserMno = '';
   String tripId = '';
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final CollectionReference<Map<String, dynamic>> ref =
-      FirebaseFirestore.instance.collection('Trip');
   final PreferenceService _preferenceService = PreferenceService();
   List<TripMemberModel> arrMemberIDListNotifier = <TripMemberModel>[];
   List<TripGridColumn> arrGridTripColumn = <TripGridColumn>[];
@@ -67,53 +62,39 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                   '';
             }
           },
-          child: BlocBuilder<UserBloc, UserState>(
-            builder: (BuildContext context, UserState state) {
-              return Padding(
-                padding: const EdgeInsets.all(8),
-                child: StreamBuilder<List<TripModel>>(
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<TripModel>> snapshot) {
-                      if (snapshot.hasData) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            createTripHeaderView(
-                                userName: snapshot.data!.first
-                                    .tripMemberDetails!.first.tripMemberName),
-                            Flexible(
-                              child: ListView.builder(
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (BuildContext context, int index) {
+          child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: StreamBuilder<List<TripModel>>(
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<TripModel>> snapshot) {
+                    if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          createTripHeaderView(
+                              userName: snapshot.data!.first.tripMemberDetails!
+                                  .first.tripMemberName),
+                          Flexible(
+                            child: ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (BuildContext context, int index) {
                                   final TripModel tripData =
                                       snapshot.data![index];
 
                                   tripId = tripData.tripId;
 
-                                  final List<TripMemberModel>?
-                                      selectedTripMemberName =
-                                      tripData.tripMemberDetails;
-                                  String? memberName;
-                                  String? memberMno;
-                                  if (selectedTripMemberName != null) {
-                                    for (final TripMemberModel item
-                                        in selectedTripMemberName) {
-                                      memberName = item.tripMemberName;
-                                      memberMno = item.tripMemberMno;
-                                    }
-                                  }
                                   return GestureDetector(
                                     onTap: () {
-                                      Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute<List<String>>(
-                                              builder: (_) => AddMemberScreen(
-                                                tripName: tripData.tripName,
-                                                    userMno: tripUserMno,
-                                                    userName: tripUserName,
-                                                    tripId: tripData.tripId,
-                                                  )));
-                                    },
+                                    /*Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute<List<String>>(
+                                          builder: (_) => AddMemberScreen(
+                                            tripName: tripData.tripName,
+                                                userMno: tripUserMno,
+                                                userName: tripUserName,
+                                                tripId: tripData.tripId,
+                                              )));*/
+                                  },
                                     child: Card(
                                       margin: const EdgeInsets.all(12),
                                       elevation: 0,
@@ -141,20 +122,17 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                   );
                                 },
                               ),
-                            ),
-                          ],
-                        );
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.waiting) {
-                        return _buildLoading();
-                      } else {
-                        return const Center(child: Text('no trip(s) found!'));
-                      }
-                    },
-                    stream: DatabaseManager().listenTripsData()),
-              );
-            },
-          ),
+                          ),
+                        ],
+                      );
+                    } else if (snapshot.connectionState ==
+                        ConnectionState.waiting) {
+                      return _buildLoading();
+                    } else {
+                      return const Center(child: Text('no trip(s) found!'));
+                    }
+                  },
+                  stream: DatabaseManager().listenTripsData())),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -250,10 +228,11 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                           tripNameList.add(_createTripNameController.text);
                           addTripColumn();
                           addMemberName();
+                          tripId = tripUserId();
 
                           context.read<UserBloc>().add(AddMemberDetails(
-                            tripName: _createTripNameController.text,
-                                id: tripUserId(),
+                                tripName: _createTripNameController.text,
+                                id: tripId,
                                 tripMemberDetails: arrMemberIDListNotifier,
                                 tripGridColumnDetails: arrGridTripColumn,
                               ));
@@ -339,7 +318,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
         filled: true,
         contentPadding: const EdgeInsets.only(left: 8),
         border: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.grey),
+          borderSide: BorderSide(color: Colors.grey),
         ),
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(

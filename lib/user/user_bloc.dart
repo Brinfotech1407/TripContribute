@@ -104,10 +104,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   Future<void> _onUpdateTripMember(
       UpdateTripMemberData event, Emitter<UserState> emit) async {
-    await Future<void>.delayed(const Duration(seconds: 1));
+    //await Future<void>.delayed(const Duration(seconds: 1));
+    log(" event.tripMemberDetails ${event.tripMemberDetails?.length}");
+    log(" event.tripId ${event.tripId}");
     try {
       for (final TripMemberModel arrItem in event.tripMemberDetails!) {
-        DatabaseManager().updateTripMember(
+        await DatabaseManager().updateTripMember(
             id: event.tripId, newlyAddedMembers: arrItem.toJson());
       }
     } catch (exception) {

@@ -26,16 +26,11 @@ class AddMemberScreen extends StatefulWidget {
 class _AddMemberScreenState extends State<AddMemberScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  List<String> selectedMemberNameList = <String>[];
-  List<String> selectedMemberMnoList = <String>[];
-  String memberName = '';
-  String memberMno = '';
   List<TripMemberModel> arrMemberList = <TripMemberModel>[];
 
   @override
   void initState() {
-    selectedMemberNameList.add(widget.userName);
-    selectedMemberMnoList.add(widget.userMno);
+    arrMemberList.add(TripMemberModel(widget.userName, widget.userMno));
     super.initState();
   }
 
@@ -50,7 +45,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
             buildHeaderView(context),
             Flexible(
               child: ListView.builder(
-                itemCount: selectedMemberNameList.length,
+                itemCount: arrMemberList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
                     height: 140,
@@ -69,13 +64,15 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              selectedMemberNameList[index],
+                              arrMemberList[index].tripMemberName ?? '',
                               style: const TextStyle(fontSize: 17),
                             ),
                             Row(
                               children: [
                                 Expanded(
-                                    child: Text(selectedMemberMnoList[index])),
+                                    child: Text(
+                                        arrMemberList[index].tripMemberMno ??
+                                            '')),
                                 IconButton(
                                   onPressed: () {},
                                   icon: const Icon(Icons.delete),
@@ -139,17 +136,15 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         padding: const EdgeInsets.only(top: 8, right: 10, bottom: 33),
         alignment: Alignment.topRight,
         onPressed: () {
-          if (memberName.isNotEmpty && memberMno.isNotEmpty) {
-            addMemberName(tripUserName: memberName, tripUserMno: memberMno);
+          if (arrMemberList.isNotEmpty && widget.tripId.isNotEmpty) {
+            context.read<UserBloc>().add(UpdateTripMemberData(
+                  tripId: widget.tripId,
+                  tripMemberDetails: arrMemberList,
+                ));
+            ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('members data is added!')));
 
-            if (arrMemberList.isNotEmpty) {
-              context.read<UserBloc>().add(UpdateTripMemberData(
-                    tripId: widget.tripId,
-                    tripMemberDetails: arrMemberList,
-                  ));
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('members data is added!')));
-            }
+            Navigator.pop(context);
           } else {
             QuickAlert.show(
               context: context,
@@ -162,14 +157,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         icon: const Icon(Icons.check, size: 27),
       ),
     );
-  }
-
-  void addMemberName(
-      {required String tripUserName, required String tripUserMno}) {
-    final TripMemberModel itemName = TripMemberModel(tripUserName, tripUserMno);
-    arrMemberList
-      ..clear()
-      ..add(itemName);
   }
 
   Future<void> buildShowAddMemberModalBottomSheet(BuildContext context) {
@@ -232,10 +219,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                       } else if (_nameController.text.isNotEmpty &&
                           _phoneController.text.isNotEmpty) {
                         setState(() {
-                          selectedMemberMnoList.add(_phoneController.text);
-                          selectedMemberNameList.add(_nameController.text);
-                          memberName = _nameController.text;
-                          memberMno = _phoneController.text;
+                          arrMemberList.add(TripMemberModel(
+                              _nameController.text, _phoneController.text));
                           _nameController.clear();
                           _phoneController.clear();
                           Navigator.pop(context);
@@ -287,7 +272,6 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         onSubmitted: (String value) {
           setState(() {
             if (value.isNotEmpty) {
-              selectedMemberNameList.add(value);
               _nameController.clear();
             }
           });
@@ -300,19 +284,27 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   Widget mobileNumberFormFiledView() {
     return Padding(
       padding: const EdgeInsets.only(left: 14, right: 14, top: 20),
-      child: TextField(
+      child: TextFormField(
         controller: _phoneController,
         autofillHints: const [AutofillHints.telephoneNumber],
         cursorColor: Colors.black,
         decoration: inputDecoration(hintText: 'mobile number'),
         keyboardType: TextInputType.phone,
-        onSubmitted: (String value) {
-          setState(() {
-            selectedMemberNameList.add(value);
-            _phoneController.clear();
-          });
+        validator: (String? value) {
+          phoneValidation(value!);
         },
       ),
     );
+  }
+
+  String phoneValidation(String value) {
+    const String pattern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+    RegExp regExp = RegExp(pattern);
+    if (value.isEmpty) {
+      return 'Please enter mobile number';
+    } else if (!regExp.hasMatch(value)) {
+      return 'Please enter valid mobile number';
+    }
+    return 'Successfully added Mobile No';
   }
 }

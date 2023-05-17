@@ -85,7 +85,7 @@ class DatabaseManager {
 
   Future<TripModel?> getSingleTripMemberList(String userID) async {
     final DocumentSnapshot<Map<String, dynamic>> doc =
-    await _fireStore.collection('Members').doc(userID).get();
+        await _fireStore.collection('Members').doc(userID).get();
     if (doc.exists) {
       try {
         final TripModel user = TripModel.fromJson(doc.data()!);
