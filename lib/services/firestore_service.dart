@@ -67,38 +67,6 @@ class DatabaseManager {
     return '';
   }
 
-  Future<ProfileModel?> getSingleUserList(String userID) async {
-    final DocumentSnapshot<Map<String, dynamic>> doc =
-        await _fireStore.collection('user').doc(userID).get();
-    if (doc.exists) {
-      try {
-        final ProfileModel user = ProfileModel.fromJson(doc.data()!);
-        print('user $user');
-        return user;
-      } catch (e) {
-        throw Exception(e.toString());
-      }
-    } else {
-      return null;
-    }
-  }
-
-  Future<TripModel?> getSingleTripMemberList(String userID) async {
-    final DocumentSnapshot<Map<String, dynamic>> doc =
-        await _fireStore.collection('Members').doc(userID).get();
-    if (doc.exists) {
-      try {
-        final TripModel user = TripModel.fromJson(doc.data()!);
-        print('Members $user');
-        return user;
-      } catch (e) {
-        throw Exception(e.toString());
-      }
-    } else {
-      return null;
-    }
-  }
-
   Stream<List<TripModel>> listenTripsData() {
     final Query<Map<String, dynamic>> query =
         FirebaseFirestore.instance.collection('Trip');

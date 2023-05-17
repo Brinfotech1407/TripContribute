@@ -37,8 +37,6 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<UserBloc>(context).add(const GetUserData());
-    BlocProvider.of<UserBloc>(context).add(const FetchData());
   }
 
   @override

@@ -58,19 +58,6 @@ class AddMemberDetails extends UserEvent {
   final List<TripGridColumn>? tripGridColumnDetails;
 }
 
-class GetUserData extends UserEvent {
-  const GetUserData();
-
-  @override
-  List<Object> get props => [];
-}
-
-class FetchData extends UserEvent {
-  const FetchData();
-
-  @override
-  List<Object> get props => [];
-}
 
 class UpdateTripMemberData extends UserEvent {
   const UpdateTripMemberData({
