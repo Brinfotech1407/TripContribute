@@ -24,17 +24,22 @@ class _ExpenseListingState extends State<ExpenseListing> {
   TripDataSource? tripDataSource;
 
   @override
+  void initState() {
+    tripDataSource = TripDataSource(
+      tripData: trips,
+      arrGridTripColumn: arrTripColumns,
+      sortingApplied: () {},
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: StreamBuilder<List<TripModel>>(
       stream: DatabaseManager().listenTripsData(),
       builder: (BuildContext context, AsyncSnapshot<List<TripModel>> snapshot) {
-        //if(snapshot.data!.single.tripId == widget.tripId) {
-        return getGridView(snapshot.data!);
-        /* }else{
-        return
-           Container();
-        }*/
+        return getGridView(snapshot.data ?? []);
       },
     ));
   }
@@ -47,13 +52,11 @@ class _ExpenseListingState extends State<ExpenseListing> {
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 1,
             mainAxisExtent: 250,
-            mainAxisSpacing: 8,
+            mainAxisSpacing: 10,
             crossAxisSpacing: 8),
         itemBuilder: (_, int index) {
           final TripModel arrItem = arrTripList[index];
-          print('arrItem ${arrItem.tripName}');
           setUpGridView(arrItem);
-          final arrMember = arrTripList[index].tripMemberDetails![index];
           return GestureDetector(
             onTap: () {},
             child: Container(
@@ -68,23 +71,25 @@ class _ExpenseListingState extends State<ExpenseListing> {
                   ),
                 ),
                 subtitle: Container(
-                  height: MediaQuery.of(context).size.height / 2,
+                  height: MediaQuery.of(context).size.height,
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 7, bottom: 4),
-                    child: SfDataGrid(
-                      source: tripDataSource!,
-                      gridLinesVisibility: GridLinesVisibility.both,
-                      headerRowHeight: 45,
-                      rowHeight: 50,
-                      controller: _controller,
-                      verticalScrollPhysics:
-                          const NeverScrollableScrollPhysics(),
-                      horizontalScrollPhysics:
-                          const NeverScrollableScrollPhysics(),
-                      headerGridLinesVisibility: GridLinesVisibility.both,
-                      columns: getGridColumns(),
-                    ),
+                    child: tripDataSource != null
+                        ? SfDataGrid(
+                            source: tripDataSource!,
+                            gridLinesVisibility: GridLinesVisibility.both,
+                            headerRowHeight: 45,
+                            rowHeight: 50,
+                            controller: _controller,
+                            verticalScrollPhysics:
+                                const NeverScrollableScrollPhysics(),
+                            horizontalScrollPhysics:
+                                const NeverScrollableScrollPhysics(),
+                            headerGridLinesVisibility: GridLinesVisibility.both,
+                            columns: getGridColumns(),
+                          )
+                        : Container(),
                   ),
                 ),
               ),
@@ -103,15 +108,13 @@ class _ExpenseListingState extends State<ExpenseListing> {
   void setUpGridView(TripModel arrItem) {
     arrTripColumns = getColumnData(arrItem.columnNames!);
     trips
-        /* ..clear()
-      .*/
-        .addAll(arrItem.tripMemberDetails!.toList().reversed);
+      ..clear()
+      ..addAll(arrItem.TripDetails!.reversed);
     tripDataSource = TripDataSource(
       tripData: trips,
       sortingApplied: () {},
       arrGridTripColumn: arrTripColumns,
     );
-    print('tripDataSource $tripDataSource');
   }
 
   List<TripGridColumn> getColumnData(List<TripGridColumn> gridColumns) {
@@ -119,7 +122,10 @@ class _ExpenseListingState extends State<ExpenseListing> {
 
     if (gridColumns.isNotEmpty) {
       final List<TripGridColumn> arrTempColumnList = <TripGridColumn>[
-        TripGridColumn(name: 'No', columnType: 'Free Text'),
+        TripGridColumn(
+          name: 'no',
+          columnType: 'Free Text',
+        ),
         ...gridColumns
       ];
       arrTripColumns.addAll(arrTempColumnList);
@@ -137,11 +143,11 @@ class _ExpenseListingState extends State<ExpenseListing> {
       final String alphabet = getAlphabet(column.name!, i);
       final double columnWidth = getColumnWidth(column.name!, column);
       final String columnDisplay =
-          getColumnDisplayName(alphabet, column.name!, column);
+          getColumnDisplayName(alphabet, column.name ?? '', column);
 
       arrColumnList.add(
         GridColumn(
-          columnName: column.name!,
+          columnName: column.name ?? '',
           width: columnWidth,
           label: Container(
             padding: const EdgeInsets.all(2),
@@ -219,7 +225,7 @@ class TripDataSource extends DataGridSource {
       arrDataGridCell.add(
         DataGridCell<dynamic>(
           columnName: key.name!,
-          value: key.name!, //getValueFromKey(e, key.name!, counter, key),
+          value: getValueFromKey(e, key.name!, counter, key),
         ),
       );
     }
@@ -233,11 +239,7 @@ class TripDataSource extends DataGridSource {
     int counter,
     TripGridColumn columnData,
   ) {
-    print('eKey ${e[key]}');
-    if (key == 'No') {
-      return '$counter';
-    }
-
+    print('getValueFromKey ${e}');
     if (columnData.isNumericColumn) {
       return e[key] != null ? double.parse(e[key] as String) : 0;
     }

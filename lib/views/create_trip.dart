@@ -79,6 +79,10 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                           Flexible(
                             child: ListView.builder(
                               itemCount: snapshot.data!.length,
+                              key: const PageStorageKey(
+                                  '' /*here put the your list unique id */),
+                              keyboardDismissBehavior:
+                                  ScrollViewKeyboardDismissBehavior.onDrag,
                               itemBuilder: (BuildContext context, int index) {
                                 final TripModel tripData =
                                     snapshot.data![index];

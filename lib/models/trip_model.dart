@@ -7,7 +7,6 @@ import 'package:trip_contribute/models/trip_member_model.dart';
 /// the star denotes the source file name.
 part 'trip_model.g.dart';
 
-
 /// An annotation for the code generator to know that this class needs the
 /// JSON serialization logic to be generated.
 @JsonSerializable(explicitToJson: true)
@@ -19,6 +18,7 @@ class TripModel {
   String tripId;
   List<TripMemberModel>? tripMemberDetails;
   List<TripGridColumn>? columnNames;
+  List<dynamic>? TripDetails;
 
   @override
   List<Object?> get props => [
@@ -26,12 +26,14 @@ class TripModel {
         tripId,
         tripMemberDetails,
         columnNames,
+        TripDetails,
       ];
 
   /// A necessary factory constructor for creating a new User instance
   /// from a map. Pass the map to the generated `_$UserFromJson()` constructor.
   /// The constructor is named after the source class, in this case, User.
-  factory TripModel.fromJson(Map<String, dynamic> json) => _$TripModelFromJson(json);
+  factory TripModel.fromJson(Map<String, dynamic> json) =>
+      _$TripModelFromJson(json);
 
   /// `toJson` is the convention for a class to declare support for serialization
   /// to JSON. The implementation simply calls the private, generated
