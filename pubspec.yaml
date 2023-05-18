@@ -52,6 +52,11 @@ dependencies:
   uuid: ^3.0.7
   bloc_concurrency: ^0.2.1
   syncfusion_flutter_datagrid: ^21.2.5
+  form_controller: ^0.8.4
+  flutter_form_builder: ^8.0.0
+  dependencies:
+  flutter_typeahead: ^4.3.8
+  form_builder_validators: ^8.6.1
 
 dev_dependencies:
   flutter_test:

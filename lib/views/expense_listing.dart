@@ -5,6 +5,7 @@ import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/services/firestore_service.dart';
 import 'package:trip_contribute/utils/grid_notes_utils.dart';
 import 'package:trip_contribute/utils/tripUtils.dart';
+import 'package:trip_contribute/views/add_grid_row_screen.dart';
 
 class ExpenseListing extends StatefulWidget {
   const ExpenseListing({Key? key, required this.tripId}) : super(key: key);
@@ -35,13 +36,28 @@ class _ExpenseListingState extends State<ExpenseListing> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: StreamBuilder<List<TripModel>>(
-      stream: DatabaseManager().listenTripsData(),
-      builder: (BuildContext context, AsyncSnapshot<List<TripModel>> snapshot) {
-        return getGridView(snapshot.data ?? []);
-      },
-    ));
+    return StreamBuilder<List<TripModel>>(
+        stream: DatabaseManager().listenTripsData(),
+        builder:
+            (BuildContext context, AsyncSnapshot<List<TripModel>> snapshot) {
+          return Scaffold(
+            body: getGridView(snapshot.data ?? []),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {},
+              backgroundColor: Colors.black,
+              child: IconButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushReplacement(MaterialPageRoute<List<String>>(
+                    builder: (_) => AddGridRowScreen(
+                        arrColumnList: arrTripColumns, arrNotesData: trips),
+                  ));
+                },
+                icon: const Icon(Icons.add),
+              ),
+            ),
+          );
+        });
   }
 
   Widget getGridView(List<TripModel> arrTripList) {
