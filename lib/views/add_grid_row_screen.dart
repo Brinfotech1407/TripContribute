@@ -78,7 +78,6 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
     final List<Widget> arrChildList = <Widget>[];
 
     for (final TripGridColumn currentColumn in widget.arrColumnList ?? []) {
-      print('isNumericColumn${currentColumn.showAutoSuggestion.toString()}');
       if (currentColumn.isNumericColumn) {
         arrChildList.add(
           FormBuilderTextField(
@@ -241,9 +240,11 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
           return ListTile(
             title: Text(arrMember.tripMemberName!),
             onTap: () {
-              selectedValue = arrMember.tripMemberName;
-              mapTextController[currentColumn.name]!.text =
-                  arrMember.tripMemberName!;
+              setState(() {
+                selectedValue = arrMember.tripMemberName;
+                mapTextController[currentColumn.name]!.text =
+                    arrMember.tripMemberName!;
+              });
               Navigator.pop(context);
             },
           );

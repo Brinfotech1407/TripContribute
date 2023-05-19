@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:trip_contribute/models/trip_grid_data.dart';
-import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/services/firestore_service.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
@@ -12,8 +11,10 @@ import 'package:trip_contribute/utils/tripUtils.dart';
 import 'package:trip_contribute/views/add_grid_row_screen.dart';
 
 class ExpenseListing extends StatefulWidget {
-  const ExpenseListing({Key? key, required this.tripId}) : super(key: key);
+  const ExpenseListing({Key? key, required this.tripId, required this.tripData})
+      : super(key: key);
   final String tripId;
+  final TripModel tripData;
 
   @override
   State<ExpenseListing> createState() => _ExpenseListingState();
@@ -22,7 +23,6 @@ class ExpenseListing extends StatefulWidget {
 class _ExpenseListingState extends State<ExpenseListing> {
   List<TripGridColumn> arrTripColumns = <TripGridColumn>[];
   List<dynamic> trips = <dynamic>[];
-  List<TripMemberModel> tripMemberList = <TripMemberModel>[];
 
   final DataGridController _controller = DataGridController();
   Map<String, ColumnResizeUpdateDetails> mapColumnReSizingMode =
@@ -58,7 +58,7 @@ class _ExpenseListingState extends State<ExpenseListing> {
                       builder: (_) => AddGridRowScreen(
                           arrColumnList: arrTripColumns,
                           arrNotesData: trips,
-                          tripMemberList: tripMemberList),
+                          tripMemberList: widget.tripData.tripMemberDetails!),
                     ),
                   );
 
@@ -83,11 +83,6 @@ class _ExpenseListingState extends State<ExpenseListing> {
             crossAxisSpacing: 8),
         itemBuilder: (_, int index) {
           final TripModel arrItem = arrTripList[index];
-          if (arrItem.tripMemberDetails!.isNotEmpty) {
-            tripMemberList
-              ..clear()
-              ..addAll(arrItem.tripMemberDetails!);
-          }
           setUpGridView(arrItem);
           return GestureDetector(
             onTap: () {},
@@ -96,7 +91,7 @@ class _ExpenseListingState extends State<ExpenseListing> {
               child: ListTile(
                 contentPadding: const EdgeInsets.all(8),
                 title: Text(
-                  arrItem.tripName,
+                  widget.tripData.tripName,
                   style: const TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 20,
@@ -107,7 +102,8 @@ class _ExpenseListingState extends State<ExpenseListing> {
                   padding: const EdgeInsets.only(bottom: 4),
                   child: Padding(
                     padding: const EdgeInsets.only(top: 7, bottom: 4),
-                    child: tripDataSource != null
+                    child: tripDataSource?.rows.isNotEmpty != null &&
+                            widget.tripData.TripDetails != null
                         ? SfDataGrid(
                             source: tripDataSource!,
                             gridLinesVisibility: GridLinesVisibility.both,
@@ -121,7 +117,9 @@ class _ExpenseListingState extends State<ExpenseListing> {
                             headerGridLinesVisibility: GridLinesVisibility.both,
                             columns: getGridColumns(),
                           )
-                        : Container(),
+                        : const Center(
+                            child: Text('No Data found'),
+                          ),
                   ),
                 ),
               ),
@@ -138,15 +136,17 @@ class _ExpenseListingState extends State<ExpenseListing> {
   }
 
   void setUpGridView(TripModel arrItem) {
-    arrTripColumns = getColumnData(arrItem.columnNames!);
-    trips
-      ..clear()
-      ..addAll(arrItem.TripDetails!.reversed);
-    tripDataSource = TripDataSource(
-      tripData: trips,
-      sortingApplied: () {},
-      arrGridTripColumn: arrTripColumns,
-    );
+    if (widget.tripData.TripDetails != null) {
+      arrTripColumns = getColumnData(arrItem.columnNames!);
+      trips
+        ..clear()
+        ..addAll(widget.tripData.TripDetails!.reversed);
+      tripDataSource = TripDataSource(
+        tripData: trips,
+        sortingApplied: () {},
+        arrGridTripColumn: arrTripColumns,
+      );
+    }
   }
 
   List<TripGridColumn> getColumnData(List<TripGridColumn> gridColumns) {

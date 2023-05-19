@@ -91,10 +91,11 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
 
                                 return GestureDetector(
                                   onTap: () {
-                                    Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute<List<String>>(
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute<List<String>>(
                                             builder: (_) => ExpenseListing(
                                                   tripId: tripData.tripId,
+                                                  tripData: tripData,
                                                 )));
                                   },
                                   child: Card(
@@ -266,8 +267,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                         icon: const Icon(Icons.close),
                         iconSize: 22,
                         onPressed: () {
-                          Navigator.pop(context);
                           _createTripNameController.clear();
+                          Navigator.pop(context);
                         },
                       ),
                     ],
@@ -281,10 +282,10 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                     onTap: () {
                       setState(() {
                         if (_createTripNameController.text.isNotEmpty) {
+                          tripId = tripUserId();
                           tripNameList.add(_createTripNameController.text);
                           addTripColumn();
                           addMemberName();
-                          tripId = tripUserId();
 
                           context.read<UserBloc>().add(CreateTripData(
                                 tripName: _createTripNameController.text,
@@ -294,10 +295,10 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                               ));
 
                           Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute<List<String>>(
+                              .push(MaterialPageRoute<List<String>>(
                                   builder: (_) => AddMemberScreen(
                                         tripName: tripNameList.last,
-                                        userMno: tripUserMno, //.stringsub(3),
+                                        userMno: tripUserMno,
                                         userName: tripUserName,
                                         tripId: tripId,
                                       )));
