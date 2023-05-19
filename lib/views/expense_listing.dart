@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:trip_contribute/models/trip_grid_data.dart';
+import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/services/firestore_service.dart';
 import 'package:trip_contribute/user/user_bloc.dart';
@@ -21,6 +22,7 @@ class ExpenseListing extends StatefulWidget {
 class _ExpenseListingState extends State<ExpenseListing> {
   List<TripGridColumn> arrTripColumns = <TripGridColumn>[];
   List<dynamic> trips = <dynamic>[];
+  List<TripMemberModel> tripMemberList = <TripMemberModel>[];
 
   final DataGridController _controller = DataGridController();
   Map<String, ColumnResizeUpdateDetails> mapColumnReSizingMode =
@@ -54,10 +56,12 @@ class _ExpenseListingState extends State<ExpenseListing> {
                       await Navigator.of(context).push(
                     MaterialPageRoute<Map<String, dynamic>>(
                       builder: (_) => AddGridRowScreen(
-                          arrColumnList: arrTripColumns, arrNotesData: trips),
+                          arrColumnList: arrTripColumns,
+                          arrNotesData: trips,
+                          tripMemberList: tripMemberList),
                     ),
                   );
-                  print('gridValues $gridValues');
+
                   saveGridNotes(gridValues);
                 },
                 icon: const Icon(Icons.add),
@@ -79,6 +83,11 @@ class _ExpenseListingState extends State<ExpenseListing> {
             crossAxisSpacing: 8),
         itemBuilder: (_, int index) {
           final TripModel arrItem = arrTripList[index];
+          if (arrItem.tripMemberDetails!.isNotEmpty) {
+            tripMemberList
+              ..clear()
+              ..addAll(arrItem.tripMemberDetails!);
+          }
           setUpGridView(arrItem);
           return GestureDetector(
             onTap: () {},

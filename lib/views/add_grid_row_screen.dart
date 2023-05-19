@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:form_controller/form_controller.dart';
 import 'package:trip_contribute/models/trip_grid_data.dart';
+import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/utils/grid_notes_utils.dart';
 import 'package:trip_contribute/views/widgets/type_ahead_form_field.dart';
 
@@ -11,12 +12,14 @@ class AddGridRowScreen extends StatefulWidget {
     Key? key,
     required this.arrColumnList,
     required this.arrNotesData,
+    required this.tripMemberList,
   }) : super(
           key: key,
         );
 
   final List<TripGridColumn>? arrColumnList;
   final List<dynamic>? arrNotesData;
+  final List<TripMemberModel> tripMemberList;
 
   @override
   _AddGridRowScreenState createState() => _AddGridRowScreenState();
@@ -32,6 +35,7 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
   Map<String, String> mapFilePicker = <String, String>{};
   Map<String, String>? mediaUploadTrack;
   Map<String, dynamic>? arrNewlyAddedRecord = <String, dynamic>{};
+  String? selectedValue;
 
   @override
   void initState() {
@@ -113,7 +117,7 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
                       field.didChange(value);
                     },
                     onTap: () {
-                      _showDialog();
+                      _showDialog(currentColumn);
                     },
                   ));
             },
@@ -214,27 +218,34 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
     return arrMap;
   }
 
-  void _showDialog() {
+  void _showDialog(TripGridColumn currentColumn) {
     showDialog<void>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Member list'),
-            content: setupAlertDialoadContainer(),
+            content: setupAlertDialoadContainer(currentColumn),
           );
         });
   }
 
-  Widget setupAlertDialoadContainer() {
+  Widget setupAlertDialoadContainer(TripGridColumn currentColumn) {
     return Container(
-      height: MediaQuery.of(context).size.height / 2,
+      // height: MediaQuery.of(context).size.height / 2,
       width: MediaQuery.of(context).size.width / 1,
       child: ListView.builder(
         shrinkWrap: true,
-        itemCount: 5,
+        itemCount: widget.tripMemberList.length,
         itemBuilder: (BuildContext context, int index) {
-          return const ListTile(
-            title: Text('Gujarat, India'),
+          final TripMemberModel arrMember = widget.tripMemberList[index];
+          return ListTile(
+            title: Text(arrMember.tripMemberName!),
+            onTap: () {
+              selectedValue = arrMember.tripMemberName;
+              mapTextController[currentColumn.name]!.text =
+                  arrMember.tripMemberName!;
+              Navigator.pop(context);
+            },
           );
         },
       ),
