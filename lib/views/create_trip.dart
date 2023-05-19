@@ -267,8 +267,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                         icon: const Icon(Icons.close),
                         iconSize: 22,
                         onPressed: () {
-                          _createTripNameController.clear();
                           Navigator.pop(context);
+                          _createTripNameController.clear();
                         },
                       ),
                     ],
@@ -332,6 +332,12 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
       name: 'Name',
       columnType: 'Free Text',
       isRequired: true,
+    );
+
+    final TripGridColumn itemDescription = TripGridColumn(
+      name: 'Description',
+      columnType: 'Free Text',
+      isRequired: true,
       showAutoSuggestion: true,
     );
 
@@ -343,6 +349,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
     );
     arrGridTripColumn
       ..add(itemName)
+      ..add(itemDescription)
       ..add(itemAmount);
   }
 

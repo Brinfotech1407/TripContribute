@@ -56,7 +56,7 @@ class _ExpenseListingState extends State<ExpenseListing> {
                       await Navigator.of(context).push(
                     MaterialPageRoute<Map<String, dynamic>>(
                       builder: (_) => AddGridRowScreen(
-                          arrColumnList: arrTripColumns,
+                          arrColumnList: widget.tripData.columnNames,
                           arrNotesData: trips,
                           tripMemberList: widget.tripData.tripMemberDetails!),
                     ),
