@@ -58,7 +58,6 @@ class CreateTripData extends UserEvent {
   final List<TripGridColumn>? tripGridColumnDetails;
 }
 
-
 class UpdateTripMemberData extends UserEvent {
   const UpdateTripMemberData({
     required this.tripMemberDetails,
@@ -66,6 +65,16 @@ class UpdateTripMemberData extends UserEvent {
   });
 
   final List<TripMemberModel>? tripMemberDetails;
+  final String? tripId;
+}
+
+class UpdateExpenseRowData extends UserEvent {
+  const UpdateExpenseRowData({
+    required this.tripExpenseDetails,
+    required this.tripId,
+  });
+
+  final Map<String, dynamic> tripExpenseDetails;
   final String? tripId;
 }
 

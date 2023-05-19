@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:trip_contribute/models/trip_grid_data.dart';
 import 'package:trip_contribute/models/trip_model.dart';
 import 'package:trip_contribute/services/firestore_service.dart';
+import 'package:trip_contribute/user/user_bloc.dart';
+import 'package:trip_contribute/user/user_event.dart';
 import 'package:trip_contribute/utils/grid_notes_utils.dart';
 import 'package:trip_contribute/utils/tripUtils.dart';
 import 'package:trip_contribute/views/add_grid_row_screen.dart';
@@ -46,12 +49,16 @@ class _ExpenseListingState extends State<ExpenseListing> {
               onPressed: () {},
               backgroundColor: Colors.black,
               child: IconButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushReplacement(MaterialPageRoute<List<String>>(
-                    builder: (_) => AddGridRowScreen(
-                        arrColumnList: arrTripColumns, arrNotesData: trips),
-                  ));
+                onPressed: () async {
+                  final Map<String, dynamic>? gridValues =
+                      await Navigator.of(context).push(
+                    MaterialPageRoute<Map<String, dynamic>>(
+                      builder: (_) => AddGridRowScreen(
+                          arrColumnList: arrTripColumns, arrNotesData: trips),
+                    ),
+                  );
+                  print('gridValues $gridValues');
+                  saveGridNotes(gridValues);
                 },
                 icon: const Icon(Icons.add),
               ),
@@ -202,6 +209,28 @@ class _ExpenseListingState extends State<ExpenseListing> {
       return ' ';
     }
     return '$alphabet : ${column.toUpperCase()}';
+  }
+
+  void saveGridNotes(Map<String, dynamic>? gridValues) {
+    final List<dynamic> arrGridData = trips..add(gridValues);
+
+    saveNotes(
+      arrGridData: arrGridData,
+      newlyAddedEntries: gridValues,
+    );
+  }
+
+  void saveNotes({
+    String additionalNotes = '',
+    List<dynamic>? arrGridData,
+    Map<String, dynamic>? newlyAddedEntries,
+  }) {
+    if (newlyAddedEntries != null) {
+      context.read<UserBloc>().add(UpdateExpenseRowData(
+            tripId: widget.tripId,
+            tripExpenseDetails: newlyAddedEntries,
+          ));
+    }
   }
 }
 

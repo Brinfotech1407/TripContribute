@@ -29,6 +29,10 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
   final Map<String, TextEditingController> mapTextController =
       <String, TextEditingController>{};
 
+  Map<String, String> mapFilePicker = <String, String>{};
+  Map<String, String>? mediaUploadTrack;
+  Map<String, dynamic>? arrNewlyAddedRecord = <String, dynamic>{};
+
   @override
   void initState() {
     super.initState();
@@ -83,6 +87,36 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
             ),
             validator:
                 getFormValidators(context: context, column: currentColumn),
+          ),
+        );
+      } else if (currentColumn.name == 'Name') {
+        arrChildList.add(
+          FormBuilderField<String?>(
+            name: currentColumn.name!,
+            onChanged: (String? val) => debugPrint(val.toString()),
+            builder: (FormFieldState<String?> field) {
+              return InputDecorator(
+                  decoration: const InputDecoration(
+                    disabledBorder: InputBorder.none,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                  ),
+                  child: TextFormField(
+                    controller: mapTextController[currentColumn.name],
+                    decoration: const InputDecoration(
+                      labelText: 'Name',
+                    ),
+                    validator: getFormValidators(
+                        context: context, column: currentColumn),
+                    onSaved: (String? value) {
+                      mapTextController[currentColumn.name]!.text = value!;
+                      field.didChange(value);
+                    },
+                    onTap: () {
+                      _showDialog();
+                    },
+                  ));
+            },
           ),
         );
       } else {
@@ -153,22 +187,16 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
   }
 
   void addRows(bool sendMessage) {
-    /*  _formKey.currentState!.save();
+    _formKey.currentState!.save();
 
-    final Map<String, dynamic> arrUpdatedMap = getUpdatedMap();
+    final Map<String, dynamic>? arrUpdatedMap = getUpdatedMap();
     if (_formKey.currentState!.validate()) {
-      final NotesCreateData notesCreateData = NotesCreateData(
-            (NotesCreateDataBuilder b) {
-          b
-            ..needsToSendMessage = sendMessage
-            ..arrNewlyAddedRecord = arrUpdatedMap;
-        },
-      );
+      arrNewlyAddedRecord = arrUpdatedMap;
 
-      Navigator.pop(context, notesCreateData);
+      Navigator.pop(context, arrNewlyAddedRecord);
     } else {
       Container();
-    }*/
+    }
   }
 
   void buildTextControllerForTextInputView() {
@@ -178,5 +206,38 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
             gridColumn.name!, () => TextEditingController());
       }
     }
+  }
+
+  Map<String, dynamic>? getUpdatedMap() {
+    final Map<String, dynamic> arrMap = _formKey.currentState!.value;
+
+    return arrMap;
+  }
+
+  void _showDialog() {
+    showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Member list'),
+            content: setupAlertDialoadContainer(),
+          );
+        });
+  }
+
+  Widget setupAlertDialoadContainer() {
+    return Container(
+      height: MediaQuery.of(context).size.height / 2,
+      width: MediaQuery.of(context).size.width / 1,
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: 5,
+        itemBuilder: (BuildContext context, int index) {
+          return const ListTile(
+            title: Text('Gujarat, India'),
+          );
+        },
+      ),
+    );
   }
 }

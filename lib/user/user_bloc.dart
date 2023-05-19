@@ -18,6 +18,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     on<UserPreferenceServiceInit>(_onPreferenceServiceInit);
     on<CreateTripData>(_onCreateTripDetails);
     on<UpdateTripMemberData>(_onUpdateTripMember);
+    on<UpdateExpenseRowData>(_onUpdateTripExpense);
   }
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -84,13 +85,23 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  Future<void> _onUpdateTripMember(
-      UpdateTripMemberData event, Emitter<UserState> emit) async {
+  Future<void> _onUpdateTripMember(UpdateTripMemberData event,
+      Emitter<UserState> emit) async {
     try {
       for (final TripMemberModel arrItem in event.tripMemberDetails!) {
         await DatabaseManager().updateTripMember(
             id: event.tripId, newlyAddedMembers: arrItem.toJson());
       }
+    } catch (exception) {
+      log('member added successfully');
+    }
+  }
+
+  Future<void> _onUpdateTripExpense(UpdateExpenseRowData event,
+      Emitter<UserState> emit) async {
+    try {
+      await DatabaseManager().updateExpenseGridRowData(
+          id: event.tripId, newlyAddedExpense: event.tripExpenseDetails);
     } catch (exception) {
       log('member added successfully');
     }

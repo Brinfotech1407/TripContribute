@@ -95,4 +95,20 @@ class DatabaseManager {
       print(e);
     }
   }
+
+  Future<void> updateExpenseGridRowData({
+    String? id,
+    Map<String, dynamic>? newlyAddedExpense,
+  }) async {
+    final List<dynamic> arrTripExpenseRowData = <dynamic>[newlyAddedExpense];
+    try {
+      _fireStore.collection('Trip').doc(id).update(
+        {
+          'TripDetails': FieldValue.arrayUnion(arrTripExpenseRowData),
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
 }
