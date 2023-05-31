@@ -76,10 +76,9 @@ class _ExpenseListingState extends State<ExpenseListing> {
     if (arrTripList.isNotEmpty) {
       return GridView.builder(
         itemCount: 1,
-        shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 1,
-            mainAxisExtent: 250,
+            mainAxisExtent: MediaQuery.of(context).size.height,
             mainAxisSpacing: 10,
             crossAxisSpacing: 8),
         itemBuilder: (_, int index) {
@@ -94,7 +93,7 @@ class _ExpenseListingState extends State<ExpenseListing> {
                 title: Text(
                   widget.tripData.tripName,
                   style: const TextStyle(
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                     fontSize: 20,
                   ),
                 ),
@@ -106,16 +105,28 @@ class _ExpenseListingState extends State<ExpenseListing> {
                     child: tripDataSource?.rows.isNotEmpty != null &&
                             widget.tripData.TripDetails != null
                         ? SfDataGrid(
-                            source: tripDataSource!,
+                      source: tripDataSource!,
                             gridLinesVisibility: GridLinesVisibility.both,
                             headerRowHeight: 45,
                             rowHeight: 50,
+                            allowSwiping: true,
+                            allowColumnsResizing: true,
                             controller: _controller,
                             verticalScrollPhysics:
                                 const NeverScrollableScrollPhysics(),
                             horizontalScrollPhysics:
                                 const NeverScrollableScrollPhysics(),
                             headerGridLinesVisibility: GridLinesVisibility.both,
+                            tableSummaryRows: [
+                              GridTableSummaryRow(
+                                showSummaryInRow: false,
+                                title: 'Total Amount:',
+                                color: Colors.green.shade100,
+                                titleColumnSpan: 3,
+                                columns: getSummaryColumn(),
+                                position: GridTableSummaryRowPosition.bottom,
+                              ),
+                            ],
                             columns: getGridColumns(),
                           )
                         : const Center(
@@ -249,6 +260,23 @@ class _ExpenseListingState extends State<ExpenseListing> {
             tripExpenseDetails: newlyAddedEntries,
           ));
     }
+  }
+
+  List<GridSummaryColumn> getSummaryColumn() {
+    final List<GridSummaryColumn> arrSummaryColumn = <GridSummaryColumn>[];
+    for (int i = 0; i < arrTripColumns.length; i++) {
+      final TripGridColumn arrItem = arrTripColumns[i];
+      if (arrItem.isNumericColumn && arrItem.showTotal!) {
+        arrSummaryColumn.add(
+          GridSummaryColumn(
+            name: '${arrItem}_sum',
+            columnName: arrItem.name!,
+            summaryType: GridSummaryType.sum,
+          ),
+        );
+      }
+    }
+    return arrSummaryColumn;
   }
 }
 

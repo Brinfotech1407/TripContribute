@@ -163,9 +163,6 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
                       mapTextController[currentColumn.name]?.text = value!;
                       field.didChange(value);
                     },
-                    onChanged: (String value) {
-                      mapTextController[currentColumn.name]?.text = value;
-                    },
                     onTap: () {},
                   ));
             },
