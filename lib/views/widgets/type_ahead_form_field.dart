@@ -32,7 +32,7 @@ class _TypeAheadViewState extends State<TypeAheadView> {
       textFieldConfiguration: TextFieldConfiguration(
         controller: widget.controller,
         decoration: InputDecoration(
-          labelText: widget.currentColumn.name!,
+          labelText: widget.currentColumn.name!.toUpperCase(),
           disabledBorder: InputBorder.none,
         ),
       ),

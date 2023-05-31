@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:trip_contribute/models/trip_grid_data.dart';
 import 'package:trip_contribute/models/trip_model.dart';
@@ -222,11 +223,19 @@ class _ExpenseListingState extends State<ExpenseListing> {
 
   void saveGridNotes(Map<String, dynamic>? gridValues) {
     final List<dynamic> arrGridData = trips..add(gridValues);
-
-    saveNotes(
-      arrGridData: arrGridData,
-      newlyAddedEntries: gridValues,
-    );
+    if (arrGridData.isNotEmpty) {
+      saveNotes(
+        arrGridData: arrGridData,
+        newlyAddedEntries: gridValues,
+      );
+    } else {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.info,
+        title: 'Oops...',
+        text: 'Please enter proper Details',
+      );
+    }
   }
 
   void saveNotes({

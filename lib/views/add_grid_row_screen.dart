@@ -5,7 +5,6 @@ import 'package:form_controller/form_controller.dart';
 import 'package:trip_contribute/models/trip_grid_data.dart';
 import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/utils/grid_notes_utils.dart';
-import 'package:trip_contribute/views/widgets/type_ahead_form_field.dart';
 
 class AddGridRowScreen extends StatefulWidget {
   const AddGridRowScreen({
@@ -78,21 +77,7 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
     final List<Widget> arrChildList = <Widget>[];
 
     for (final TripGridColumn currentColumn in widget.arrColumnList ?? []) {
-      if (currentColumn.isNumericColumn) {
-        arrChildList.add(
-          FormBuilderTextField(
-            name: currentColumn.name!,
-            maxLength: 10,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText: 'Please Enter ${currentColumn.name!}',
-              labelText: currentColumn.name!.toUpperCase(),
-            ),
-            validator:
-                getFormValidators(context: context, column: currentColumn),
-          ),
-        );
-      } else if (currentColumn.name == 'Name') {
+      if (currentColumn.name == 'Name') {
         arrChildList.add(
           FormBuilderField<String?>(
             name: currentColumn.name!,
@@ -106,8 +91,8 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
                   ),
                   child: TextFormField(
                     controller: mapTextController[currentColumn.name],
-                    decoration: const InputDecoration(
-                      labelText: 'Name',
+                    decoration: InputDecoration(
+                      labelText: currentColumn.name!.toUpperCase(),
                     ),
                     validator: getFormValidators(
                         context: context, column: currentColumn),
@@ -122,8 +107,39 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
             },
           ),
         );
+      } else if (currentColumn.isNumericColumn) {
+        arrChildList.add(
+          FormBuilderField<String?>(
+            name: currentColumn.name!,
+            onChanged: (String? val) => debugPrint(val.toString()),
+            builder: (FormFieldState<String?> field) {
+              return InputDecorator(
+                  decoration: const InputDecoration(
+                    disabledBorder: InputBorder.none,
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                  ),
+                  child: TextFormField(
+                    controller: mapTextController[currentColumn.name],
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: currentColumn.name?.toUpperCase(),
+                    ),
+                    validator: getFormValidators(
+                        context: context, column: currentColumn),
+                    onSaved: (String? value) {
+                      mapTextController[currentColumn.name]?.text = value!;
+                      field.didChange(value);
+                    },
+                    onChanged: (String value) {
+                      mapTextController[currentColumn.name]?.text = value;
+                    },
+                    onTap: () {},
+                  ));
+            },
+          ),
+        );
       } else {
-        if (currentColumn.showAutoSuggestion!) {
           arrChildList.add(
             FormBuilderField<String?>(
               name: currentColumn.name!,
@@ -135,25 +151,26 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                   ),
-                  child: TypeAheadView(
+                  child: TextFormField(
                     controller: mapTextController[currentColumn.name],
-                    currentColumn: currentColumn,
-                    arrSuggestionList: widget.arrNotesData,
-                    onSuggestionSelected: (String suggestion) {
-                      mapTextController[currentColumn.name]!.text = suggestion;
-                    },
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      labelText: currentColumn.name?.toUpperCase(),
+                    ),
                     validator: getFormValidators(
                         context: context, column: currentColumn),
                     onSaved: (String? value) {
-                      mapTextController[currentColumn.name]!.text = value!;
+                      mapTextController[currentColumn.name]?.text = value!;
                       field.didChange(value);
                     },
-                  ),
-                );
-              },
+                    onChanged: (String value) {
+                      mapTextController[currentColumn.name]?.text = value;
+                    },
+                    onTap: () {},
+                  ));
+            },
             ),
           );
-        }
       }
     }
 
@@ -190,15 +207,21 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
   }
 
   void addRows(bool sendMessage) {
-    _formKey.currentState!.save();
+    setState(() {
+      _formKey.currentState!.save();
+    });
 
     final Map<String, dynamic>? arrUpdatedMap = getUpdatedMap();
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState != null &&
+        _formKey.currentState!.validate() &&
+        _formKey.currentState!.value.isNotEmpty) {
       arrNewlyAddedRecord = arrUpdatedMap;
 
       Navigator.pop(context, arrNewlyAddedRecord);
     } else {
-      Container();
+      const AlertDialog(
+        title: Text('Please Enter Proper Details'),
+      );
     }
   }
 
