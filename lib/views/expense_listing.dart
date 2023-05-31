@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 import 'package:trip_contribute/models/trip_grid_data.dart';
 import 'package:trip_contribute/models/trip_model.dart';
@@ -104,30 +105,34 @@ class _ExpenseListingState extends State<ExpenseListing> {
                     padding: const EdgeInsets.only(top: 7, bottom: 4),
                     child: tripDataSource?.rows.isNotEmpty != null &&
                             widget.tripData.TripDetails != null
-                        ? SfDataGrid(
-                      source: tripDataSource!,
-                            gridLinesVisibility: GridLinesVisibility.both,
-                            headerRowHeight: 45,
-                            rowHeight: 50,
-                            allowSwiping: true,
-                            allowColumnsResizing: true,
-                            controller: _controller,
-                            verticalScrollPhysics:
-                                const NeverScrollableScrollPhysics(),
-                            horizontalScrollPhysics:
-                                const NeverScrollableScrollPhysics(),
-                            headerGridLinesVisibility: GridLinesVisibility.both,
-                            tableSummaryRows: [
-                              GridTableSummaryRow(
-                                showSummaryInRow: false,
-                                title: 'Total Amount:',
-                                color: Colors.green.shade100,
-                                titleColumnSpan: 3,
-                                columns: getSummaryColumn(),
-                                position: GridTableSummaryRowPosition.bottom,
-                              ),
-                            ],
-                            columns: getGridColumns(),
+                        ? SfDataGridTheme(
+                            data:
+                                SfDataGridThemeData(headerColor: Colors.white),
+                            child: SfDataGrid(
+                              source: tripDataSource!,
+                              gridLinesVisibility: GridLinesVisibility.both,
+                              headerRowHeight: 45,
+                              rowHeight: 50,
+                              allowSwiping: true,
+                              allowColumnsResizing: true,
+                              controller: _controller,
+                              verticalScrollPhysics:
+                                  const NeverScrollableScrollPhysics(),
+                              horizontalScrollPhysics:
+                                  const NeverScrollableScrollPhysics(),
+                              headerGridLinesVisibility:
+                                  GridLinesVisibility.both,
+                              tableSummaryRows: [
+                                GridTableSummaryRow(
+                                  showSummaryInRow: false,
+                                  title: 'Total Amount:',
+                                  titleColumnSpan: 3,
+                                  columns: getSummaryColumn(),
+                                  position: GridTableSummaryRowPosition.bottom,
+                                ),
+                              ],
+                              columns: getGridColumns(),
+                            ),
                           )
                         : const Center(
                             child: Text('No Data found'),
@@ -195,7 +200,7 @@ class _ExpenseListingState extends State<ExpenseListing> {
           width: columnWidth,
           label: Container(
             padding: const EdgeInsets.all(2),
-            color: Colors.blue.shade400,
+            color: const Color.fromRGBO(107, 105, 105, 1),
             alignment: Alignment.center,
             child: Text(
               columnDisplay,
