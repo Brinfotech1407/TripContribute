@@ -5,6 +5,7 @@ import 'package:form_controller/form_controller.dart';
 import 'package:trip_contribute/models/trip_grid_data.dart';
 import 'package:trip_contribute/models/trip_member_model.dart';
 import 'package:trip_contribute/utils/grid_notes_utils.dart';
+import 'package:trip_contribute/utils/tripUtils.dart';
 
 class AddGridRowScreen extends StatefulWidget {
   const AddGridRowScreen({
@@ -191,16 +192,14 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
 
   Widget buildSubmitButton() {
     return Container(
-      alignment: Alignment.center,
-      margin: const EdgeInsets.all(10),
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: ElevatedButton(
-        child: const Text('Add'),
-        onPressed: () {
-          addRows(false);
-        },
-      ),
-    );
+        alignment: Alignment.center,
+        margin: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(left: 10, right: 10),
+        child: GestureDetector(
+            onTap: () {
+              addRows(false);
+            },
+            child: TripUtils().bottomButtonDesignView(buttonText: 'Add')));
   }
 
   void addRows(bool sendMessage) {
