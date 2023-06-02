@@ -184,7 +184,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                       );
                     } else if (snapshot.connectionState ==
                         ConnectionState.waiting) {
-                      return _buildLoading();
+                      return TripUtils().buildLoading();
                     } else {
                       return const Center(child: Text('no trip(s) found!'));
                     }
@@ -209,7 +209,6 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
     );
   }
 
-  Widget _buildLoading() => const Center(child: CircularProgressIndicator());
 
   Padding createTripHeaderView({String? userName}) {
     return Padding(

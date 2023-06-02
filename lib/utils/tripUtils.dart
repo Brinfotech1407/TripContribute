@@ -44,7 +44,7 @@ class TripUtils {
                Color.fromRGBO(0, 0, 0, 1),
                Color.fromRGBO(107, 105, 105, 1)
              ]),
-       ),
+      ),
       child: Padding(
         padding: const EdgeInsets.only(left: 18, bottom: 8, top: 8, right: 18),
         child: Text(
@@ -54,6 +54,8 @@ class TripUtils {
       ),
     );
   }
+
+  Widget buildLoading() => const Center(child: CircularProgressIndicator());
 
   static List<String> arrAlphabets = <String>[];
 

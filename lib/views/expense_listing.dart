@@ -44,9 +44,9 @@ class _ExpenseListingState extends State<ExpenseListing> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<TripModel>>(
-        stream: DatabaseManager().listenTripsData(),
         builder:
             (BuildContext context, AsyncSnapshot<List<TripModel>> snapshot) {
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           return Scaffold(
             body: getGridView(snapshot.data ?? []),
             floatingActionButton: FloatingActionButton(
@@ -70,7 +70,14 @@ class _ExpenseListingState extends State<ExpenseListing> {
               ),
             ),
           );
-        });
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return TripUtils().buildLoading();
+        } else {
+          return const Center(child: Text('no data found!'));
+        }
+      },
+      stream: DatabaseManager().listenTripsData(),
+    );
   }
 
   Widget getGridView(List<TripModel> arrTripList) {
