@@ -266,8 +266,8 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                         icon: const Icon(Icons.close),
                         iconSize: 22,
                         onPressed: () {
-                          Navigator.pop(context);
                           _createTripNameController.clear();
+                          Navigator.pop(context);
                         },
                       ),
                     ],
@@ -292,6 +292,7 @@ class _CrateTripScreenState extends State<CrateTripScreen> {
                                 tripMemberDetails: arrMemberIDListNotifier,
                                 tripGridColumnDetails: arrGridTripColumn,
                               ));
+                          Navigator.pop(context);
 
                           Navigator.of(context)
                               .push(MaterialPageRoute<List<String>>(
