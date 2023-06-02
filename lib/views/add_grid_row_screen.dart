@@ -242,12 +242,12 @@ class _AddGridRowScreenState extends State<AddGridRowScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Member list'),
-            content: setupAlertDialoadContainer(currentColumn),
+            content: setupAlertDialogContainer(currentColumn),
           );
         });
   }
 
-  Widget setupAlertDialoadContainer(TripGridColumn currentColumn) {
+  Widget setupAlertDialogContainer(TripGridColumn currentColumn) {
     return Container(
       // height: MediaQuery.of(context).size.height / 2,
       width: MediaQuery.of(context).size.width / 1,

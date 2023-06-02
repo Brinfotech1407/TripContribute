@@ -41,7 +41,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             buildHeaderView(context),
             Flexible(
               child: ListView.builder(
@@ -62,13 +62,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                          children: <Widget>[
                             Text(
                               arrMemberList[index].tripMemberName ?? '',
                               style: const TextStyle(fontSize: 17),
                             ),
                             Row(
-                              children: [
+                              children: <Widget>[
                                 Expanded(
                                     child: Text(
                                         arrMemberList[index].tripMemberMno ??
@@ -114,7 +114,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
 
   Row buildHeaderView(BuildContext context) {
     return Row(
-      children: [
+      children: <Widget>[
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(left: 10, bottom: 10),

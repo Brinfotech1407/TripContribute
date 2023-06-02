@@ -44,8 +44,7 @@ class _ExpenseListingState extends State<ExpenseListing> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<TripModel>>(
-        builder:
-            (BuildContext context, AsyncSnapshot<List<TripModel>> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<TripModel>> snapshot) {
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
           return Scaffold(
             body: getGridView(snapshot.data ?? []),
@@ -63,6 +62,7 @@ class _ExpenseListingState extends State<ExpenseListing> {
                           tripMemberList: widget.tripData.tripMemberDetails!),
                     ),
                   );
+                  widget.tripData.TripDetails!.add(gridValues);
 
                   saveGridNotes(gridValues);
                 },
@@ -293,13 +293,11 @@ class _ExpenseListingState extends State<ExpenseListing> {
 }
 
 class TripDataSource extends DataGridSource {
-  /// Creates the notes data source class with required details.
   TripDataSource({
     required List<dynamic> tripData,
     required List<TripGridColumn>? arrGridTripColumn,
-    required VoidCallback? sortingApplied,
+    this.sortingApplied,
   }) {
-    this.sortingApplied = sortingApplied;
     _tripData.clear();
     for (int i = 0; i < tripData.length; i++) {
       final dynamic arrItem = tripData[i];
@@ -328,7 +326,7 @@ class TripDataSource extends DataGridSource {
       arrDataGridCell.add(
         DataGridCell<dynamic>(
           columnName: key.name!,
-          value: getValueFromKey(e, key.name!, counter, key),
+          value: getValueFromKey(e, key.name ?? '', counter, key),
         ),
       );
     }
@@ -342,7 +340,6 @@ class TripDataSource extends DataGridSource {
     int counter,
     TripGridColumn columnData,
   ) {
-    print('getValueFromKey ${e}');
     if (columnData.isNumericColumn) {
       return e[key] != null ? double.parse(e[key] as String) : 0;
     }
